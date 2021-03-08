@@ -1,5 +1,11 @@
 variable "kube_config" {
-    type = string
-    description = "path to kube config"
-    default = "./.kube/kube_config"
+  type        = string
+  description = "path to kube config"
+  default     = "./.kube/kube_config"
+}
+
+variable "slack_endpoint" {
+  type        = string
+  description = "Slack group wehbook endpoint"
+  default     = ""
 }
