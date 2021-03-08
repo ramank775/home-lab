@@ -1,0 +1,16 @@
+{
+  "name": "slack-notifier",
+  "version": "1.0.0",
+  "description": "Slack notifier ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Raman",
+  "license": "MIT",
+  "dependencies": {
+    "node-nats-streaming": "^0.3.2",
+    "request": "^2.88.2",
+    "string-template": "^1.0.0"
+  }
+}

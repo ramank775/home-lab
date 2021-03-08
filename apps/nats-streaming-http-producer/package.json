@@ -1,0 +1,21 @@
+{
+  "name": "nats-streaming-http-producer",
+  "version": "1.0.0",
+  "description": "This is a nodejs http producer for nats streaming",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nats",
+    "nats-streamining",
+    "nats-producer",
+    "nats-streaming-http-producer"
+  ],
+  "author": "Raman",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "node-nats-streaming": "^0.3.2"
+  }
+}

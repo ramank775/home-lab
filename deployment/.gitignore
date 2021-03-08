@@ -1,0 +1,7 @@
+*.local.tf
+.kube/*config
+.terraform
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+crash.log
