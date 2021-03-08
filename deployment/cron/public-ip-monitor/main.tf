@@ -3,6 +3,27 @@ locals {
   appname = "public-ip-monitor"
 }
 
+resource "kubernetes_persistent_volume_claim" "public_ip_monitor_pvc" {
+  metadata {
+    name      = local.appname
+    namespace = var.namespace
+    labels = {
+      "app" = local.appname
+    }
+  }
+  wait_until_bound = false
+  spec {
+    resources {
+      requests = {
+        "storage" = "1Mi"
+      }
+    }
+
+    access_modes = ["ReadWriteOnce"]
+  }
+}
+
+
 resource "kubernetes_cron_job" "public_ip_monitor_cron_job" {
   metadata {
     name      = local.appname
@@ -40,12 +61,13 @@ resource "kubernetes_cron_job" "public_ip_monitor_cron_job" {
               volume_mount {
                 name       = "data"
                 mount_path = "/data"
+                sub_path   = "data"
               }
             }
             volume {
               name = "data"
-              empty_dir {
-
+              persistent_volume_claim {
+                claim_name = local.appname
               }
             }
           }
