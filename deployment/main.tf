@@ -1,3 +1,6 @@
+module "networking" {
+  source = "./networking"
+}
 module "resources" {
   source    = "./resources"
   namespace = var.namespaces.resources

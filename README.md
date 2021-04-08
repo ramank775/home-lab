@@ -67,7 +67,7 @@ Setup Raspberry PI:
     Follow complete instruction from [here](https://rancher.com/docs/k3s/latest/en/advanced/#enabling-legacy-iptables-on-raspbian-buster)
 - Install K3s server on master Pi
     ```sh
-      curl -sfL https://get.k3s.io | sh -
+      curl -sfL https://get.k3s.io | sh - --disable servicelb
     ```
 - Copy node token of master 
     ```sh
@@ -80,17 +80,26 @@ Setup Raspberry PI:
     Note: Follow complete instruction from [here](https://rancher.com/docs/k3s/latest/en/) to setup k3s.
 - Run `kubectl get nodes` to verify all nodes has joined the cluster.
 - Copy `/etc/rancher/k3s/k3s.yaml` from Master Pi to access cluster from other system.
-
+- Install longhorn for persistent volume (Optional)
+    ```sh
+        kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
+    ```
+- Install metallb
+    ```sh
+        kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.6/manifests/namespace.yaml
+        kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.9.6/manifests/metallb.yaml
+        kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+    ```
 ## How to install current workload
 - Download terraform cli and add it to system path. Download cli from [here](https://www.terraform.io/).
 - Clone this repo to local system.
-- Change directory to deployement 
+- Change directory to deployment 
     ```sh
-        cd deployement
+        cd deployment
     ```
 - Copy `values.local.tf.tmpl` to `values.local.tf` and update variables default value if requried.
 - Copy k3s cluster config to `deployment/.kube/kube_config`.
-- Run initialize terraform in deployement repo.
+- Run initialize terraform in deployment repo.
     ```sh
         terraform init
     ```
