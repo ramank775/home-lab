@@ -18,4 +18,5 @@ module "cron" {
   source                           = "./cron"
   namespace                        = var.namespaces.crons
   nats_streaming_http_producer_url = module.apps.nats_streaming_http_producer.endpoint
+  github_token                     = var.github_token
 }

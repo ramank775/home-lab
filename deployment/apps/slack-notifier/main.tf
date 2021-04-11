@@ -20,6 +20,11 @@ resource "kubernetes_config_map" "slack_notifier_config_map" {
             "subject": "public-ip-update",
             "endpoint": "${var.slack_endpoint}",
             "template": "Alert!! Public ip of home lab got updated from {old_ip} to {new_ip}"
+        },
+        {
+            "subject": "service-error",
+            "endpoint": "${var.slack_endpoint}",
+            "template": "Alert!! {name} throws error {error}"
         }
     ]
     EOT
