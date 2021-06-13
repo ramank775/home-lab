@@ -127,3 +127,11 @@ Setup Raspberry PI:
 - Public ip monitor
 
     Cron which run hourly to check if the public ip has changed or not. If public ip change it publish message into message broker with old and new public IP.
+
+- Blog feature posts
+
+    Cron which run at mid night to compute the top blogs in terms of views and update them as featured blogs for [https://blog.one9x.org](https://blog.one9x.org)
+
+- Pihole
+
+    DNS level network add blocker. It is used for local dns server
