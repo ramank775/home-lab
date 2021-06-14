@@ -15,6 +15,7 @@ resource "kubernetes_config_map" "pihole-adlists" {
   data = {
     "adlists.list" = <<EOF
     https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+    https://dbl.oisd.nl/
     EOF
   }
 }
