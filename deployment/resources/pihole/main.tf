@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
         "storage" = "500Mi"
       }
     }
-
+    storage_class_name = "longhorn"
     access_modes = ["ReadWriteOnce"]
   }
 }
@@ -33,11 +33,7 @@ resource "kubernetes_config_map" "pihole-adlists" {
     }
   }
   data = {
-    "adlists.list" = <<EOF
-https://dbl.oisd.nl
-https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt
-https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-EOF
+    "adlists.list" = "https://dbl.oisd.nl https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
   }
 }
 

@@ -81,6 +81,11 @@ Setup Raspberry PI:
 - Run `kubectl get nodes` to verify all nodes has joined the cluster.
 - Copy `/etc/rancher/k3s/k3s.yaml` from Master Pi to access cluster from other system.
 - Install longhorn for persistent volume (Optional)
+
+    Make sure you have `open-iscsi` install in all of the nodes
+    ```sh
+        sudo apt-get update;sudo apt-get install -y open-iscsi
+    ```
     ```sh
         kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
     ```
