@@ -4,6 +4,26 @@ locals {
   replica = var.replicas
 }
 
+resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
+  metadata {
+    name      = local.appname
+    namespace = var.namespace
+    labels = {
+      "app" = local.appname
+    }
+  }
+  wait_until_bound = false
+  spec {
+    resources {
+      requests = {
+        "storage" = "500Mi"
+      }
+    }
+
+    access_modes = ["ReadWriteOnce"]
+  }
+}
+
 resource "kubernetes_config_map" "pihole-adlists" {
   metadata {
     namespace = var.namespace
@@ -14,9 +34,10 @@ resource "kubernetes_config_map" "pihole-adlists" {
   }
   data = {
     "adlists.list" = <<EOF
-    https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-    https://dbl.oisd.nl/
-    EOF
+https://dbl.oisd.nl
+https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt
+https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+EOF
   }
 }
 
@@ -29,24 +50,7 @@ resource "kubernetes_config_map" "pihole-regex" {
     }
   }
   data = {
-    "regex.list" = <<EOF
-    ^(.+[-_.])??adse?rv(er?|ice)?s?[0-9]*[-.]
-    EOF
-  }
-}
-
-resource "kubernetes_config_map" "pihole-env" {
-  metadata {
-    namespace = var.namespace
-    name      = "pihole-env"
-    labels = {
-      "app" = local.appname
-    }
-  }
-  data = {
-    "TZ" : "ASIA/KOLKATA",
-    "DNS1" : "1.1.1.1",
-    "DNS2" : "1.0.0.1"
+    "regex.list" = "^(.+[-_.])??adse?rv(er?|ice)?s?[0-9]*[-.]"
   }
 }
 
@@ -79,13 +83,20 @@ resource "kubernetes_deployment" "pihole-deployment" {
           name  = local.appname
           image = local.image
           env {
-            name = "TZ"
-            value_from {
-              config_map_key_ref {
-                name = "pihole-env"
-                key  = "TZ"
-              }
-            }
+            name  = "TZ"
+            value = var.tz
+          }
+          env {
+            name  = "WEBPASSWORD"
+            value = var.admin_pass
+          }
+          env {
+            name  = "PIHOLE_DNS_"
+            value = var.upstream_dns
+          }
+          volume_mount {
+            name       = "pihole-config"
+            mount_path = "/etc/pihole"
           }
           volume_mount {
             name       = "pihole-adlists"
@@ -97,6 +108,7 @@ resource "kubernetes_deployment" "pihole-deployment" {
             mount_path = "/etc/pihole/regex.list"
             sub_path   = "regex.list"
           }
+          
         }
         volume {
           name = "pihole-adlists"
@@ -108,6 +120,13 @@ resource "kubernetes_deployment" "pihole-deployment" {
           name = "pihole-regex"
           config_map {
             name = "pihole-regex"
+          }
+        }
+        volume {
+          name = "pihole-config"
+          persistent_volume_claim {
+            claim_name = local.appname
+            read_only  = false
           }
         }
       }

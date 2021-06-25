@@ -23,3 +23,22 @@ variable "tag" {
   sensitive   = false
   type        = string
 }
+
+variable "admin_pass" {
+  type = string
+  description = "Web admin portal password"
+  sensitive = true
+  default = "thisispassword"
+}
+
+variable "tz" {
+  type = string
+  description = "timezone for pihole server"
+  default = "ASIA/KOLKATA"
+}
+
+variable "upstream_dns" {
+  type = string
+  description = "upstream dns server seperated by ';'"
+  default = "208.67.222.222;208.67.220.220"
+}
