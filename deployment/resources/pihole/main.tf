@@ -24,31 +24,31 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
   }
 }
 
-resource "kubernetes_config_map" "pihole-adlists" {
-  metadata {
-    namespace = var.namespace
-    name      = "pihole-adlists"
-    labels = {
-      "app" = local.appname
-    }
-  }
-  data = {
-    "adlists.list" = "https://dbl.oisd.nl https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-  }
-}
+# resource "kubernetes_config_map" "pihole-adlists" {
+#   metadata {
+#     namespace = var.namespace
+#     name      = "pihole-adlists"
+#     labels = {
+#       "app" = local.appname
+#     }
+#   }
+#   data = {
+#     "adlists.list" = "https://dbl.oisd.nl https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
+#   }
+# }
 
-resource "kubernetes_config_map" "pihole-regex" {
-  metadata {
-    namespace = var.namespace
-    name      = "pihole-regex"
-    labels = {
-      "app" = local.appname
-    }
-  }
-  data = {
-    "regex.list" = "^(.+[-_.])??adse?rv(er?|ice)?s?[0-9]*[-.]"
-  }
-}
+# resource "kubernetes_config_map" "pihole-regex" {
+#   metadata {
+#     namespace = var.namespace
+#     name      = "pihole-regex"
+#     labels = {
+#       "app" = local.appname
+#     }
+#   }
+#   data = {
+#     "regex.list" = "^(.+[-_.])??adse?rv(er?|ice)?s?[0-9]*[-.]"
+#   }
+# }
 
 resource "kubernetes_deployment" "pihole-deployment" {
   metadata {
@@ -93,29 +93,6 @@ resource "kubernetes_deployment" "pihole-deployment" {
           volume_mount {
             name       = "pihole-config"
             mount_path = "/etc/pihole"
-          }
-          volume_mount {
-            name       = "pihole-adlists"
-            mount_path = "/etc/pihole/adlists.list"
-            sub_path   = "adlists.list"
-          }
-          volume_mount {
-            name       = "pihole-regex"
-            mount_path = "/etc/pihole/regex.list"
-            sub_path   = "regex.list"
-          }
-          
-        }
-        volume {
-          name = "pihole-adlists"
-          config_map {
-            name = "pihole-adlists"
-          }
-        }
-        volume {
-          name = "pihole-regex"
-          config_map {
-            name = "pihole-regex"
           }
         }
         volume {
