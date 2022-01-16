@@ -19,26 +19,26 @@ variable "image" {
 
 variable "tag" {
   description = "pihole image tag"
-  default     = "latest"
+  default     = "2022.01.1"
   sensitive   = false
   type        = string
 }
 
 variable "admin_pass" {
-  type = string
+  type        = string
   description = "Web admin portal password"
-  sensitive = true
-  default = "thisispassword"
+  sensitive   = true
+  default     = "thisispassword"
 }
 
 variable "tz" {
-  type = string
+  type        = string
   description = "timezone for pihole server"
-  default = "ASIA/KOLKATA"
+  default     = "ASIA/KOLKATA"
 }
 
 variable "upstream_dns" {
-  type = string
+  type        = string
   description = "upstream dns server seperated by ';'"
-  default = "208.67.222.222;208.67.220.220"
+  default     = "208.67.222.222;208.67.220.220"
 }

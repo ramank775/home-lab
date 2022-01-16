@@ -20,7 +20,7 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
       }
     }
     storage_class_name = "longhorn"
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
   }
 }
 
@@ -102,6 +102,7 @@ resource "kubernetes_deployment" "pihole-deployment" {
             read_only  = false
           }
         }
+        node_name = "pi-1"
       }
     }
   }
