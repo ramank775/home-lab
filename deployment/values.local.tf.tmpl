@@ -15,3 +15,31 @@ variable "github_token" {
   description = "github personal access token"
   default     = ""
 }
+
+variable "tunnel_ssh_user" {
+  type        = string
+  description = "Remote proxy server ssh user"
+  default     = "dev"
+}
+
+variable "tunnel_ssh_port" {
+  type        = number
+  description = "Remote proxy server ssh port"
+  default     = 22
+}
+
+variable "tunnel_proxy_host" {
+  type        = string
+  description = "Remote proxy server hostname"
+}
+
+variable "tunnel_remote_port" {
+  type        = number
+  description = "Remote proxy server port to forward"
+  default     = 8080
+}
+
+variable "tunnel_ssh_key" {
+  type = string
+  description = "SSH private key for proxy server"
+}

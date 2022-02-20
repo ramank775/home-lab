@@ -20,3 +20,14 @@ module "slack-notifier" {
   nats_cluster_id = var.nats_cluster_id
   slack_endpoint  = var.slack_endpoint
 }
+
+module "tunnel-client" {
+  source             = "./tunnel-client"
+  namespace          = var.namespace
+  replicas           = 1
+  tunnel_ssh_user    = var.tunnel_ssh_user
+  tunnel_ssh_port    = var.tunnel_ssh_port
+  tunnel_ssh_key     = var.tunnel_ssh_key
+  tunnel_proxy_host  = var.tunnel_proxy_host
+  tunnel_remote_port = var.tunnel_remote_port
+}

@@ -7,11 +7,16 @@ module "resources" {
 }
 
 module "apps" {
-  source          = "./apps"
-  namespace       = var.namespaces.apps
-  nats_url        = module.resources.nats.endpoint
-  nats_cluster_id = module.resources.nats.cluster_id
-  slack_endpoint  = var.slack_endpoint
+  source             = "./apps"
+  namespace          = var.namespaces.apps
+  nats_url           = module.resources.nats.endpoint
+  nats_cluster_id    = module.resources.nats.cluster_id
+  slack_endpoint     = var.slack_endpoint
+  tunnel_ssh_user    = var.tunnel_ssh_user
+  tunnel_ssh_port    = var.tunnel_ssh_port
+  tunnel_proxy_host  = var.tunnel_proxy_host
+  tunnel_remote_port = var.tunnel_remote_port
+  tunnel_ssh_key     = var.tunnel_ssh_key
 }
 
 module "cron" {

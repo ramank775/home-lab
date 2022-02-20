@@ -1,23 +1,34 @@
+
 variable "namespace" {
   type        = string
-  description = "Kubernetes namespace for apps"
-  default     = "homelab-apps"
+  description = "kubernetes namepsace for tcp tunnel client"
+  default     = "homelab_apps"
 }
 
-variable "nats_url" {
+variable "image" {
   type        = string
-  description = "Nats cluster url"
+  description = "tcp tunnel client image name"
+  default     = "ramank775/tunnel-client"
 }
 
-variable "nats_cluster_id" {
+variable "tag" {
+  description = "TCP tunnel client image tag"
+  default     = "v0.0.3"
+  sensitive   = false
   type        = string
-  description = "Nats cluster id"
-  default     = "home-lab"
 }
 
-variable "slack_endpoint" {
+variable "replicas" {
+  type        = number
+  description = "Replica count"
+  default     = 1
+}
+
+variable "memorylimit" {
+  description = "Memory resource limit for nats pod"
+  default     = "120Mi"
+  sensitive   = false
   type        = string
-  description = "Slack webhook endpoint"
 }
 
 variable "tunnel_ssh_user" {
@@ -44,7 +55,6 @@ variable "tunnel_remote_port" {
 }
 
 variable "tunnel_ssh_key" {
-  type = string
-  description = "SSH private key for proxy server"
+  type        = string
+  description = "SSH private key of proxy server"
 }
- 
