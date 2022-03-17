@@ -65,6 +65,9 @@ resource "kubernetes_deployment" "pihole-deployment" {
         "app" = local.appname
       }
     }
+    strategy {
+      type = "Recreate"
+    }
     template {
       metadata {
         annotations = {
