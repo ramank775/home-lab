@@ -156,3 +156,26 @@ resource "kubernetes_service" "pihole-dns-service" {
     }
   }
 }
+
+resource "kubernetes_service" "pihole-admin-service" {
+  metadata {
+    name = "${local.appname}-admin-service"
+    labels = {
+      "app" = local.appname
+    }
+    namespace = var.namespace
+  }
+
+  spec {
+    type = "LoadBalancer"
+    port {
+      name        = "admin"
+      port        = 80
+      target_port = 80
+      protocol    = "TCP"
+    }
+    selector = {
+      "app" = local.appname
+    }
+  }
+}
