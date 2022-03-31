@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "homelab_apps"
 }
 
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for slack notifier"
+  default     = {}
+}
+
 variable "image" {
   type        = string
   description = "slack notifier image name"

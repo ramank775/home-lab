@@ -42,6 +42,7 @@ resource "kubernetes_cron_job" "blog-feature-posts_cron_job" {
                 value = "${var.nats_streaming_http_producer_url}/publish/service-error"
               }
             }
+            node_selector = var.node_selector
           }
         }
       }

@@ -34,7 +34,7 @@ resource "kubernetes_config_map" "tunnel_nginx_config_map" {
     "default.conf" = <<EOT
         location / {
             default_type text/html;
-            return 200 "Hello from custom file";
+            return 200 "Hello from homelab";
         }
     EOT
   }
@@ -132,6 +132,8 @@ resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
             name = "tunnel-nginx-config-map"
           }
         }
+
+        node_selector = var.node_selector
       }
     }
 

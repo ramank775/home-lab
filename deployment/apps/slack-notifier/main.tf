@@ -93,6 +93,8 @@ resource "kubernetes_deployment" "slack_notifier_deployement" {
             }
           }
         }
+
+        node_selector = var.node_selector
       }
     }
   }

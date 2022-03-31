@@ -10,6 +10,12 @@ variable "namespace" {
   default     = "homelab_apps"
 }
 
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for nats http producer "
+  default     = {}
+}
+
 variable "image" {
   type        = string
   description = "Nats streaming http producer image name"

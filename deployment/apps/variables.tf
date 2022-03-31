@@ -4,6 +4,12 @@ variable "namespace" {
   default     = "homelab-apps"
 }
 
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for homelab apps "
+  default     = {}
+}
+
 variable "nats_url" {
   type        = string
   description = "Nats cluster url"
@@ -44,7 +50,7 @@ variable "tunnel_remote_port" {
 }
 
 variable "tunnel_ssh_key" {
-  type = string
+  type        = string
   description = "SSH private key for proxy server"
 }
- 
+

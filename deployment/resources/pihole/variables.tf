@@ -42,3 +42,9 @@ variable "upstream_dns" {
   description = "upstream dns server seperated by ';'"
   default     = "208.67.222.222;208.67.220.220"
 }
+
+variable "node_selector" {
+  type        = map(string)
+  description = "Node Selector for pihole"
+  default     = {}
+}

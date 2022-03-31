@@ -72,6 +72,7 @@ resource "kubernetes_deployment" "nats_streaming_http_producer_deployement" {
             timeout_seconds = 30
           }
         }
+        node_selector = var.node_selector
       }
     }
 

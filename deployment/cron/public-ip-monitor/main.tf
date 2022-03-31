@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume_claim" "public_ip_monitor_pvc" {
       }
     }
     storage_class_name = "longhorn"
-    access_modes = ["ReadWriteOnce"]
+    access_modes       = ["ReadWriteOnce"]
   }
 }
 
@@ -70,6 +70,7 @@ resource "kubernetes_cron_job" "public_ip_monitor_cron_job" {
                 claim_name = local.appname
               }
             }
+            node_selector = var.node_selector
           }
         }
       }

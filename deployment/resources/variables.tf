@@ -9,3 +9,9 @@ variable "namespace" {
   description = "kubernetes namespace for resources"
   default     = "homelab-resources"
 }
+
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for homelab Resources "
+  default     = {}
+}

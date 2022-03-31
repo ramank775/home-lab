@@ -14,3 +14,9 @@ variable "github_token" {
   description = "github personal access token"
   sensitive   = true
 }
+
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for homelab Crons "
+  default     = {}
+}

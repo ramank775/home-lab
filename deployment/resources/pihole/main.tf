@@ -105,7 +105,7 @@ resource "kubernetes_deployment" "pihole-deployment" {
             read_only  = false
           }
         }
-        node_name = "pi-1"
+        node_selector = var.node_selector
       }
     }
   }

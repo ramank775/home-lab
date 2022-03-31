@@ -43,3 +43,27 @@ variable "tunnel_ssh_key" {
   type = string
   description = "SSH private key for proxy server"
 }
+
+variable "node_selector_apps" {
+  type        = map(string)
+  description = "Node selector for homelab apps"
+  default = {
+
+  }
+}
+
+variable "node_selector_crons" {
+  type        = map(string)
+  description = "Node selector for homelab crons"
+  default = {
+
+  }
+}
+
+variable "node_selector_resources" {
+  type        = map(string)
+  description = "Node selector for homelab resources"
+  default = {
+
+  }
+}

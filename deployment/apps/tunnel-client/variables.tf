@@ -58,3 +58,9 @@ variable "tunnel_ssh_key" {
   type        = string
   description = "SSH private key of proxy server"
 }
+
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for tcp tunnel client"
+  default     = {}
+}

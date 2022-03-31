@@ -10,6 +10,7 @@ module "nats_streaming_http_producer" {
   replicas        = 1
   nats_url        = var.nats_url
   nats_cluster_id = var.nats_cluster_id
+  node_selector   = var.node_selector
 }
 
 module "slack-notifier" {
@@ -19,6 +20,7 @@ module "slack-notifier" {
   nats_url        = var.nats_url
   nats_cluster_id = var.nats_cluster_id
   slack_endpoint  = var.slack_endpoint
+  node_selector   = var.node_selector
 }
 
 module "tunnel-client" {
@@ -30,4 +32,5 @@ module "tunnel-client" {
   tunnel_ssh_key     = var.tunnel_ssh_key
   tunnel_proxy_host  = var.tunnel_proxy_host
   tunnel_remote_port = var.tunnel_remote_port
+  node_selector      = var.node_selector
 }

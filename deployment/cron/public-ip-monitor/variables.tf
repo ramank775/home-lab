@@ -18,6 +18,12 @@ variable "tag" {
 }
 
 variable "nats_streaming_http_producer_url" {
-    type = string
-    description = "nats streaming http producer url"
+  type        = string
+  description = "nats streaming http producer url"
+}
+
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for public ip monitor"
+  default     = {}
 }
