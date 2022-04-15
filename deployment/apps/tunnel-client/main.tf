@@ -40,6 +40,29 @@ resource "kubernetes_config_map" "tunnel_nginx_config_map" {
   }
 }
 
+resource "kubernetes_config_map" "tunnel-nginx-confd-config-map" {
+  metadata {
+    name      = "tunnel-nginx-confd-config-map"
+    namespace = var.namespace
+    labels = {
+      "app" = local.appname
+    }
+  }
+
+  data = {
+    "visitor-badge.conf" = <<EOT
+    server {
+        listen 80;
+        server_name visitor-badge.one9x.com;
+        
+        location / {
+            proxy_pass http://visitor-badge;
+        }
+    }
+    EOT
+  }
+}
+
 resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
   metadata {
     name      = local.appname
@@ -118,6 +141,12 @@ resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
             mount_path = "/config/nginx/default.d"
             read_only  = true
           }
+
+          volume_mount {
+            name       = "confd"
+            mount_path = "/config/nginx/conf.d"
+            read_only  = true
+          }
         }
         volume {
           name = "ssh-key"
@@ -130,6 +159,13 @@ resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
           name = "default-conf"
           config_map {
             name = "tunnel-nginx-config-map"
+          }
+        }
+
+        volume {
+          name = "confd"
+          config_map {
+            name = "tunnel-nginx-confd-config-map"
           }
         }
 

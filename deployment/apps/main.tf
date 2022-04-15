@@ -34,3 +34,10 @@ module "tunnel-client" {
   tunnel_remote_port = var.tunnel_remote_port
   node_selector      = var.node_selector
 }
+
+module "visitor-badge" {
+  source        = "./visitor-badge"
+  namespace     = var.namespace
+  replicas      = 1
+  node_selector = var.node_selector
+}
