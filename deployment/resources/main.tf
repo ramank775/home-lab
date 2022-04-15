@@ -15,3 +15,13 @@ module "pihole" {
   namespace     = var.namespace
   node_selector = var.node_selector
 }
+
+module "cloudflared" {
+  source                  = "./cloudflared"
+  namespace               = var.namespace
+  node_selector           = var.node_selector
+  cloudflared_cred_file   = var.cloudflared_cred_file
+  cloudflared_config_file = var.cloudflared_config_file
+  cloudflared_cert_file   = var.cloudflared_cert_file
+}
+

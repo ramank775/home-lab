@@ -26,7 +26,7 @@ module "slack-notifier" {
 module "tunnel-client" {
   source             = "./tunnel-client"
   namespace          = var.namespace
-  replicas           = 1
+  replicas           = 0
   tunnel_ssh_user    = var.tunnel_ssh_user
   tunnel_ssh_port    = var.tunnel_ssh_port
   tunnel_ssh_key     = var.tunnel_ssh_key

@@ -67,3 +67,18 @@ variable "node_selector_resources" {
 
   }
 }
+
+variable "cloudflared_cred_file" {
+  type        = string
+  description = "cloudflared tunnel cred file path"
+}
+
+variable "cloudflared_config_file" {
+  type        = string
+  description = "cloudflared config file"
+}
+
+variable "cloudflared_cert_file" {
+  type = string
+  description = "Cloudflared tunnel cert file"
+}

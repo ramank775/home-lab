@@ -2,8 +2,11 @@ module "networking" {
   source = "./networking"
 }
 module "resources" {
-  source    = "./resources"
-  namespace = var.namespaces.resources
+  source                  = "./resources"
+  namespace               = var.namespaces.resources
+  cloudflared_cred_file   = var.cloudflared_cred_file
+  cloudflared_config_file = var.cloudflared_config_file
+  cloudflared_cert_file   = var.cloudflared_cert_file
 }
 
 module "apps" {
