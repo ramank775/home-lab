@@ -31,7 +31,7 @@ variable "replicas" {
 
 variable "memorylimit" {
   description = "Memory resource limit for nats pod"
-  default     = "120Mi"
+  default     = "512Mi"
   sensitive   = false
   type        = string
 }

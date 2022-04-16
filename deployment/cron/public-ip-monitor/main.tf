@@ -32,7 +32,7 @@ resource "kubernetes_cron_job" "public_ip_monitor_cron_job" {
       "app" = local.appname
     }
   }
-  count = 1
+  count = var.replicas
   spec {
     schedule = "@hourly"
     job_template {

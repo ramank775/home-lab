@@ -38,7 +38,7 @@ resource "kubernetes_deployment" "nats-deployment" {
             }
           }
           image             = local.image
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
           port {
             container_port = 4222
             protocol       = "TCP"

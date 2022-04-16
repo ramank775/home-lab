@@ -58,10 +58,10 @@ Setup Raspberry PI:
   Follow the steps below to switch configure Buster to use legacy iptables:
 
   ```sh
-      sudo iptables -F
-      sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-      sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-      sudo reboot
+  sudo iptables -F
+  sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+  sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+  sudo reboot
   ```
 
 - Enabling cgroups for Raspbian Buster.
@@ -78,15 +78,15 @@ Setup Raspberry PI:
 
 - Install K3s server on master Pi
   ```sh
-    curl -sfL https://get.k3s.io | sh - --disable servicelb
+  curl -sfL https://get.k3s.io | sh - --disable servicelb
   ```
 - Copy node token of master
   ```sh
-    cat /var/lib/rancher/k3s/server/node-token
+  cat /var/lib/rancher/k3s/server/node-token
   ```
 - Install K3s agent on slaves Pi
   ```sh
-      curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -
+  curl -sfL https://get.k3s.io | K3S_URL=https://myserver:6443 K3S_TOKEN=mynodetoken sh -
   ```
   Note: Follow complete instruction from [here](https://rancher.com/docs/k3s/latest/en/) to setup k3s.
 - Run `kubectl get nodes` to verify all nodes has joined the cluster.
@@ -96,18 +96,40 @@ Setup Raspberry PI:
   Make sure you have `open-iscsi` install in all of the nodes
 
   ```sh
-      sudo apt-get update;sudo apt-get install -y open-iscsi
+  sudo apt-get update;sudo apt-get install -y open-iscsi
   ```
 
   ```sh
-      kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
+  kubectl apply -f https://raw.githubusercontent.com/longhorn/longhorn/master/deploy/longhorn.yaml
   ```
 
 - Install metallb
+
   ```sh
-      kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
-      kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
-      kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
+  kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+  ```
+
+- Install System upgrade operator
+
+  ```sh
+  kubectl apply -f https://github.com/rancher/system-upgrade-controller/releases/latest/download/system-upgrade-controller.yaml
+  kubectl apply -f system/upgrade/plan.yaml
+  ```
+
+- Install kubernetes dashboard
+  ```sh
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
+  ```
+  Create service account and cluster role binding for kubernetes dashboard
+  ```sh
+  kubectl create serviceaccount dashboard -n default
+  kubectl create clusterrolebinding dashboard-admin -n default --clusterrole=cluster-admin --serviceaccount=default:dashboard
+  ```
+  Get Login Token
+  ```sh
+  kubectl get secret $(kubectl get serviceaccount dashboard -o jsonpath="{.secrets[0].name}") -o jsonpath="{.data.token}" | base64 --decode
   ```
 
 ## How to install current workload
@@ -116,21 +138,21 @@ Setup Raspberry PI:
 - Clone this repo to local system.
 - Change directory to deployment
   ```sh
-      cd deployment
+  cd deployment
   ```
 - Copy `values.local.tf.tmpl` to `values.local.tf` and update variables default value if requried.
 - Copy k3s cluster config to `deployment/.kube/kube_config`.
 - Run initialize terraform in deployment repo.
   ```sh
-      terraform init
+  terraform init
   ```
 - Verify workload to be added by running
   ```sh
-      terraform plan
+  terraform plan
   ```
 - Apply the terraform plan by running
   ```sh
-      terraform apply --auto-approve
+  terraform apply --auto-approve
   ```
 
 ### Current workload

@@ -79,8 +79,9 @@ resource "kubernetes_deployment" "pihole-deployment" {
       }
       spec {
         container {
-          name  = local.appname
-          image = local.image
+          name              = local.appname
+          image             = local.image
+          image_pull_policy = "IfNotPresent"
           env {
             name  = "TZ"
             value = var.tz

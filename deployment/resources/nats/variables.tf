@@ -4,16 +4,16 @@ variable "cluster_domain" {
   default     = "cluster.local"
 }
 
-variable "replicas" {
-  type        = number
-  description = "Nats replica count"
-  default     = 1
-}
-
 variable "namespace" {
   description = "kubernetes namepsace to host nats"
   sensitive   = false
   type        = string
+}
+
+variable "replicas" {
+  type        = number
+  description = "Nats replica count"
+  default     = 1
 }
 
 variable "image" {

@@ -95,7 +95,7 @@ resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
             }
           }
           image             = local.image
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
           env {
             name  = "PROXY_SSH_USER"
             value = var.tunnel_ssh_user

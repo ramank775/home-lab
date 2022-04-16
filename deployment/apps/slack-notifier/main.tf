@@ -61,7 +61,7 @@ resource "kubernetes_deployment" "slack_notifier_deployement" {
               "memory" = var.memorylimit
             }
           }
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
           image             = local.image
           env {
             name  = "NATS_CLUSTER_ID"

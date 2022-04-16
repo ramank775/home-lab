@@ -17,6 +17,11 @@ variable "tag" {
   type        = string
 }
 
+variable "replicas" {
+  type        = number
+  description = "Replica count"
+}
+
 variable "nats_streaming_http_producer_url" {
   type        = string
   description = "nats streaming http producer url"

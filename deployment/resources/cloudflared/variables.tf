@@ -4,6 +4,18 @@ variable "namespace" {
   description = "kubernetes namepsace for cloudflared tunnel client"
 }
 
+variable "node_selector" {
+  type        = map(string)
+  description = "Node selector for cloudflared tunnel client"
+  default     = {}
+}
+
+variable "replicas" {
+  type        = number
+  description = "Replica count for cloudflared tunnel client"
+  default     = 1
+}
+
 variable "image" {
   type        = string
   description = "clouldflared tunnel client image name"
@@ -15,12 +27,6 @@ variable "tag" {
   default     = "2022.4.1"
   sensitive   = false
   type        = string
-}
-
-variable "replicas" {
-  type        = number
-  description = "Replica count"
-  default     = 1
 }
 
 variable "memorylimit" {
@@ -45,8 +51,3 @@ variable "cloudflared_config_file" {
   description = "Cloudflared config file"
 }
 
-variable "node_selector" {
-  type        = map(string)
-  description = "Node selector for tcp tunnel client"
-  default     = {}
-}

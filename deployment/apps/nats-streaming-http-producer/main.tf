@@ -36,7 +36,7 @@ resource "kubernetes_deployment" "nats_streaming_http_producer_deployement" {
             }
           }
           image             = local.image
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
           env {
             name  = "PORT"
             value = "3000"

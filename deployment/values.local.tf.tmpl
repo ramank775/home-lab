@@ -4,6 +4,65 @@ variable "kube_config" {
   default     = "./.kube/kube_config"
 }
 
+variable "apps_node_selector" {
+  type        = map(string)
+  description = "Node selector for homelab apps"
+  default = {
+
+  }
+}
+
+variable "apps_replicas" {
+  type        = map(number)
+  description = "Replica count for resources"
+  default = {
+    nats_streaming_http_producer = 1
+    slack_notifier               = 1
+    tunnel_client                = 1
+    visitor_badge                = 1
+  }
+}
+
+variable "crons_node_selector" {
+  type        = map(string)
+  description = "Node selector for homelab crons"
+  default = {
+
+  }
+}
+
+variable "crons_replicas" {
+  type        = map(number)
+  description = "Replica count for crons"
+  default = {
+    public_ip_monitor  = 1
+    blog_feature_posts = 1
+  }
+}
+
+variable "resources_node_selector" {
+  type        = map(string)
+  description = "Node selector for homelab resources"
+  default = {
+
+  }
+}
+
+variable "resources_replicas" {
+  type        = map(number)
+  description = "Replica count for resources"
+  default = {
+    nats        = 1
+    pihole      = 1
+    cloudflared = 1
+  }
+}
+
+variable "lb_iprange" {
+  type        = string
+  description = "Load Balancer IP range"
+}
+
 variable "slack_endpoint" {
   type        = string
   description = "Slack group wehbook endpoint"
@@ -44,29 +103,7 @@ variable "tunnel_ssh_key" {
   description = "SSH private key for proxy server"
 }
 
-variable "node_selector_apps" {
-  type        = map(string)
-  description = "Node selector for homelab apps"
-  default = {
 
-  }
-}
-
-variable "node_selector_crons" {
-  type        = map(string)
-  description = "Node selector for homelab crons"
-  default = {
-
-  }
-}
-
-variable "node_selector_resources" {
-  type        = map(string)
-  description = "Node selector for homelab resources"
-  default = {
-
-  }
-}
 
 variable "cloudflared_cred_file" {
   type        = string

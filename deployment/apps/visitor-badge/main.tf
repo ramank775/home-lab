@@ -37,7 +37,7 @@ resource "kubernetes_deployment" "visitor_badge_deployement" {
             }
           }
           image             = local.image
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
 
           env {
             name  = "md5_key"

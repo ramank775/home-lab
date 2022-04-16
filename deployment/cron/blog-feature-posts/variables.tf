@@ -23,6 +23,11 @@ variable "github_token" {
   description = "github personal access token"
 }
 
+variable "replicas" {
+  type        = number
+  description = "Replica count"
+}
+
 variable "nats_streaming_http_producer_url" {
   type        = string
   description = "nats streaming http producer url"

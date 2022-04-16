@@ -68,7 +68,7 @@ resource "kubernetes_deployment" "cloudflared_tunnel_deployement" {
             }
           }
           image             = local.image
-          image_pull_policy = "Always"
+          image_pull_policy = "IfNotPresent"
 
           args = [
             "tunnel",

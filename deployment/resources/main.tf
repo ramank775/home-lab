@@ -8,18 +8,21 @@ module "nats" {
   source        = "./nats"
   namespace     = var.namespace
   node_selector = var.node_selector
+  replicas      = var.replicas.nats
 }
 
 module "pihole" {
   source        = "./pihole"
   namespace     = var.namespace
   node_selector = var.node_selector
+  replicas      = var.replicas.pihole
 }
 
 module "cloudflared" {
   source                  = "./cloudflared"
   namespace               = var.namespace
   node_selector           = var.node_selector
+  replicas                = var.replicas.cloudflared
   cloudflared_cred_file   = var.cloudflared_cred_file
   cloudflared_config_file = var.cloudflared_config_file
   cloudflared_cert_file   = var.cloudflared_cert_file

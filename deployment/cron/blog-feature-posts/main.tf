@@ -11,7 +11,7 @@ resource "kubernetes_cron_job" "blog-feature-posts_cron_job" {
       "app" = local.appname
     }
   }
-  count = 1
+  count = var.replicas
   spec {
     schedule = "@midnight"
     job_template {
@@ -32,7 +32,7 @@ resource "kubernetes_cron_job" "blog-feature-posts_cron_job" {
             container {
               name              = local.appname
               image             = local.image
-              image_pull_policy = "Always"
+              image_pull_policy = "IfNotPresent"
               env {
                 name  = "GITHUB_TOKEN"
                 value = var.github_token

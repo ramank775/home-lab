@@ -16,6 +16,16 @@ variable "node_selector" {
   default     = {}
 }
 
+variable "replicas" {
+  type        = map(number)
+  description = "Replica count for resources"
+  default = {
+    nats        = 1
+    pihole      = 1
+    cloudflared = 1
+  }
+}
+
 variable "cloudflared_cred_file" {
   type        = string
   description = "cloudflared tunnel cred file path"

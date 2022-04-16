@@ -4,6 +4,17 @@ variable "namespace" {
   default     = "homelab-apps"
 }
 
+variable "replicas" {
+  type        = map(number)
+  description = "Replica count for resources"
+  default = {
+    nats_streaming_http_producer = 1
+    slack_notifier               = 1
+    tunnel_client                = 1
+    visitor_badge                = 1
+  }
+}
+
 variable "node_selector" {
   type        = map(string)
   description = "Node selector for homelab apps "

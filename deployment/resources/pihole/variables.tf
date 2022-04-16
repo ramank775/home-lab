@@ -1,13 +1,19 @@
-variable "replicas" {
-  type        = number
-  description = "PiHole replica count"
-  default     = 1
-}
-
 variable "namespace" {
   description = "kubernetes namepsace to host pihole"
   sensitive   = false
   type        = string
+}
+
+variable "node_selector" {
+  type        = map(string)
+  description = "Node Selector for pihole"
+  default     = {}
+}
+
+variable "replicas" {
+  type        = number
+  description = "PiHole replica count"
+  default     = 1
 }
 
 variable "image" {
@@ -19,7 +25,7 @@ variable "image" {
 
 variable "tag" {
   description = "pihole image tag"
-  default     = "2022.02.1"
+  default     = "2022.04.2"
   sensitive   = false
   type        = string
 }
@@ -41,10 +47,4 @@ variable "upstream_dns" {
   type        = string
   description = "upstream dns server seperated by ';'"
   default     = "208.67.222.222;208.67.220.220"
-}
-
-variable "node_selector" {
-  type        = map(string)
-  description = "Node Selector for pihole"
-  default     = {}
 }
