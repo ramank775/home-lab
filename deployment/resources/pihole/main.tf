@@ -16,7 +16,7 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
   spec {
     resources {
       requests = {
-        "storage" = "500Mi"
+        "storage" = "1Gi"
       }
     }
     storage_class_name = "longhorn"
@@ -50,7 +50,11 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
 #   }
 # }
 
-resource "kubernetes_deployment" "pihole-deployment" {
+# resource "kubernetes_deployment" "pihole-deployment" {
+
+# }
+
+resource "kubernetes_stateful_set_v1" "name" {
   metadata {
     namespace = var.namespace
     name      = "pihole"
@@ -59,15 +63,15 @@ resource "kubernetes_deployment" "pihole-deployment" {
     }
   }
   spec {
-    replicas = local.replica
+    replicas               = local.replica
+    revision_history_limit = 1
     selector {
       match_labels = {
         "app" = local.appname
       }
     }
-    strategy {
-      type = "Recreate"
-    }
+    service_name = "${local.appname}-portal-service"
+
     template {
       metadata {
         annotations = {
