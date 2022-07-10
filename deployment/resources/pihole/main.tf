@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
         "storage" = "1Gi"
       }
     }
-    storage_class_name = "longhorn"
+    storage_class_name = "hyper-converged"
     access_modes       = ["ReadWriteOnce"]
   }
 }

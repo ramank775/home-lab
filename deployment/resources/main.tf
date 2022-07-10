@@ -4,6 +4,20 @@ resource "kubernetes_namespace" "homelab_resources_namespace" {
   }
 }
 
+resource "kubernetes_storage_class_v1" "hyper_converged" {
+  metadata {
+    name = "hyper-converged"
+  }
+  storage_provisioner    = "driver.longhorn.io"
+  allow_volume_expansion = true
+  parameters = {
+    numberOfReplicas    = "2"
+    dataLocality        = "best-effort"
+    staleReplicaTimeout = "2880"
+    fromBackup          = ""
+  }
+}
+
 module "nats" {
   source        = "./nats"
   namespace     = var.namespace
