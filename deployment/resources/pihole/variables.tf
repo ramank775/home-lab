@@ -25,7 +25,7 @@ variable "image" {
 
 variable "tag" {
   description = "pihole image tag"
-  default     = "2022.04.3"
+  default     = "2022.07.1"
   sensitive   = false
   type        = string
 }
