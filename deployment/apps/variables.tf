@@ -4,6 +4,11 @@ variable "namespace" {
   default     = "homelab-apps"
 }
 
+variable "domain" {
+  type        = string
+  description = "Default Domain name cluster endpoint"
+}
+
 variable "replicas" {
   type        = map(number)
   description = "Replica count for resources"

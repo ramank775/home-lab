@@ -4,6 +4,11 @@ variable "cluster_domain" {
   default     = "cluster.local"
 }
 
+variable "domain" {
+  type        = string
+  description = "Default Domain name cluster endpoint"
+}
+
 variable "namespace" {
   type        = string
   description = "kubernetes namespace for resources"
@@ -39,4 +44,9 @@ variable "cloudflared_config_file" {
 variable "cloudflared_cert_file" {
   type        = string
   description = "Cloudflared tunnel cert file"
+}
+
+variable "pihole_config_dir" {
+  type        = string
+  description = "Pihole config director contains adlists and local dns"
 }

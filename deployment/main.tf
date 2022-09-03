@@ -5,16 +5,19 @@ module "networking" {
 module "resources" {
   source                  = "./resources"
   namespace               = var.namespaces.resources
+  domain                  = var.domain
   replicas                = var.resources_replicas
   cloudflared_cred_file   = var.cloudflared_cred_file
   cloudflared_config_file = var.cloudflared_config_file
   cloudflared_cert_file   = var.cloudflared_cert_file
   node_selector           = var.resources_node_selector
+  pihole_config_dir       = var.pihole_config_dir
 }
 
 module "apps" {
   source             = "./apps"
   namespace          = var.namespaces.apps
+  domain             = var.domain
   replicas           = var.apps_replicas
   nats_url           = module.resources.nats.endpoint
   nats_cluster_id    = module.resources.nats.cluster_id

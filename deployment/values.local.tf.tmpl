@@ -4,6 +4,12 @@ variable "kube_config" {
   default     = "./.kube/kube_config"
 }
 
+variable "domain" {
+  type        = string
+  description = "Default Domain name cluster endpoint"
+  default     = "mylab.home"
+}
+
 variable "apps_node_selector" {
   type        = map(string)
   description = "Node selector for homelab apps"

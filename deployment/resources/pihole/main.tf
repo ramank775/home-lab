@@ -4,55 +4,19 @@ locals {
   replica = var.replicas
 }
 
-resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
+resource "kubernetes_config_map" "pihole-config" {
   metadata {
-    name      = local.appname
     namespace = var.namespace
+    name      = "pihole-config"
     labels = {
       "app" = local.appname
     }
   }
-  wait_until_bound = false
-  spec {
-    resources {
-      requests = {
-        "storage" = "1Gi"
-      }
-    }
-    storage_class_name = "hyper-converged"
-    access_modes       = ["ReadWriteOnce"]
+  data = {
+    "adlists.list" = file("${var.pihole_config_dir}/adlists.list")
+    "custom.list"  = file("${var.pihole_config_dir}/custom.list")
   }
 }
-
-# resource "kubernetes_config_map" "pihole-adlists" {
-#   metadata {
-#     namespace = var.namespace
-#     name      = "pihole-adlists"
-#     labels = {
-#       "app" = local.appname
-#     }
-#   }
-#   data = {
-#     "adlists.list" = "https://dbl.oisd.nl https://raw.githubusercontent.com/kboghdady/youTube_ads_4_pi-hole/master/youtubelist.txt https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts"
-#   }
-# }
-
-# resource "kubernetes_config_map" "pihole-regex" {
-#   metadata {
-#     namespace = var.namespace
-#     name      = "pihole-regex"
-#     labels = {
-#       "app" = local.appname
-#     }
-#   }
-#   data = {
-#     "regex.list" = "^(.+[-_.])??adse?rv(er?|ice)?s?[0-9]*[-.]"
-#   }
-# }
-
-# resource "kubernetes_deployment" "pihole-deployment" {
-
-# }
 
 resource "kubernetes_stateful_set_v1" "name" {
   metadata {
@@ -85,7 +49,7 @@ resource "kubernetes_stateful_set_v1" "name" {
         container {
           name              = local.appname
           image             = local.image
-          image_pull_policy = "IfNotPresent"
+          image_pull_policy = "Always"
           env {
             name  = "TZ"
             value = var.tz
@@ -99,15 +63,34 @@ resource "kubernetes_stateful_set_v1" "name" {
             value = var.upstream_dns
           }
           volume_mount {
-            name       = "pihole-config"
-            mount_path = "/etc/pihole"
+            name       = "pihole-adlist-config"
+            mount_path = "/etc/pihole/adlists.list"
+            sub_path   = "adlists.list"
+          }
+          volume_mount {
+            name       = "pihole-dns-config"
+            mount_path = "/etc/pihole/custom.list"
+            sub_path   = "custom.list"
           }
         }
         volume {
-          name = "pihole-config"
-          persistent_volume_claim {
-            claim_name = local.appname
-            read_only  = false
+          name = "pihole-adlist-config"
+          config_map {
+            name = "pihole-config"
+            items {
+              key  = "adlists.list"
+              path = "adlists.list"
+            }
+          }
+        }
+        volume {
+          name = "pihole-dns-config"
+          config_map {
+            name = "pihole-config"
+            items {
+              key  = "custom.list"
+              path = "custom.list"
+            }
           }
         }
         node_selector = var.node_selector
@@ -181,6 +164,35 @@ resource "kubernetes_service" "pihole-admin-service" {
     }
     selector = {
       "app" = local.appname
+    }
+  }
+}
+
+resource "kubernetes_ingress_v1" "pihole-ingress" {
+  metadata {
+    name      = local.appname
+    namespace = var.namespace
+    annotations = {
+      "kubernetes.io/ingress.class" = "traefik"
+    }
+  }
+
+  spec {
+    rule {
+      host = var.domain
+      http {
+        path {
+          path = "/"
+          backend {
+            service {
+              name = "${local.appname}-portal-service"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

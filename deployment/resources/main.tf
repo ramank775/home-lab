@@ -18,6 +18,11 @@ resource "kubernetes_storage_class_v1" "hyper_converged" {
   }
 }
 
+module "longhorn" {
+  source = "./longhorn"
+  domain = "longhorn.${var.domain}"
+}
+
 module "nats" {
   source        = "./nats"
   namespace     = var.namespace
@@ -26,10 +31,12 @@ module "nats" {
 }
 
 module "pihole" {
-  source        = "./pihole"
-  namespace     = var.namespace
-  node_selector = var.node_selector
-  replicas      = var.replicas.pihole
+  source            = "./pihole"
+  namespace         = var.namespace
+  domain            = "pihole.${var.domain}"
+  node_selector     = var.node_selector
+  replicas          = var.replicas.pihole
+  pihole_config_dir = var.pihole_config_dir
 }
 
 module "cloudflared" {

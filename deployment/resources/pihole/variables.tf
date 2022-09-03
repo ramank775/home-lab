@@ -4,6 +4,11 @@ variable "namespace" {
   type        = string
 }
 
+variable "domain" {
+  type        = string
+  description = "Default Domain name cluster endpoint"
+}
+
 variable "node_selector" {
   type        = map(string)
   description = "Node Selector for pihole"
@@ -25,7 +30,7 @@ variable "image" {
 
 variable "tag" {
   description = "pihole image tag"
-  default     = "2022.07.1"
+  default     = "latest"
   sensitive   = false
   type        = string
 }
@@ -47,4 +52,9 @@ variable "upstream_dns" {
   type        = string
   description = "upstream dns server seperated by ';'"
   default     = "208.67.222.222;208.67.220.220"
+}
+
+variable "pihole_config_dir" {
+  type        = string
+  description = "Pihole config director contains adlists and local dns"
 }
