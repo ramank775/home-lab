@@ -4,6 +4,26 @@ locals {
   replica = var.replicas
 }
 
+resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
+  metadata {
+    name      = local.appname
+    namespace = var.namespace
+    labels = {
+      "app" = local.appname
+    }
+  }
+  wait_until_bound = false
+  spec {
+    resources {
+      requests = {
+        "storage" = "5Gi"
+      }
+    }
+    storage_class_name = "local-path"
+    access_modes       = ["ReadWriteOnce"]
+  }
+}
+
 resource "kubernetes_config_map" "pihole-config" {
   metadata {
     namespace = var.namespace
@@ -63,37 +83,52 @@ resource "kubernetes_stateful_set_v1" "name" {
             value = var.upstream_dns
           }
           volume_mount {
+            name       = "pihole-config"
+            mount_path = "/etc/pihole"
+          }
+          volume_mount {
             name       = "pihole-adlist-config"
             mount_path = "/etc/pihole/adlists.list"
             sub_path   = "adlists.list"
           }
-          volume_mount {
-            name       = "pihole-dns-config"
-            mount_path = "/etc/pihole/custom.list"
-            sub_path   = "custom.list"
+          # volume_mount {
+          #   name       = "pihole-dns-config"
+          #   mount_path = "/etc/pihole/custom.list"
+          #   sub_path   = "custom.list"
+          # }
+        }
+        volume {
+          name = "pihole-config"
+          persistent_volume_claim {
+            claim_name = local.appname
+            read_only  = false
           }
         }
         volume {
           name = "pihole-adlist-config"
           config_map {
-            name = "pihole-config"
+            default_mode = "0777"
+            name         = "pihole-config"
             items {
               key  = "adlists.list"
               path = "adlists.list"
             }
           }
         }
-        volume {
-          name = "pihole-dns-config"
-          config_map {
-            name = "pihole-config"
-            items {
-              key  = "custom.list"
-              path = "custom.list"
-            }
-          }
+        # volume {
+        #   name = "pihole-dns-config"
+        #   config_map {
+        #     default_mode = "0777"
+        #     name         = "pihole-config"
+        #     items {
+        #       key  = "custom.list"
+        #       path = "custom.list"
+        #     }
+        #   }
+        # }
+        node_selector = {
+          "kubernetes.io/hostname" = "pi-1",
         }
-        node_selector = var.node_selector
       }
     }
   }

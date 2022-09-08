@@ -49,3 +49,12 @@ module "cloudflared" {
   cloudflared_cert_file   = var.cloudflared_cert_file
 }
 
+module "kube-dashboard" {
+  source = "./kube-dashboard"
+  domain = "kube.${var.domain}"
+}
+
+module "traefik" {
+  source = "./traefik"
+  domain = "traefix.${var.domain}"
+}
