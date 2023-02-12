@@ -1,6 +1,6 @@
 # Home Lab
 
-This repo contains the setup code for home lab of Raspberry pi cluster running k3s.
+This repo contains the setup code for home lab of Raspberry pi cluster running k3s with Truenas as storage system.
 
 ## Setup
 
@@ -16,6 +16,14 @@ Hardware:
 - 3 x USB Type C cable
 - 1 x Micro HDMI cable (optional)
 - 1 x SD card (optional)
+
+Truenas System
+- 1 x ASUS PRIME H410M-E
+- 1 x i3 10th Gen CPU
+- 2 x 8GB RAM
+- 1 x 16GB Intel Optane M10
+- 1 x 128GB SSD
+- 3 x 1TB HDD
 
 Setup Raspberry PI:
 
@@ -50,6 +58,19 @@ Setup Raspberry PI:
   - expand file system to use full storage
   - disable desktop mode
 - Enable static IP address to prevent IP address change dynamically.
+
+### Setup using Ansible and Terraform
+
+- Prepare ansible group_vars from [sample](setup/inventories/sample/)
+- Run ansible playbook to configure raspberry pi and K3s 
+```
+  $ ansible-playbook ./setup/setup.yml -i {ansible-dir-with-hosts.ini}
+```
+- Rerun if anything fails
+
+### Manual Setup
+
+
 - Run `sudo apt update` to update the packages.
 - Enabling legacy iptables on Raspbian Buster.
 
@@ -91,6 +112,9 @@ Setup Raspberry PI:
   Note: Follow complete instruction from [here](https://rancher.com/docs/k3s/latest/en/) to setup k3s.
 - Run `kubectl get nodes` to verify all nodes has joined the cluster.
 - Copy `/etc/rancher/k3s/k3s.yaml` from Master Pi to access cluster from other system.
+
+- Install democratic-csi if using external storage solution.
+
 - Install longhorn for persistent volume (Optional)
 
   Make sure you have `open-iscsi` install in all of the nodes
@@ -106,8 +130,7 @@ Setup Raspberry PI:
 - Install metallb
 
   ```sh
-  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/namespace.yaml
-  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.12.1/manifests/metallb.yaml
+  kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.7/config/manifests/metallb-native.yaml
   kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
   ```
 
@@ -120,7 +143,7 @@ Setup Raspberry PI:
 
 - Install kubernetes dashboard
   ```sh
-  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
+  kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.6.1/aio/deploy/recommended.yaml
   ```
   Create service account and cluster role binding for kubernetes dashboard
   ```sh

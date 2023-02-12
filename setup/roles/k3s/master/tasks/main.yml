@@ -1,0 +1,104 @@
+---
+- name: Copy K3s service file
+  register: k3s_service
+  ansible.builtin.template:
+    src: "k3s.service.j2"
+    dest: "{{ systemd_dir }}/k3s.service"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable and check K3s service
+  ansible.builtin.systemd:
+    name: k3s
+    daemon_reload: true
+    state: restarted
+    enabled: true
+
+- name: Wait for node-token
+  ansible.builtin.wait_for:
+    path: "{{ k3s_server_location }}/server/node-token"
+
+- name: Register node-token file access mode
+  ansible.builtin.stat:
+    path: "{{ k3s_server_location }}/server/node-token"
+  register: p
+
+- name: Change file access node-token
+  ansible.builtin.file:
+    path: "{{ k3s_server_location }}/server/node-token"
+    mode: "g+rx,o+rx"
+
+- name: Read node-token from master
+  ansible.builtin.slurp:
+    path: "{{ k3s_server_location }}/server/node-token"
+  register: node_token
+
+- name: Store Master node-token
+  ansible.builtin.set_fact:
+    token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
+
+- name: Restore node-token file access
+  ansible.builtin.file:
+    path: "{{ k3s_server_location }}/server/node-token"
+    mode: "{{ p.stat.mode }}"
+
+- name: Create directory .kube
+  ansible.builtin.file:
+    path: "~{{ ansible_user }}/.kube"
+    state: directory
+    owner: "{{ ansible_user }}"
+    mode: "u=rwx,g=rx,o="
+
+- name: Copy config file to user home directory
+  ansible.builtin.copy:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "~{{ ansible_user }}/.kube/config"
+    remote_src: true
+    owner: "{{ ansible_user }}"
+    mode: "u=rw,g=,o="
+
+- name: Replace https://localhost:6443 by https://master-ip:6443
+  ansible.builtin.command: >-
+    k3s kubectl config set-cluster default
+      --server=https://{{ master_ip }}:6443
+      --kubeconfig "~{{ ansible_user }}/.kube/config"
+  changed_when: true
+
+- name: Config Direcotory
+  debug:
+    msg: "config directory {{ config_dir }}"
+
+# - name: Check if local directory exits or not
+#   stat:
+#     path: "{{ config_dir }}/.kube"
+#   register: file_data
+#   delegate_to: localhost
+
+# - name: Report if directory exits
+#   debug:
+#     msg: "Directory does exits {{ file_data.path }}"
+#   when: file_data.stat.exits
+
+# - name: Report if directory not exists
+#   debug:
+#     msg: "Directory doesnot exists {{ file_data.path }}"
+#   when: not file_data.stat.exists
+
+- name: Copy config file to local
+  ansible.builtin.fetch:
+    src: "~{{ ansible_user }}/.kube/config"
+    dest: "{{ config_dir }}/.kube/config"
+    flat: true
+
+- name: Create kubectl symlink
+  ansible.builtin.file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/kubectl
+    state: link
+
+- name: Create crictl symlink
+  ansible.builtin.file:
+    src: /usr/local/bin/k3s
+    dest: /usr/local/bin/crictl
+    state: link

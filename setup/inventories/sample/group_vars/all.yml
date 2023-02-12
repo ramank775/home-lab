@@ -1,0 +1,18 @@
+---
+k3s_version: v1.26.0+k3s1
+ansible_user: pi
+ansible_connection: ssh
+ansible_ssh_pass: pass
+ansible_ssh_user: pi
+systemd_dir: /etc/systemd/system
+master_ip: "{{ hostvars[groups['master'][0]]['ansible_host'] | default(groups['master'][0]) }}"
+extra_server_args: "--disable servicelb"
+extra_agent_args: ""
+config_dir: "{{ playbook_dir }}../.lab"
+domain: homelab.arpa
+kube_host: "10.0.0.10"
+kube_insecure: true
+lb_iprange: "10.0.0.50-10.0.0.70"
+truenas_host: "10.0.0.30"
+truenas_k3s_pool: "pool-1"
+truenas_api_key: ""

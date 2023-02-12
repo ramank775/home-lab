@@ -1,0 +1,33 @@
+---
+- name: Prepare k3s cluster prerequisits
+  hosts: k3s_cluster
+  gather_facts: true
+  become: true
+  tags:
+    - init
+  roles:
+    - role: raspberrypi
+    - role: k3s/download
+
+- name: Setup K3s master
+  hosts: master
+  tags:
+    - setup
+  become: true
+  roles:
+    - role: k3s/master
+
+- name: Setup k3s node
+  hosts: node
+  tags:
+    - setup
+  become: true
+  roles:
+    - role: k3s/node
+
+- name: Install k3s resource
+  hosts: localhost
+  tags:
+    - resources
+  roles:
+    - role: resources

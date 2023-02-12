@@ -1,0 +1,22 @@
+---
+- name: Destroy K3S resources
+  community.general.terraform:
+    project_path: "terraform/"
+    state: absent
+    force_init: false
+    complex_vars: true
+    variables:
+      kube_config: "{{ config_dir }}/.kube/config"
+      kube_host: "{{ kube_host }}"
+      kube_insecure: "{{ kube_insecure }}"
+      lb_iprange: "{{ lb_iprange }}"
+      domain: "{{ domain}}"
+      versions:
+        lb: "v0.13.7"
+        kube_dash: "v2.7.0"
+      pihole_config_dir: "{{ config_dir }}/pihole"
+      truenas:
+        host: "{{ truenas_host }}"
+        port: 80
+        pool: "{{ truenas_k3s_pool }}"
+        apikey: "{{ truenas_api_key }}"
