@@ -34,7 +34,7 @@ resource "kubernetes_service" "traefix-dashboard-service" {
       protocol    = "TCP"
     }
     selector = {
-      "app.kubernetes.io/instance" = "traefik"
+      "app.kubernetes.io/instance" = "traefik-kube-system"
       "app.kubernetes.io/name"     = "traefik"
     }
   }

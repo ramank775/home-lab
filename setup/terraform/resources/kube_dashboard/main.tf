@@ -39,7 +39,7 @@ resource "helm_release" "kubernetes-dashboard" {
 
   set {
     name  = "ingress.annotations.kubernetes\\.io/ingress\\.class"
-    value = "traefix"
+    value = "traefik"
   }
 
   set {
