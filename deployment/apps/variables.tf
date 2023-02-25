@@ -26,21 +26,21 @@ variable "node_selector" {
   default     = {}
 }
 
-variable "nats_url" {
-  type        = string
-  description = "Nats cluster url"
-}
+# variable "nats_url" {
+#   type        = string
+#   description = "Nats cluster url"
+# }
 
-variable "nats_cluster_id" {
-  type        = string
-  description = "Nats cluster id"
-  default     = "home-lab"
-}
+# variable "nats_cluster_id" {
+#   type        = string
+#   description = "Nats cluster id"
+#   default     = "home-lab"
+# }
 
-variable "slack_endpoint" {
-  type        = string
-  description = "Slack webhook endpoint"
-}
+# variable "slack_endpoint" {
+#   type        = string
+#   description = "Slack webhook endpoint"
+# }
 
 variable "tunnel_ssh_user" {
   type        = string

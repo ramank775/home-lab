@@ -18,7 +18,7 @@ resource "kubernetes_persistent_volume_claim" "public_ip_monitor_pvc" {
         "storage" = "1Mi"
       }
     }
-    storage_class_name = "longhorn"
+    storage_class_name = "truenas-iscsi-csi"
     access_modes       = ["ReadWriteOnce"]
   }
 }
