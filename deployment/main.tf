@@ -19,6 +19,8 @@ module "apps" {
   tunnel_remote_port = var.tunnel_remote_port
   tunnel_ssh_key     = var.tunnel_ssh_key
   node_selector      = var.apps_node_selector
+  static_site_pass   = var.static_site_pass
+  static_site_user   = var.static_site_user
 }
 
 module "cron" {

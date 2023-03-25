@@ -19,12 +19,12 @@ variable "replicas" {
 variable "image" {
   type        = string
   description = "clouldflared tunnel client image name"
-  default     = "erisamoe/cloudflared"
+  default     = "cloudflare/cloudflared"
 }
 
 variable "tag" {
   description = "TCP tunnel client image tag"
-  default     = "2022.4.1"
+  default     = "2023.3.0"
   sensitive   = false
   type        = string
 }

@@ -23,21 +23,17 @@ resource "kubernetes_namespace" "homelab_apps_namespace" {
 #   node_selector   = var.node_selector
 # }
 
-# module "tunnel_client" {
-#   source             = "./tunnel-client"
-#   namespace          = var.namespace
-#   replicas           = var.replicas.tunnel_client
-#   tunnel_ssh_user    = var.tunnel_ssh_user
-#   tunnel_ssh_port    = var.tunnel_ssh_port
-#   tunnel_ssh_key     = var.tunnel_ssh_key
-#   tunnel_proxy_host  = var.tunnel_proxy_host
-#   tunnel_remote_port = var.tunnel_remote_port
-#   node_selector      = var.node_selector
-# }
 
 module "visitor_badge" {
   source        = "./visitor-badge"
   namespace     = var.namespace
   replicas      = var.replicas.visitor_badge
   node_selector = var.node_selector
+}
+
+module "static-site" {
+  source    = "./static-site"
+  namespace = var.namespace
+  username  = var.static_site_user
+  password  = var.static_site_pass
 }

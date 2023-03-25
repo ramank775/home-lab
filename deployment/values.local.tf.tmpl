@@ -134,3 +134,14 @@ variable "cloudflared_cert_file" {
   type = string
   description = "Cloudflared tunnel cert file"
 }
+
+variable "static_site_user" {
+  type        = string
+  description = "Static site ssh username"
+}
+
+variable "static_site_pass" {
+  type        = string
+  sensitive   = true
+  description = "static site ssh password"
+}

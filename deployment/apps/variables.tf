@@ -70,3 +70,13 @@ variable "tunnel_ssh_key" {
   description = "SSH private key for proxy server"
 }
 
+variable "static_site_user" {
+  type        = string
+  description = "Static site ssh username"
+}
+
+variable "static_site_pass" {
+  type        = string
+  description = "static site ssh password"
+  sensitive   = true
+}
