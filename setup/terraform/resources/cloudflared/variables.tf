@@ -24,7 +24,7 @@ variable "image" {
 
 variable "tag" {
   description = "TCP tunnel client image tag"
-  default     = "2023.3.0"
+  default     = "2023.3.1"
   sensitive   = false
   type        = string
 }

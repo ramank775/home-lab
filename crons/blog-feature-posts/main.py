@@ -174,7 +174,7 @@ def handleError(ex):
             "Content-Type": "application/json"
         }
         response = requests.request(
-            "POST", self._url, headers=headers, data=data)
+            "POST", endpoint, headers=headers, data=data)
         print("Error pushed to reporting endpoint with status code",
               response.status_code)
 

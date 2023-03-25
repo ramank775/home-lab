@@ -40,6 +40,23 @@ resource "kubernetes_service" "traefix-dashboard-service" {
   }
 }
 
+resource "kubernetes_manifest" "https-redirect-middleware" {
+  manifest = {
+    apiVersion = "traefik.containo.us/v1alpha1"
+    kind       = "Middleware"
+    metadata = {
+      name      = "redirect"
+      namespace = local.namespace
+    }
+    spec = {
+      redirectScheme = {
+        scheme    = "https"
+        permanent = "true"
+      }
+    }
+  }
+}
+
 resource "kubernetes_ingress_v1" "traefik-ingress" {
   metadata {
     name      = "traefik-ingress"

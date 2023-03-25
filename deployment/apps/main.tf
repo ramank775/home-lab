@@ -37,3 +37,9 @@ module "static-site" {
   username  = var.static_site_user
   password  = var.static_site_pass
 }
+
+module "vaultwarden" {
+  source    = "./vaultwarden"
+  namespace = var.namespace
+  domain    = "vw.${var.domain}"
+}
