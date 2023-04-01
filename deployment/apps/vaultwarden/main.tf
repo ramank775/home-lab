@@ -1,7 +1,8 @@
 locals {
-  data_volume = "vaultwarden-data"
-  app         = "vaultwarden"
-  replicas    = 1
+  data_volume         = "vaultwarden-data"
+  proxy_config_volume = "vw-proxy-config"
+  app                 = "vaultwarden"
+  replicas            = 1
 }
 
 resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
@@ -21,6 +22,63 @@ resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
     }
     storage_class_name = "truenas-iscsi-csi"
     access_modes       = ["ReadWriteOnce"]
+  }
+}
+
+resource "kubernetes_config_map" "vw-proxy-config" {
+  metadata {
+    name      = local.proxy_config_volume
+    namespace = var.namespace
+    labels = {
+      "app" = local.app
+    }
+  }
+
+  data = {
+    "default.conf" = <<EOT
+    server {
+        listen 80;
+        server_name _;
+        client_max_body_size 128M;
+        
+        location / {
+          proxy_http_version 1.1;
+          proxy_set_header "Connection" "";
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_pass http://localhost:8000;
+        }
+
+        location /notifications/hub/negotiate {
+          proxy_http_version 1.1;
+          proxy_set_header "Connection" "";
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_pass http://localhost:8000;
+        }
+
+        location /notifications/hub {
+          proxy_read_timeout 300s;
+          proxy_connect_timeout 75s;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header Forwarded $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_pass http://localhost:3012;
+        }
+
+    }
+    EOT
   }
 }
 
@@ -56,25 +114,43 @@ resource "kubernetes_deployment" "vaultwarden" {
           }
 
           env {
+            name  = "ROCKET_PORT"
+            value = "8000"
+          }
+
+          env {
             name  = "SIGNUPS_ALLOWED"
             value = "false"
           }
 
-          port {
-            container_port = 80
-          }
-          port {
-            container_port = 3012
-          }
           volume_mount {
             mount_path = "/data"
             name       = "data"
+          }
+        }
+        container {
+          name              = "${local.app}-nginx"
+          image_pull_policy = "Always"
+          image             = "nginx:stable-alpine-slim"
+          port {
+            container_port = 80
+          }
+          volume_mount {
+            name       = "confd"
+            mount_path = "/etc/nginx/conf.d"
+            read_only  = true
           }
         }
         volume {
           name = "data"
           persistent_volume_claim {
             claim_name = local.data_volume
+          }
+        }
+        volume {
+          name = "confd"
+          config_map {
+            name = local.proxy_config_volume
           }
         }
       }
@@ -102,12 +178,6 @@ resource "kubernetes_service" "vaultwarden_service" {
       target_port = 80
       protocol    = "TCP"
     }
-    port {
-      name        = "websocket"
-      port        = 3012
-      target_port = 3012
-      protocol    = "TCP"
-    }
   }
 }
 
@@ -124,17 +194,6 @@ resource "kubernetes_ingress_v1" "name" {
     rule {
       host = var.domain
       http {
-        path {
-          path = "/notifications/hub"
-          backend {
-            service {
-              name = local.app
-              port {
-                number = 3012
-              }
-            }
-          }
-        }
         path {
           path = "/"
           backend {
