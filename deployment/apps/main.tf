@@ -43,3 +43,14 @@ module "vaultwarden" {
   namespace = var.namespace
   domain    = "vw.${var.domain}"
 }
+
+module "mail" {
+  source             = "./mail"
+  namespace          = var.namespace
+  dovecot_config_dir = var.dovecot_config_dir
+  tunnel_ssh_key     = var.tunnel_ssh_key
+  tunnel_proxy_host  = var.tunnel_proxy_host
+  tunnel_ssh_port    = var.tunnel_ssh_port
+  tunnel_ssh_user    = var.tunnel_ssh_user
+  spampd_config_dir  = var.spampd_config_dir
+}

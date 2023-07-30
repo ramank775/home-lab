@@ -1,4 +1,4 @@
-FROM nginx:alpine
+FROM alpine:3.18.2
 
 ENV SSH_KEY_NAME=id_rsa
 ENV REMOTE_PORT=
@@ -8,12 +8,10 @@ ENV PROXY_SSH_PORT=22
 
 RUN apk add --no-cache bash autossh
 
-COPY startup.sh /docker-entrypoint.d/startup.sh
+COPY startup.sh /docker-entrypoint.sh
 
-COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
-
-RUN mkdir -p /config/nginx/default.d && mkdir -p /config/nginx/conf.d
-
-RUN chmod +x /docker-entrypoint.d/startup.sh
+RUN chmod +x /docker-entrypoint.sh
 
 VOLUME [ "/config" ]
+
+ENTRYPOINT [ "/docker-entrypoint.sh" ]

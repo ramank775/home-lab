@@ -21,6 +21,8 @@ module "apps" {
   node_selector      = var.apps_node_selector
   static_site_pass   = var.static_site_pass
   static_site_user   = var.static_site_user
+  dovecot_config_dir = var.dovecot_config_dir
+  spampd_config_dir  = var.spampd_config_dir
 }
 
 module "cron" {

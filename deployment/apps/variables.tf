@@ -80,3 +80,13 @@ variable "static_site_pass" {
   description = "static site ssh password"
   sensitive   = true
 }
+
+variable "dovecot_config_dir" {
+  type        = string
+  description = "Local dovecot configuration directory"
+}
+
+variable "spampd_config_dir" {
+  type        = string
+  description = "Spampd configuration directory"
+}

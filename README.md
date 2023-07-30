@@ -200,3 +200,7 @@ Setup Raspberry PI:
 - Pihole
 
   DNS level network add blocker. It is used for local dns server
+
+- Mail Server (Partially)
+  
+  Running mail server partially (expect postfix, opendkim).
