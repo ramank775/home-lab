@@ -9,6 +9,7 @@ locals {
   spampdImage  = "ramank775/spampd:${var.spampd_tag}"
   spampdName   = "${local.prefix}spampd"
   spampdVolume = "spampd-dir"
+  postfixadmin = "postfix-admin"
 }
 
 resource "kubernetes_persistent_volume_claim" "mail_data" {
@@ -23,7 +24,7 @@ resource "kubernetes_persistent_volume_claim" "mail_data" {
   spec {
     resources {
       requests = {
-        "storage" = "10Gi"
+        "storage" = "100Gi"
       }
     }
     storage_class_name = "truenas-iscsi-csi"
@@ -152,6 +153,136 @@ resource "kubernetes_service" "dovecot_service" {
 
     selector = {
       "app" = local.dovecotName
+    }
+  }
+}
+
+resource "kubernetes_deployment" "postfix-admin" {
+  metadata {
+    name      = local.postfixadmin
+    namespace = var.namespace
+    labels = {
+      "app" = local.postfixadmin
+    }
+  }
+
+  spec {
+    replicas = local.replicas
+    selector {
+      match_labels = {
+        "app" = local.postfixadmin
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = local.postfixadmin
+        }
+      }
+
+      spec {
+        container {
+          name              = local.postfixadmin
+          image             = "postfixadmin:latest"
+          image_pull_policy = "Always"
+          port {
+            container_port = 80
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_TYPE"
+            value = var.db_type
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_HOST"
+            value = var.db_host
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_PORT"
+            value = var.db_port
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_NAME"
+            value = var.db_name
+          }
+
+          env {
+            name  = "POSTFIXADMIN_DB_USER"
+            value = var.db_user
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_PASSWORD"
+            value = var.db_pass
+          }
+          env {
+            name  = "POSTFIXADMIN_SMTP_SERVER"
+            value = var.smtp_server
+          }
+          env {
+            name  = "POSTFIXADMIN_SMTP_PORT"
+            value = var.smtp_port
+          }
+          env {
+            name  = "POSTFIXADMIN_SETUP_PASSWORD"
+            value = var.postfix_admin_setup_password
+          }
+          env {
+            name  = "POSTFIXADMIN_ENCRYPT"
+            value = var.postfix_admin_encrypt
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "postfixadmin_service" {
+  metadata {
+    namespace = var.namespace
+    name      = "${local.postfixadmin}-service"
+    labels = {
+      "app" = local.postfixadmin
+    }
+  }
+  spec {
+    type = "ClusterIP"
+    port {
+      name        = "portal"
+      port        = 80
+      target_port = 80
+      protocol    = "TCP"
+    }
+
+    selector = {
+      "app" = local.postfixadmin
+    }
+  }
+}
+
+resource "kubernetes_ingress_v1" "postfixadmin_ingress" {
+  metadata {
+    name      = "${local.postfixadmin}-ingress"
+    namespace = var.namespace
+    annotations = {
+      "kubernetes.io/ingress.class"                      = "traefik"
+      "traefik.ingress.kubernetes.io/router.middlewares" = "kube-system-redirect@kubernetescrd"
+    }
+  }
+  spec {
+    rule {
+      host = "admin.${var.domain}"
+      http {
+        path {
+          path = "/"
+          backend {
+            service {
+              name = "${local.postfixadmin}-service"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -370,68 +501,5 @@ resource "kubernetes_service" "spampd_service" {
     selector = {
       "app" = local.spampdName
     }
-  }
-}
-
-resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
-  metadata {
-    name      = local.tunnelName
-    namespace = var.namespace
-    labels = {
-      "app" = local.tunnelName
-    }
-  }
-
-  spec {
-    replicas = local.replicas
-    selector {
-      match_labels = {
-        "app" = local.tunnelName
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          "app" = local.tunnelName
-        }
-      }
-
-      spec {
-        container {
-          name              = local.tunnelName
-          image             = local.tunnelImage
-          image_pull_policy = "IfNotPresent"
-          env {
-            name  = "PROXY_SSH_USER"
-            value = var.tunnel_ssh_user
-          }
-          env {
-            name  = "PROXY_HOST"
-            value = var.tunnel_proxy_host
-          }
-          env {
-            name  = "PROXY_SSH_PORT"
-            value = var.tunnel_ssh_port
-          }
-          volume_mount {
-            name       = "ssh-key"
-            mount_path = "/config/.ssh/id_rsa"
-            sub_path   = "id_rsa"
-            read_only  = false
-          }
-
-          args = ["-R", "0.0.0.0:24:${local.spampdName}-service:24", "-R", "0.0.0.0:143:mail-dovecot-service:143", "-v"]
-        }
-        volume {
-          name = "ssh-key"
-          secret {
-            default_mode = "0600"
-            secret_name  = "mail-tunnel-ssh-key"
-          }
-        }
-
-      }
-    }
-
   }
 }

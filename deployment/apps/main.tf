@@ -45,12 +45,23 @@ module "vaultwarden" {
 }
 
 module "mail" {
-  source             = "./mail"
-  namespace          = var.namespace
-  dovecot_config_dir = var.dovecot_config_dir
-  tunnel_ssh_key     = var.tunnel_ssh_key
-  tunnel_proxy_host  = var.tunnel_proxy_host
-  tunnel_ssh_port    = var.tunnel_ssh_port
-  tunnel_ssh_user    = var.tunnel_ssh_user
-  spampd_config_dir  = var.spampd_config_dir
+  source                       = "./mail"
+  namespace                    = var.namespace
+  domain                       = "mail.${var.domain}"
+  dovecot_config_dir           = var.dovecot_config_dir
+  tunnel_ssh_key               = var.tunnel_ssh_key
+  tunnel_proxy_host            = var.tunnel_proxy_host
+  tunnel_ssh_port              = var.tunnel_ssh_port
+  tunnel_ssh_user              = var.tunnel_ssh_user
+  spampd_config_dir            = var.spampd_config_dir
+  db_host                      = var.mail_db_host
+  db_port                      = var.mail_db_port
+  db_name                      = var.mail_db_name
+  db_user                      = var.mail_db_user
+  db_pass                      = var.mail_db_pass
+  db_type                      = var.mail_db_type
+  smtp_port                    = var.mail_smtp_port
+  smtp_server                  = var.mail_smtp_server
+  postfix_admin_setup_password = var.postfix_admin_setup_password
+  postfix_admin_encrypt        = var.postfix_admin_encrypt
 }

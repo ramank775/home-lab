@@ -90,3 +90,61 @@ variable "spampd_config_dir" {
   type        = string
   description = "Spampd configuration directory"
 }
+
+variable "mail_db_type" {
+  type        = string
+  description = "Database type"
+  default     = "mysqli"
+}
+
+variable "mail_db_host" {
+  type        = string
+  description = "Database host"
+}
+
+variable "mail_db_port" {
+  type        = string
+  description = "Database port"
+  default     = "3306"
+}
+
+variable "mail_db_name" {
+  type        = string
+  description = "Database name"
+  default     = "mail"
+}
+
+variable "mail_db_user" {
+  type        = string
+  description = "Database name"
+  default     = "mailer"
+}
+
+variable "mail_db_pass" {
+  type        = string
+  description = "Database password"
+  sensitive   = true
+}
+
+
+variable "mail_smtp_server" {
+  type        = string
+  description = "Smtp server"
+}
+
+variable "mail_smtp_port" {
+  type        = number
+  description = "Smtp port"
+}
+
+variable "postfix_admin_setup_password" {
+  type        = string
+  description = "Postfix admin setup password"
+  sensitive   = true
+}
+
+variable "postfix_admin_encrypt" {
+  type        = string
+  description = "Encrypt algo for postfix admin"
+  default     = "md5crypt"
+}
