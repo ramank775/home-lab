@@ -1,9 +1,13 @@
-# module "resources" {
-#   source        = "./resources"
-#   namespace     = var.namespaces.resources
-#   replicas      = var.resources_replicas
-#   node_selector = var.resources_node_selector
-# }
+module "resources" {
+  source          = "./resources"
+  namespace       = var.namespaces.resources
+  replicas        = var.resources_replicas
+  node_selector   = var.resources_node_selector
+  domain          = var.domain
+  smtp_relay_host = "[${var.remote_smtp_server}]:${var.remote_smtp_port}"
+  smtp_relay_user = var.remote_smtp_user
+  smtp_relay_pass = var.remote_smtp_pass
+}
 
 module "apps" {
   source    = "./apps"

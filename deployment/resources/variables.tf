@@ -1,3 +1,8 @@
+variable "domain" {
+  type        = string
+  description = "Default Domain name cluster endpoint"
+}
+
 variable "cluster_domain" {
   type        = string
   description = "K8s cluster domain name"
@@ -20,6 +25,23 @@ variable "replicas" {
   type        = map(number)
   description = "Replica count for resources"
   default = {
-    nats = 1
+    nats = 0
+    smtp_relay = 1
   }
+}
+
+variable "smtp_relay_host" {
+  description = "SMTP Relay server"
+  type = string
+}
+
+variable "smtp_relay_user" {
+  description = "SMTP Relay server username"
+  type = string
+}
+
+variable "smtp_relay_pass" {
+  description = "SMTP Relay sever password"
+  type = string
+  sensitive = true
 }

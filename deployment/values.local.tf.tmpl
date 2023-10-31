@@ -191,17 +191,6 @@ variable "mail_db_pass" {
   sensitive   = true
 }
 
-
-variable "mail_smtp_server" {
-  type        = string
-  description = "Smtp server"
-}
-
-variable "mail_smtp_port" {
-  type        = string
-  description = "Smtp port"
-}
-
 variable "postfix_admin_setup_password" {
   type        = string
   description = "Postfix admin setup password"
@@ -213,3 +202,27 @@ variable "postfix_admin_encrypt" {
   description = "Encrypt algo for postfix admin"
   default     = "md5crypt"
 }
+
+variable "remote_smtp_server" {
+  type        = string
+  description = "Smtp server"
+}
+
+variable "remote_smtp_port" {
+  type        = string
+  description = "Smtp port"
+}
+
+
+variable "remote_smtp_user" {
+  type        = string
+  description = "Smtp username"
+  default     = "no-reply@homelab.arpa"
+}
+
+variable "remote_smtp_pass" {
+  type        = string
+  description = "Smtp password"
+  default     = "SuPeRSeCrEt"
+}
+
