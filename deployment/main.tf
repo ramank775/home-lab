@@ -33,10 +33,12 @@ module "apps" {
   mail_db_name                 = var.mail_db_name
   mail_db_user                 = var.mail_db_user
   mail_db_pass                 = var.mail_db_pass
-  mail_smtp_port               = var.mail_smtp_port
-  mail_smtp_server             = var.mail_smtp_server
+  mail_smtp_port               = var.remote_smtp_port
+  mail_smtp_server             = var.remote_smtp_server
   postfix_admin_setup_password = var.postfix_admin_setup_password
   postfix_admin_encrypt        = var.postfix_admin_encrypt
+  vaultwarden_options          = var.vaultwarden_options
+  smtp_options                 = module.resources.smtp_options
 }
 
 module "cron" {

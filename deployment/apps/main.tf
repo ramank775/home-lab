@@ -39,9 +39,12 @@ module "static-site" {
 }
 
 module "vaultwarden" {
-  source    = "./vaultwarden"
-  namespace = var.namespace
-  domain    = "vw.${var.domain}"
+  source        = "./vaultwarden"
+  namespace     = var.namespace
+  domain        = "vw.${var.domain}"
+  public_domain = lookup(var.vaultwarden_options, "public_domain", "vw.${var.domain}")
+  sender_mail   = lookup(var.vaultwarden_options, "from_mail", "vaultwarden@${var.domain}")
+  smtp_options  = var.smtp_options
 }
 
 module "mail" {

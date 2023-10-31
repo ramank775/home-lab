@@ -123,6 +123,30 @@ resource "kubernetes_deployment" "vaultwarden" {
             value = "false"
           }
 
+          env {
+            name  = "DOMAIN"
+            value = var.public_domain
+          }
+
+          env {
+            name  = "SMTP_HOST"
+            value = var.smtp_options.host
+          }
+          env {
+            name  = "SMTP_FROM"
+            value = var.sender_mail
+          }
+
+          env {
+            name  = "SMTP_SECURITY"
+            value = lookup(var.smtp_options, "secruity", "off")
+          }
+
+          env {
+            name  = "SMTP_PORT"
+            value = var.smtp_options.port
+          }
+
           volume_mount {
             mount_path = "/data"
             name       = "data"
@@ -181,7 +205,7 @@ resource "kubernetes_service" "vaultwarden_service" {
   }
 }
 
-resource "kubernetes_ingress_v1" "name" {
+resource "kubernetes_ingress_v1" "vaultwarden-ingress" {
   metadata {
     name      = "${local.app}-ingress"
     namespace = var.namespace

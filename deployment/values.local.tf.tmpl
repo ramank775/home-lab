@@ -226,3 +226,11 @@ variable "remote_smtp_pass" {
   default     = "SuPeRSeCrEt"
 }
 
+variable "vaultwarden_options" {
+  type        = map(string)
+  description = "Vaultwarden options"
+  default = {
+    "public_domain" : "https://vw.homelab.arpa"
+    "from_mail" : "vaultwarden@homelab.arpa"
+  }
+}

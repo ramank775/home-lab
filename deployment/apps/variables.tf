@@ -148,3 +148,20 @@ variable "postfix_admin_encrypt" {
   description = "Encrypt algo for postfix admin"
   default     = "md5crypt"
 }
+
+variable "smtp_options" {
+  type = map(string)
+  description = "smtp settings"
+  default = {
+    "host" = "mail.homelab.arpa"
+    "port" = 25
+    "security" = "off"
+  }
+}
+
+variable "vaultwarden_options" {
+  type = map(string)
+  description = "Vaultwarden options"
+  default = {
+  }
+}
