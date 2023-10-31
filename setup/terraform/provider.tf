@@ -12,6 +12,9 @@ terraform {
       version = ">= 1.7.0"
     }
   }
+  backend "kubernetes" {
+    secret_suffix = "setup-state"
+  }
 }
 
 provider "kubernetes" {
@@ -32,4 +35,14 @@ provider "kubectl" {
   config_path = var.kube_config
   host        = var.kube_host
   insecure    = var.kube_insecure
+}
+
+data "terraform_remote_state" "setup" {
+  backend = "kubernetes"
+  config = {
+    secret_suffix    = "setup-state"
+    load_config_file = true
+    config_path      = var.kube_config
+    host             = var.kube_host
+  }
 }

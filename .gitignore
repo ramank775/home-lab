@@ -1,4 +1,4 @@
-*.local.tf
+*.local.*
 .lab
 .terraform
 .terraform.lock.hcl
