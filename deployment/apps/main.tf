@@ -63,8 +63,7 @@ module "mail" {
   db_user                      = var.mail_db_user
   db_pass                      = var.mail_db_pass
   db_type                      = var.mail_db_type
-  smtp_port                    = var.mail_smtp_port
-  smtp_server                  = var.mail_smtp_server
+  smtp_options                 = var.smtp_options
   postfix_admin_setup_password = var.postfix_admin_setup_password
   postfix_admin_encrypt        = var.postfix_admin_encrypt
 }

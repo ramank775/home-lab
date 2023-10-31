@@ -84,14 +84,13 @@ variable "db_pass" {
 }
 
 
-variable "smtp_server" {
-  type        = string
-  description = "Smtp server"
-}
-
-variable "smtp_port" {
-  type        = number
-  description = "Smtp port"
+variable "smtp_options" {
+  type = map(string)
+  description = "smtp settings"
+  default = {
+    "host" = "mail.homelab.arpa"
+    "port" = 25
+  }
 }
 
 variable "postfix_admin_setup_password" {

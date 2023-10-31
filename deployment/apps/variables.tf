@@ -126,17 +126,6 @@ variable "mail_db_pass" {
   sensitive   = true
 }
 
-
-variable "mail_smtp_server" {
-  type        = string
-  description = "Smtp server"
-}
-
-variable "mail_smtp_port" {
-  type        = number
-  description = "Smtp port"
-}
-
 variable "postfix_admin_setup_password" {
   type        = string
   description = "Postfix admin setup password"

@@ -215,11 +215,11 @@ resource "kubernetes_deployment" "postfix-admin" {
           }
           env {
             name  = "POSTFIXADMIN_SMTP_SERVER"
-            value = var.smtp_server
+            value = var.smtp_options.host
           }
           env {
             name  = "POSTFIXADMIN_SMTP_PORT"
-            value = var.smtp_port
+            value = var.smtp_options.port
           }
           env {
             name  = "POSTFIXADMIN_SETUP_PASSWORD"
