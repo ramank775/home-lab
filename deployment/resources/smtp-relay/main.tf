@@ -91,6 +91,9 @@ resource "kubernetes_service" "smtp-internal-service" {
     labels = {
       "app" = local.appname
     }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
     namespace = var.namespace
   }
 

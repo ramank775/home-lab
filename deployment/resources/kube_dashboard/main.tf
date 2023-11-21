@@ -8,15 +8,33 @@ resource "kubernetes_namespace" "kubernetes-dashboard-namespace" {
   }
 }
 
+resource "kubernetes_manifest" "kube-dashboard-ingress-middleware" {
+  manifest = {
+    apiVersion = "traefik.containo.us/v1alpha1"
+    kind       = "Middleware"
+    metadata = {
+      name      = "kube-strip-middleware-ingress"
+      namespace = local.namespace
+    }
+    spec = {
+      replacePathRegex = {
+        regex       = "/dashboard/(.*)"
+        replacement = "/$1"
+      }
+    }
+  }
+}
+
 resource "helm_release" "kubernetes-dashboard" {
   depends_on = [
-    kubernetes_namespace.kubernetes-dashboard-namespace
+    kubernetes_namespace.kubernetes-dashboard-namespace,
+    kubernetes_manifest.kube-dashboard-ingress-middleware
   ]
   name       = "kubernetes-dashboard"
   repository = "https://kubernetes.github.io/dashboard/"
   chart      = "kubernetes-dashboard"
   namespace  = local.namespace
-
+  wait       = true
   set {
     name  = "replicaCount"
     value = 1
@@ -77,23 +95,6 @@ resource "helm_release" "kubernetes-dashboard" {
     value = "kube-dash"
   }
 }
-
-# resource "kubernetes_manifest" "kube-dashboard-ingress-middleware" {
-#   manifest = {
-#     apiVersion = "traefik.containo.us/v1alpha1"
-#     kind       = "Middleware"
-#     metadata = {
-#       name      = "kube-strip-middleware-ingress"
-#       namespace = local.namespace
-#     }
-#     spec = {
-#       replacePathRegex = {
-#         regex       = "/dashboard/(.*)"
-#         replacement = "/$1"
-#       }
-#     }
-#   }
-# }
 
 # resource "kubernetes_service" "kube-dashboard-service" {
 #   metadata {

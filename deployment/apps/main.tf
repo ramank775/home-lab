@@ -31,12 +31,12 @@ module "visitor_badge" {
   node_selector = var.node_selector
 }
 
-module "static-site" {
-  source    = "./static-site"
-  namespace = var.namespace
-  username  = var.static_site_user
-  password  = var.static_site_pass
-}
+# module "static-site" {
+#   source    = "./static-site"
+#   namespace = var.namespace
+#   username  = var.static_site_user
+#   password  = var.static_site_pass
+# }
 
 module "vaultwarden" {
   source        = "./vaultwarden"
@@ -66,4 +66,5 @@ module "mail" {
   smtp_options                 = var.smtp_options
   postfix_admin_setup_password = var.postfix_admin_setup_password
   postfix_admin_encrypt        = var.postfix_admin_encrypt
+  mail_dns_server              = var.mail_dns_server
 }

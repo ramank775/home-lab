@@ -5,5 +5,5 @@ module "resources" {
   domain        = var.domain
   versions      = var.versions
   truenas       = var.truenas
-  cloudflared   = var.cloudflared
+  lb_iprange    = var.lb_iprange
 }

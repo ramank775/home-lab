@@ -191,6 +191,12 @@ variable "mail_db_pass" {
   sensitive   = true
 }
 
+variable "mail_dns_server" {
+  type = string
+  description = "DNS server IP for mail server"
+}
+
+
 variable "postfix_admin_setup_password" {
   type        = string
   description = "Postfix admin setup password"

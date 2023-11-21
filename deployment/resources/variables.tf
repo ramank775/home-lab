@@ -30,6 +30,17 @@ variable "replicas" {
   }
 }
 
+variable "pihole_config_dir" {
+  type        = string
+  description = "Pihole config director contains adlists and local dns"
+}
+
+variable "cloudflared" {
+  type = map(string)
+  description = "cloudflared tunnel options"
+}
+
+
 variable "smtp_relay_host" {
   description = "SMTP Relay server"
   type = string

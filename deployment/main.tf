@@ -1,12 +1,14 @@
 module "resources" {
-  source          = "./resources"
-  namespace       = var.namespaces.resources
-  replicas        = var.resources_replicas
-  node_selector   = var.resources_node_selector
-  domain          = var.domain
-  smtp_relay_host = "[${var.remote_smtp_server}]:${var.remote_smtp_port}"
-  smtp_relay_user = var.remote_smtp_user
-  smtp_relay_pass = var.remote_smtp_pass
+  source            = "./resources"
+  namespace         = var.namespaces.resources
+  replicas          = var.resources_replicas
+  node_selector     = var.resources_node_selector
+  domain            = var.domain
+  smtp_relay_host   = "[${var.remote_smtp_server}]:${var.remote_smtp_port}"
+  smtp_relay_user   = var.remote_smtp_user
+  smtp_relay_pass   = var.remote_smtp_pass
+  pihole_config_dir = var.pihole_config_dir
+  cloudflared       = var.cloudflared
 }
 
 module "apps" {
@@ -33,6 +35,7 @@ module "apps" {
   mail_db_name                 = var.mail_db_name
   mail_db_user                 = var.mail_db_user
   mail_db_pass                 = var.mail_db_pass
+  mail_dns_server              = var.mail_dns_server
   postfix_admin_setup_password = var.postfix_admin_setup_password
   postfix_admin_encrypt        = var.postfix_admin_encrypt
   vaultwarden_options          = var.vaultwarden_options

@@ -37,6 +37,10 @@ resource "kubernetes_config_map" "cloudflared_tunnel_config" {
 }
 
 resource "kubernetes_deployment" "cloudflared_tunnel_deployement" {
+  depends_on = [
+    kubernetes_config_map.cloudflared_tunnel_config,
+    kubernetes_secret.cloudflared_tunnel_cred
+  ]
   metadata {
     name      = local.appname
     namespace = var.namespace

@@ -43,6 +43,5 @@ data "terraform_remote_state" "setup" {
     secret_suffix    = "setup-state"
     load_config_file = true
     config_path      = var.kube_config
-    host             = var.kube_host
   }
 }

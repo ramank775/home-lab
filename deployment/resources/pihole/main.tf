@@ -35,6 +35,7 @@ resource "kubernetes_config_map" "pihole-config" {
   data = {
     "adlists.list" = file("${var.pihole_config_dir}/adlists.list")
     "custom.list"  = file("${var.pihole_config_dir}/custom.list")
+    "dnsmasq.conf" = "dns-forward-max=5096"
   }
 }
 
@@ -96,6 +97,11 @@ resource "kubernetes_stateful_set_v1" "name" {
             mount_path = "/etc/pihole/custom.list"
             sub_path   = "custom.list"
           }
+          volume_mount {
+            name = "dnsmasq-config"
+            mount_path = "/etc/dnsmasq.d/override-max-dns.conf"
+            sub_path = "dnsmasq.conf"
+          }
         }
         volume {
           name = "pihole-config"
@@ -123,6 +129,17 @@ resource "kubernetes_stateful_set_v1" "name" {
             items {
               key  = "custom.list"
               path = "custom.list"
+            }
+          }
+        }
+        volume {
+          name = "dnsmasq-config"
+          config_map {
+            default_mode = "0777"
+            name         = "pihole-config"
+            items {
+              key  = "dnsmasq.conf"
+              path = "dnsmasq.conf"
             }
           }
         }
@@ -163,6 +180,9 @@ resource "kubernetes_service" "pihole-dns-service" {
     labels = {
       "app" = local.appname
     }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
     namespace = var.namespace
   }
 
@@ -185,6 +205,9 @@ resource "kubernetes_service" "pihole-admin-service" {
     name = "${local.appname}-admin-service"
     labels = {
       "app" = local.appname
+    }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
     }
     namespace = var.namespace
   }

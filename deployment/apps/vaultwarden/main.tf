@@ -13,7 +13,7 @@ resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
       "app" = local.data_volume
     }
   }
-  wait_until_bound = false
+  wait_until_bound = true
   spec {
     resources {
       requests = {
@@ -83,6 +83,9 @@ resource "kubernetes_config_map" "vw-proxy-config" {
 }
 
 resource "kubernetes_deployment" "vaultwarden" {
+  depends_on = [ 
+    kubernetes_persistent_volume_claim.vaultwarden_data
+   ]
   metadata {
     name      = local.app
     namespace = var.namespace

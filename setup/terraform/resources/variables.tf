@@ -45,3 +45,8 @@ variable "cloudflared" {
   }
   description = "cloudflared tunnel options"
 }
+
+variable "lb_iprange" {
+  type        = string
+  description = "Load Balancer IP range"
+}

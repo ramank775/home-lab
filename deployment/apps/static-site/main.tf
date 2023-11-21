@@ -147,6 +147,9 @@ resource "kubernetes_service" "static_server_sftp" {
     labels = {
       "app" = local.sftp_server
     }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
     namespace = var.namespace
   }
 

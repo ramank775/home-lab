@@ -11,13 +11,7 @@ resource "kubernetes_namespace" "homelab_resources_namespace" {
 
 module "metallb" {
   source = "./metallb"
-}
-
-
-module "kube-dashboard" {
-  source       = "./kube_dashboard"
-  domain       = "kube.${var.domain}"
-  dash_version = var.versions.kube_dash
+  iprange = var.lb_iprange
 }
 
 module "traefik" {
@@ -33,16 +27,6 @@ module "democratic" {
   truenas_apikey = var.truenas.apikey
 }
 
-# module "system-updater" {
-#   source = "./system_updater"
-# }
-
-module "cloudflared" {
-  source                  = "./cloudflared"
-  namespace               = var.namespace
-  node_selector           = var.node_selector
-  replicas                = 1
-  cloudflared_cred_file   = var.cloudflared.cred_file
-  cloudflared_config_file = var.cloudflared.config_file
-  cloudflared_cert_file   = var.cloudflared.cert_file
+module "system-updater" {
+  source = "./system_updater"
 }

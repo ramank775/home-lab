@@ -3,7 +3,7 @@ locals {
   appname = "blog-feature-posts"
 }
 
-resource "kubernetes_cron_job" "blog-feature-posts_cron_job" {
+resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
   metadata {
     name      = local.appname
     namespace = var.namespace
