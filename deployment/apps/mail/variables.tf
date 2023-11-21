@@ -126,3 +126,8 @@ variable "tunnel_ssh_key" {
   type        = string
   description = "SSH private key of proxy server"
 }
+
+variable "mail_dns_server" {
+  type = string
+  description = "Load balancer IP for mail dns server"
+}

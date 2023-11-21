@@ -10,6 +10,7 @@ locals {
   spampdName   = "${local.prefix}spampd"
   spampdVolume = "spampd-dir"
   postfixadmin = "postfix-admin"
+  bind9Name    = "${local.prefix}bind9"
 }
 
 resource "kubernetes_persistent_volume_claim" "mail_data" {
@@ -49,6 +50,10 @@ resource "kubernetes_config_map" "dovecot_config" {
 }
 
 resource "kubernetes_stateful_set_v1" "dovecot" {
+  depends_on = [
+    kubernetes_persistent_volume_claim.mail_data,
+    kubernetes_config_map.dovecot_config
+  ]
   metadata {
     namespace = var.namespace
     name      = local.dovecotName
@@ -229,6 +234,14 @@ resource "kubernetes_deployment" "postfix-admin" {
             name  = "POSTFIXADMIN_ENCRYPT"
             value = var.postfix_admin_encrypt
           }
+          env {
+            name = "POSTFIXADMIN_DKIM"
+            value = "YES"
+          }
+          env {
+            name = "POSTFIXADMIN_DKIM_ALL_ADMINS"
+            value = "YES"
+          }
         }
       }
     }
@@ -367,6 +380,139 @@ resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
   }
 }
 
+resource "kubernetes_config_map" "bind9-config" {
+  metadata {
+    name      = "${local.bind9Name}-config"
+    namespace = var.namespace
+    labels = {
+      app = local.bind9Name
+    }
+  }
+
+  data = {
+    "named.conf" = <<-EOF
+options {
+  directory "/var/cache/bind";
+
+  recursion yes;
+  allow-recursion { any; };
+  
+  dnssec-validation auto;
+
+  auth-nxdomain no;    # conform to RFC1035
+  allow-query     { any; };
+
+  listen-on port 53 { any; };
+  listen-on-v6 { any; };
+  # forwarders {
+  #   8.8.8.8;
+  #   8.8.4.4;
+  # };
+};
+
+plugin query "/usr/lib/aarch64-linux-gnu/bind/filter-aaaa.so" {
+  filter-aaaa-on-v4 yes;
+  filter-aaaa-on-v6 yes;
+};
+    EOF
+  }
+}
+
+resource "kubernetes_deployment" "bind9-deployment" {
+  metadata {
+    name      = local.bind9Name
+    namespace = var.namespace
+    labels = {
+      app = local.bind9Name
+    }
+  }
+
+  spec {
+    replicas = local.replicas
+
+    selector {
+      match_labels = {
+        app = local.bind9Name
+      }
+    }
+
+    template {
+      metadata {
+        labels = {
+          app = local.bind9Name
+        }
+      }
+
+      spec {
+        container {
+          name  = local.bind9Name
+          image = "ubuntu/bind9:latest"
+
+          port {
+            container_port = 53
+          }
+
+          port {
+            container_port = 53
+            protocol       = "UDP"
+          }
+
+          volume_mount {
+            name       = "bind9-config"
+            mount_path = "/etc/bind/named.conf"
+            sub_path   = "named.conf"
+          }
+        }
+        volume {
+          name = "bind9-config"
+          config_map {
+            name = "${local.bind9Name}-config"
+            items {
+              key  = "named.conf"
+              path = "named.conf"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "bind9_service" {
+  metadata {
+    namespace = var.namespace
+    name      = "${local.bind9Name}-service"
+    labels = {
+      app = local.bind9Name
+    }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
+  }
+  spec {
+    type = "LoadBalancer"
+    load_balancer_ip = var.mail_dns_server
+    port {
+      name        = "dns"
+      port        = 53
+      target_port = 53
+      protocol    = "TCP"
+    }
+
+    port {
+      name        = "dns-udp"
+      port        = 53
+      target_port = 53
+      protocol    = "UDP"
+    }
+
+
+    selector = {
+      "app" = local.bind9Name
+    }
+  }
+}
+
 resource "kubernetes_persistent_volume_claim" "spampd-data" {
   metadata {
     name      = local.spampdVolume
@@ -388,6 +534,9 @@ resource "kubernetes_persistent_volume_claim" "spampd-data" {
 }
 
 resource "kubernetes_config_map" "spampd_config" {
+  depends_on = [
+    kubernetes_service.bind9_service
+  ]
   metadata {
     name      = "${local.spampdName}-config"
     namespace = var.namespace
@@ -399,6 +548,11 @@ resource "kubernetes_config_map" "spampd_config" {
   data = {
     "miab_spf_dmarc.cf" = file("${var.spampd_config_dir}/miab_spf_dmarc.cf")
     "cron.cf"           = file("${var.spampd_config_dir}/cron.cf")
+    "dns.cf"            = <<EOT
+dns_available yes
+dns_server ${var.mail_dns_server}
+dns_timeout 5
+    EOT
   }
 }
 
@@ -444,10 +598,17 @@ resource "kubernetes_deployment" "spampd" {
           volume_mount {
             name       = "spamassasin-config"
             mount_path = "/etc/spamassassin/miab_spf_dmarc.cf"
+            sub_path   = "miab_spf_dmarc.cf"
           }
           volume_mount {
             name       = "spamassasin-cron-config"
             mount_path = "/etc/spamassassin/cron.cf"
+            sub_path   = "cron.cf"
+          }
+          volume_mount {
+            name       = "spamassasin-dns-config"
+            mount_path = "/etc/spamassassin/dns.cf"
+            sub_path   = "dns.cf"
           }
         }
         volume {
@@ -473,6 +634,16 @@ resource "kubernetes_deployment" "spampd" {
             items {
               key  = "cron.cf"
               path = "cron.cf"
+            }
+          }
+        }
+        volume {
+          name = "spamassasin-dns-config"
+          config_map {
+            name = "${local.spampdName}-config"
+            items {
+              key  = "dns.cf"
+              path = "dns.cf"
             }
           }
         }
