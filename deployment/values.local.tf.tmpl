@@ -84,12 +84,6 @@ variable "slack_endpoint" {
   default     = ""
 }
 
-variable "github_token" {
-  type        = string
-  description = "github personal access token"
-  default     = ""
-}
-
 variable "tunnel_ssh_user" {
   type        = string
   description = "Remote proxy server ssh user"
@@ -239,4 +233,14 @@ variable "vaultwarden_options" {
     "public_domain" : "https://vw.homelab.arpa"
     "from_mail" : "vaultwarden@homelab.arpa"
   }
+}
+
+variable "blog_domain" {
+  type        = string
+  description = "Domain for blog site"
+}
+
+variable "github_config" {
+  type        = map(string)
+  description = "Github configuration"
 }

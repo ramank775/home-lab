@@ -68,3 +68,11 @@ module "mail" {
   postfix_admin_encrypt        = var.postfix_admin_encrypt
   mail_dns_server              = var.mail_dns_server
 }
+
+module "blog" {
+  source                           = "./blog"
+  namespace                        = var.namespace
+  domain                           = var.blog_domain
+  github_config                    = var.github_config
+  nats_streaming_http_producer_url = var.nats_streaming_http_producer_url
+}

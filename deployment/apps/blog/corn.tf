@@ -1,6 +1,6 @@
 locals {
-  image   = "${var.image}:${var.tag}"
-  appname = "blog-feature-posts"
+  image    = "ramank775/blog_feature_post:v1.0.2"
+  appname  = "blog-feature-posts"
 }
 
 resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
@@ -8,16 +8,16 @@ resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
     name      = local.appname
     namespace = var.namespace
     labels = {
-      "app" = local.appname
+      app = local.appname
     }
   }
-  count = var.replicas
+  count = local.replicas
   spec {
     schedule = "@midnight"
     job_template {
       metadata {
         labels = {
-          "app" = local.appname
+          app = local.appname
         }
       }
       spec {
@@ -25,7 +25,7 @@ resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
         template {
           metadata {
             labels = {
-              "app" = local.appname
+              app = local.appname
             }
           }
           spec {
@@ -34,8 +34,13 @@ resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
               image             = local.image
               image_pull_policy = "IfNotPresent"
               env {
-                name  = "GITHUB_TOKEN"
-                value = var.github_token
+                name = "GITHUB_TOKEN"
+                value_from {
+                  secret_key_ref {
+                    name = local.github_config
+                    key  = "token"
+                  }
+                }
               }
               env {
                 name  = "ERROR_REPORTING_ENDPOINT"

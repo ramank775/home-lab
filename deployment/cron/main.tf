@@ -12,11 +12,11 @@ resource "kubernetes_namespace" "homelab_cron_namespace" {
 #   replicas                         = var.replicas.public_ip_monitor
 # }
 
-module "blog_feature_posts" {
-  source                           = "./blog-feature-posts"
-  namespace                        = var.namespace
-  github_token                     = var.github_token
-  nats_streaming_http_producer_url = var.nats_streaming_http_producer_url
-  node_selector                    = var.node_selector
-  replicas                         = var.replicas.blog_feature_posts
-}
+# module "blog_feature_posts" {
+#   source                           = "./blog-feature-posts"
+#   namespace                        = var.namespace
+#   github_token                     = var.github_token
+#   nats_streaming_http_producer_url = var.nats_streaming_http_producer_url
+#   node_selector                    = var.node_selector
+#   replicas                         = var.replicas.blog_feature_posts
+# }

@@ -40,13 +40,16 @@ module "apps" {
   postfix_admin_encrypt        = var.postfix_admin_encrypt
   vaultwarden_options          = var.vaultwarden_options
   smtp_options                 = module.resources.smtp_options
+  blog_domain                  = var.blog_domain
+  github_config                = var.github_config
+  nats_streaming_http_producer_url = ""
 }
 
-module "cron" {
-  source                           = "./cron"
-  namespace                        = var.namespaces.crons
-  replicas                         = var.crons_replicas
-  nats_streaming_http_producer_url = ""
-  github_token                     = var.github_token
-  node_selector                    = var.crons_node_selector
-}
+# module "cron" {
+#   source                           = "./cron"
+#   namespace                        = var.namespaces.crons
+#   replicas                         = var.crons_replicas
+#   nats_streaming_http_producer_url = ""
+#   github_token                     = var.github_token
+#   node_selector                    = var.crons_node_selector
+# }

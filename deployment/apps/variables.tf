@@ -127,7 +127,7 @@ variable "mail_db_pass" {
 }
 
 variable "mail_dns_server" {
-  type = string
+  type        = string
   description = "DNS server IP for mail server"
 }
 
@@ -144,18 +144,33 @@ variable "postfix_admin_encrypt" {
 }
 
 variable "smtp_options" {
-  type = map(string)
+  type        = map(string)
   description = "smtp settings"
   default = {
-    "host" = "mail.homelab.arpa"
-    "port" = 25
+    "host"     = "mail.homelab.arpa"
+    "port"     = 25
     "security" = "off"
   }
 }
 
 variable "vaultwarden_options" {
-  type = map(string)
+  type        = map(string)
   description = "Vaultwarden options"
   default = {
   }
+}
+
+variable "blog_domain" {
+  type        = string
+  description = "domain for blog"
+}
+
+variable "github_config" {
+  type        = map(string)
+  description = "github configuration details"
+}
+
+variable "nats_streaming_http_producer_url" {
+  type        = string
+  description = "nats streaming http producer url"
 }

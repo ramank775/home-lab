@@ -54,5 +54,5 @@ variable "smtp_relay_pass" {
 variable "smtp_relay_networks" {
   description = "List of networks allow to send mail via relay"
   type = string
-  default = "127.0.0.0/8 10.0.0.0/8"
+  default = "127.0.0.0/8,10.0.0.0/8"
 }
