@@ -18,7 +18,7 @@ variable "image" {
 
 variable "tag" {
   description = "Visitor badge image tag"
-  default     = "latest"
+  default     = "v1.1.0"
   sensitive   = false
   type        = string
 }

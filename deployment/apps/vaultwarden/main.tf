@@ -7,7 +7,7 @@ locals {
 
 resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
   metadata {
-    name      = local.data_volume
+    name      = "vaultwarden-data"
     namespace = var.namespace
     labels = {
       "app" = local.data_volume

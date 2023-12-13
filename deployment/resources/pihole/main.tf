@@ -39,7 +39,7 @@ resource "kubernetes_config_map" "pihole-config" {
   }
 }
 
-resource "kubernetes_stateful_set_v1" "name" {
+resource "kubernetes_stateful_set_v1" "pihole" {
   metadata {
     namespace = var.namespace
     name      = "pihole"

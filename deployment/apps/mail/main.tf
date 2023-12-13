@@ -1,7 +1,7 @@
 locals {
   prefix       = "mail-"
   dovecotName  = "${local.prefix}dovecot"
-  data_volume  = "mail-dir"
+  data_volume  = "mail-directory"
   replicas     = 1
   devcotImage  = "ramank775/dovecot:${var.tag}"
   tunnelImage  = "ramank775/tunnel-client:${var.tunnel_client_tag}"
@@ -13,7 +13,7 @@ locals {
   bind9Name    = "${local.prefix}bind9"
 }
 
-resource "kubernetes_persistent_volume_claim" "mail_data" {
+resource "kubernetes_persistent_volume_claim" "mail_data_pv" {
   metadata {
     name      = local.data_volume
     namespace = var.namespace
@@ -51,7 +51,7 @@ resource "kubernetes_config_map" "dovecot_config" {
 
 resource "kubernetes_stateful_set_v1" "dovecot" {
   depends_on = [
-    kubernetes_persistent_volume_claim.mail_data,
+    kubernetes_persistent_volume_claim.mail_data_pv,
     kubernetes_config_map.dovecot_config
   ]
   metadata {
@@ -188,7 +188,7 @@ resource "kubernetes_deployment" "postfix-admin" {
       spec {
         container {
           name              = local.postfixadmin
-          image             = "postfixadmin:latest"
+          image             = "postfixadmin:3.3.13"
           image_pull_policy = "Always"
           port {
             container_port = 80
@@ -513,25 +513,25 @@ resource "kubernetes_service" "bind9_service" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "spampd-data" {
-  metadata {
-    name      = local.spampdVolume
-    namespace = var.namespace
-    labels = {
-      "app" = local.spampdVolume
-    }
-  }
-  wait_until_bound = false
-  spec {
-    resources {
-      requests = {
-        "storage" = "10Gi"
-      }
-    }
-    storage_class_name = "truenas-iscsi-csi"
-    access_modes       = ["ReadWriteOnce"]
-  }
-}
+# resource "kubernetes_persistent_volume_claim" "spampd-data" {
+#   metadata {
+#     name      = local.spampdVolume
+#     namespace = var.namespace
+#     labels = {
+#       "app" = local.spampdVolume
+#     }
+#   }
+#   wait_until_bound = false
+#   spec {
+#     resources {
+#       requests = {
+#         "storage" = "10Gi"
+#       }
+#     }
+#     storage_class_name = "truenas-iscsi-csi"
+#     access_modes       = ["ReadWriteOnce"]
+#   }
+# }
 
 resource "kubernetes_config_map" "spampd_config" {
   depends_on = [
@@ -591,10 +591,10 @@ resource "kubernetes_deployment" "spampd" {
             name  = "SPAMPD_HOST"
             value = "0.0.0.0:24"
           }
-          volume_mount {
-            mount_path = "/var/cache/spampd"
-            name       = "spampd-data"
-          }
+          # volume_mount {
+          #   mount_path = "/var/cache/spampd"
+          #   name       = "spampd-data"
+          # }
           volume_mount {
             name       = "spamassasin-config"
             mount_path = "/etc/spamassassin/miab_spf_dmarc.cf"
@@ -611,12 +611,12 @@ resource "kubernetes_deployment" "spampd" {
             sub_path   = "dns.cf"
           }
         }
-        volume {
-          name = "spampd-data"
-          persistent_volume_claim {
-            claim_name = local.spampdVolume
-          }
-        }
+        # volume {
+        #   name = "spampd-data"
+        #   persistent_volume_claim {
+        #     claim_name = local.spampdVolume
+        #   }
+        # }
         volume {
           name = "spamassasin-config"
           config_map {

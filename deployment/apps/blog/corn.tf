@@ -1,6 +1,7 @@
 locals {
   image    = "ramank775/blog_feature_post:v1.0.2"
   appname  = "blog-feature-posts"
+  cron_replica = 0
 }
 
 resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
@@ -11,7 +12,7 @@ resource "kubernetes_cron_job_v1" "blog-feature-posts_cron_job" {
       app = local.appname
     }
   }
-  count = local.replicas
+  count = local.cron_replica
   spec {
     schedule = "@midnight"
     job_template {

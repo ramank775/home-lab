@@ -86,8 +86,8 @@ resource "kubernetes_deployment" "cloudflared_tunnel_deployement" {
               path = "/ready"
               port = 2000
             }
-            failure_threshold     = 1
-            initial_delay_seconds = 10
+            failure_threshold     = 3
+            initial_delay_seconds = 30
             timeout_seconds       = 30
           }
           volume_mount {
