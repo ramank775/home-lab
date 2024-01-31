@@ -97,6 +97,12 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
           }
 
           volume_mount {
+            name = "sieve-global"
+            mount_path = "/srv/mail/sieve/default.sieve"
+            sub_path = "default.sieve"
+          }
+
+          volume_mount {
             name       = "dovecot-config"
             mount_path = "/etc/dovecot/"
           }
@@ -121,9 +127,15 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
               key  = "dovecot-sql.conf"
               path = "dovecot-sql.conf"
             }
+          }
+        }
+        volume {
+          name = "sieve-global"
+          config_map {
+            name = "${local.dovecotName}-config"
             items {
               key  = "default.sieve"
-              path = "sieve/default.sieve"
+              path = "default.sieve"
             }
           }
         }
