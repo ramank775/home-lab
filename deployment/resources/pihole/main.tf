@@ -188,6 +188,7 @@ resource "kubernetes_service" "pihole-dns-service" {
 
   spec {
     type = "LoadBalancer"
+    external_traffic_policy = "Local"
     port {
       name        = "dns"
       port        = 53

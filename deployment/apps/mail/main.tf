@@ -200,8 +200,8 @@ resource "kubernetes_deployment" "postfix-admin" {
       spec {
         container {
           name              = local.postfixadmin
-          image             = "postfixadmin:3.3.13"
-          image_pull_policy = "Always"
+          image             = "postfixadmin:3.3.12-apache"
+          image_pull_policy = "IfNotPresent"
           port {
             container_port = 80
           }
