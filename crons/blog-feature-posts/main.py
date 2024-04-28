@@ -1,3 +1,4 @@
+from datetime import datetime
 from hashlib import md5
 import requests
 import xmltodict
@@ -98,19 +99,12 @@ class GithubRepo:
 
 
 class VisitorCounter:
-    def __init__(self, namespace):
+    def __init__(self, namespace, endpoint):
         self._namespace = namespace
-
-    def _get_key_hash(self, page_id) -> str:
-        if page_id is not None and len(page_id):
-            m = md5(page_id.encode('utf-8'))
-            m.update('guess_what'.encode('utf-8'))
-            return m.hexdigest()
-        return None
+        self._endpoint = endpoint
 
     def _get_url(self, key):
-        encoded_key = self._get_key_hash(f"{self._namespace}.{key}")
-        url = f"https://api.countapi.xyz/get/visitor-badge/{encoded_key}"
+        url = f"{self._endpoint}/count?namespace=${self._namespace}&page_id={key}&read=true"
         return url
 
     def count(self, key):
@@ -177,6 +171,26 @@ def handleError(ex):
             "POST", endpoint, headers=headers, data=data)
         print("Error pushed to reporting endpoint with status code",
               response.status_code)
+
+def calculate_score(post):
+    # Define weights based on your priorities
+    weight_date = 0.6
+    weight_page_loads = 0.4
+    decay_factor = 0.95  # Adjust as needed
+
+    # Get current date and time
+    current_date = datetime.now()
+
+    # Calculate recency factor (example: days since publish date)
+    days_since_publish = (current_date - post['publish_date']).days
+
+    # Calculate the decayed page load count
+    decayed_page_loads = post['page_loads'] * (decay_factor ** days_since_publish)
+
+    # Calculate the score
+    score = (weight_date * (1 / (1 + days_since_publish))) + (weight_page_loads * decayed_page_loads)
+
+    return score
 
 
 def main():

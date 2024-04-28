@@ -6,35 +6,15 @@
     force_init: true
     complex_vars: true
     variables:
-      kube_config: "{{ config_dir }}/kube/config"
+      kube_config: "{{ kube_config }}"
       kube_host: "{{ kube_host }}"
       kube_insecure: "{{ kube_insecure }}"
       lb_iprange: "{{ lb_iprange }}"
-      domain: "{{ domain}}"
+      domain: "{{ domain }}"
       versions:
-        lb: "v0.13.7"
         kube_dash: "v2.7.0"
-      pihole_config_dir: "{{ config_dir }}/pihole"
       truenas:
         host: "{{ truenas_host }}"
         port: 80
         pool: "{{ truenas_k3s_pool }}"
         apikey: "{{ truenas_api_key }}"
-      cloudflared:
-        cred_file: "{{ config_dir }}/cloudflared/credentials.json"
-        config_file: "{{ config_dir }}/cloudflared/config.yaml"
-        cert_file: "{{ config_dir }}/cloudflared/cert.pem"
-
-- name: Configure Default K3S resources
-  community.general.terraform:
-    project_path: "terraform/config/"
-    state: present
-    force_init: true
-    complex_vars: true
-    variables:
-      kube_config: "{{ config_dir }}/kube/config"
-      kube_host: "{{ kube_host }}"
-      kube_insecure: "{{ kube_insecure }}"
-      lb_iprange: "{{ lb_iprange }}"
-      pihole_config_dir: "{{ config_dir }}/pihole"
-      domain: "{{ domain}}"

@@ -36,16 +36,6 @@ variable "truenas" {
   }
 }
 
-variable "cloudflared" {
-  type = map(string)
-  default = {
-    "cred_file"   = ""
-    "config_file" = ""
-    "cert_file"   = ""
-  }
-  description = "cloudflared tunnel options"
-}
-
 variable "lb_iprange" {
   type        = string
   description = "Load Balancer IP range"

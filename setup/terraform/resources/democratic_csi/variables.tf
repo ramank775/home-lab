@@ -15,5 +15,5 @@ variable "truenas_apikey" {
 
 variable "truenas_pool" {
   type    = string
-  default = "pool-1"
+  default = "lab-storage"
 }

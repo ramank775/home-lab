@@ -12,6 +12,7 @@ config_dir: "{{ playbook_dir }}../.lab"
 domain: homelab.arpa
 kube_host: "10.0.0.10"
 kube_insecure: true
+kube_config: "~/.kube/config"
 lb_iprange: "10.0.0.50-10.0.0.70"
 truenas_host: "10.0.0.30"
 truenas_k3s_pool: "pool-1"

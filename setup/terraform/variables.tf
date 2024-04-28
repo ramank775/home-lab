@@ -1,5 +1,6 @@
 variable "kube_config" {
-  type = string
+  type    = string
+  default = "~/.kube/config"
 }
 
 variable "kube_host" {
@@ -31,17 +32,17 @@ variable "node_selector" {
 variable "lb_iprange" {
   type        = string
   description = "Load Balancer IP range"
+  default     = "10.0.0.50-10.0.0.70"
 }
 
 variable "versions" {
   type        = map(string)
   description = "Resources Version"
+  default = {
+    kube_dash = "2.7.0"
+  }
 }
 
-variable "pihole_config_dir" {
-  type        = string
-  description = "Pihole config director contains adlists and local dns"
-}
 
 variable "truenas" {
   type = map(string)
@@ -53,12 +54,3 @@ variable "truenas" {
   }
 }
 
-variable "cloudflared" {
-  type = map(string)
-  default = {
-    "cred_file"   = ""
-    "config_file" = ""
-    "cert_file"   = ""
-  }
-  description = "cloudflared tunnel options"
-}
