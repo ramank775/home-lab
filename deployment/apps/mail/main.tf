@@ -97,9 +97,9 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
           }
 
           volume_mount {
-            name = "sieve-global"
+            name       = "sieve-global"
             mount_path = "/srv/mail/sieve/default.sieve"
-            sub_path = "default.sieve"
+            sub_path   = "default.sieve"
           }
 
           volume_mount {
@@ -168,6 +168,28 @@ resource "kubernetes_service" "dovecot_service" {
       protocol    = "TCP"
     }
 
+    selector = {
+      "app" = local.dovecotName
+    }
+  }
+}
+
+resource "kubernetes_service" "dovecot_external_service" {
+   metadata {
+    namespace = var.namespace
+    name      = "${local.dovecotName}-external"
+    labels = {
+      "app" = local.dovecotName
+    }
+  }
+  spec {
+    type = "LoadBalancer"
+    port {
+      name        = "imap"
+      port        = 143
+      target_port = 143
+      protocol    = "TCP"
+    }
     selector = {
       "app" = local.dovecotName
     }
@@ -247,11 +269,11 @@ resource "kubernetes_deployment" "postfix-admin" {
             value = var.postfix_admin_encrypt
           }
           env {
-            name = "POSTFIXADMIN_DKIM"
+            name  = "POSTFIXADMIN_DKIM"
             value = "YES"
           }
           env {
-            name = "POSTFIXADMIN_DKIM_ALL_ADMINS"
+            name  = "POSTFIXADMIN_DKIM_ALL_ADMINS"
             value = "YES"
           }
         }
@@ -339,7 +361,7 @@ resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
   }
 
   spec {
-    replicas = local.replicas
+    replicas = 0 // local.replicas
     selector {
       match_labels = {
         "app" = local.tunnelName
@@ -502,7 +524,7 @@ resource "kubernetes_service" "bind9_service" {
     }
   }
   spec {
-    type = "LoadBalancer"
+    type             = "LoadBalancer"
     load_balancer_ip = var.mail_dns_server
     port {
       name        = "dns"
@@ -685,4 +707,28 @@ resource "kubernetes_service" "spampd_service" {
       "app" = local.spampdName
     }
   }
+}
+
+resource "kubernetes_service" "spampd_external_service" {
+  metadata {
+    namespace = var.namespace
+    name      = "${local.spampdName}-external"
+    labels = {
+      app = local.spampdName
+    }
+  }
+  spec {
+    type = "LoadBalancer"
+    port {
+      name = "lmtp"
+      port = 24
+      target_port = 24
+      protocol = "TCP"
+    }
+
+    selector = {
+      app = local.spampdName
+    }
+  }
+  
 }
