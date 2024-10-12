@@ -340,7 +340,7 @@ resource "kubernetes_service" "prowlarr" {
       "media.app" = "prowlarr"
     }
     port {
-      port = 9696
+      port        = 9696
       target_port = 9696
     }
   }
@@ -452,6 +452,75 @@ resource "kubernetes_service" "jellyseerr" {
   ]
 }
 
+resource "kubernetes_deployment" "flaresovlerr" {
+  metadata {
+    name      = "flaresolverr"
+    namespace = var.namespace
+    labels = {
+      "media.app" = "flaresolverr"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        "media.app" = "flaresolverr"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          "media.app" = "flaresolverr"
+        }
+      }
+      spec {
+        container {
+          name  = "flaresolverr"
+          image = "ghcr.io/flaresolverr/flaresolverr:latest"
+          env {
+            name  = "TZ"
+            value = "Asia/Kolkata"
+          }
+
+          env {
+            name  = "LOG_HTML"
+            value = "false"
+          }
+
+          env {
+            name  = "CAPTCHA_SOLVER"
+            value = "hcaptcha-solver"
+          }
+          port {
+            container_port = 8191
+            name           = "http"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "flaresovlerr" {
+  metadata {
+    name      = "flaresolverr"
+    namespace = var.namespace
+  }
+  spec {
+    type = "ClusterIP"
+    selector = {
+      "media.app" = "flaresolverr"
+    }
+    port {
+      port        = 80
+      target_port = 8191
+    }
+  }
+  depends_on = [
+    kubernetes_deployment.prowlarr
+  ]
+}
 
 resource "kubernetes_ingress_v1" "media-management" {
   metadata {
