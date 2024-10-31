@@ -57,10 +57,18 @@ module "apps" {
 module "media" {
   source        = "./media"
   media_storage = var.media_storage
+  namespace     = var.namespaces.media
   domains = {
-    namespace    = var.namespaces.media
     "media-mgmt" = "media-mgmt.${var.domain}"
     "prowlarr"   = "tracker.${var.domain}"
     "jellyseerr" = "jellyseerr.${var.domain}"
   }
+}
+
+module "monitoring" {
+  source       = "./monitoring"
+  namespace    = var.namespaces.monitoring
+  domain       = "monitoring.${var.domain}"
+  external_ips = var.monitroing_external_ips
+  config_dir   = var.monitoring_config_dir
 }

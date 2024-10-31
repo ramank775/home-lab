@@ -17,10 +17,11 @@ variable "namespaces" {
   type        = map(string)
   description = "Namespace for different resources"
   default = {
-    apps      = "homelab-apps"
-    crons     = "homelab-crons"
-    resources = "homelab-resources"
-    media     = "media"
+    apps       = "homelab-apps"
+    crons      = "homelab-crons"
+    resources  = "homelab-resources"
+    media      = "media"
+    monitoring = "monitoring"
   }
 }
 
@@ -261,3 +262,14 @@ variable "media_storage" {
     "capacity" = "1000Gi"
   }
 }
+
+variable "monitroing_external_ips" {
+  type        = map(string)
+  description = "External IP for observability/Monitoring Stack for ingress"
+}
+variable "monitoring_config_dir" {
+  type        = string
+  description = "Directory contains configuration files for monitoring"
+
+}
+
