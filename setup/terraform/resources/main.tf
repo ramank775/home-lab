@@ -6,12 +6,14 @@ resource "kubernetes_namespace" "homelab_resources_namespace" {
 
 # module "longhorn" {
 #   source = "./longhorn"
+#   version = var.versions.longhorn
 #   domain = "longhorn.${var.domain}"
 # }
 
 module "metallb" {
-  source = "./metallb"
-  iprange = var.lb_iprange
+  source        = "./metallb"
+  iprange       = var.lb_iprange
+  chart_version = var.versions.metallb
 }
 
 module "traefik" {
@@ -21,6 +23,7 @@ module "traefik" {
 
 module "democratic" {
   source         = "./democratic_csi"
+  chart_version  = var.versions.democratic_csi
   truenas_host   = var.truenas.host
   truenas_port   = var.truenas.port
   truenas_pool   = var.truenas.pool

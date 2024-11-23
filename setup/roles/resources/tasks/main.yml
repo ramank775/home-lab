@@ -11,8 +11,6 @@
       kube_insecure: "{{ kube_insecure }}"
       lb_iprange: "{{ lb_iprange }}"
       domain: "{{ domain }}"
-      versions:
-        kube_dash: "v2.7.0"
       truenas:
         host: "{{ truenas_host }}"
         port: 80

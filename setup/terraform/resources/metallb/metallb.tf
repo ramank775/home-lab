@@ -13,6 +13,7 @@ resource "helm_release" "metallb" {
   repository = "https://metallb.github.io/metallb"
   chart      = "metallb"
   namespace  = local.namespace
+  version    = var.chart_version
   wait       = true
 }
 

@@ -16,7 +16,7 @@ resource "helm_release" "longhorn" {
   repository = "https://charts.longhorn.io"
   chart      = "longhorn"
   namespace  = local.namespace
-  version    = var.ver
+  version    = var.chart_version
 }
 
 resource "kubernetes_ingress_v1" "longhorn-ingress" {

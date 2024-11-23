@@ -16,7 +16,7 @@ resource "helm_release" "democratic" {
   repository = "https://democratic-csi.github.io/charts/"
   chart      = "democratic-csi"
   namespace  = local.namespace
-  version    = "0.14.5"
+  version    = var.chart_version
   wait       = true
   set {
     name  = "csiDriver.name"

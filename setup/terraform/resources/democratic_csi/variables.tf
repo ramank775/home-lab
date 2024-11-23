@@ -17,3 +17,8 @@ variable "truenas_pool" {
   type    = string
   default = "lab-storage"
 }
+
+variable "chart_version" {
+  type    = string
+  default = "0.14.7"
+}

@@ -4,8 +4,8 @@ variable "domain" {
   description = "Default Domain name cluster endpoint"
 }
 
-variable "ver" {
+variable "chart_version" {
   type        = string
   description = "Version of longhorn to install"
-  default     = "1.3.2"
+  default     = "1.7.2"
 }

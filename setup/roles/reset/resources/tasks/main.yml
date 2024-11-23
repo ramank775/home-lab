@@ -11,9 +11,6 @@
       kube_insecure: "{{ kube_insecure }}"
       lb_iprange: "{{ lb_iprange }}"
       domain: "{{ domain}}"
-      versions:
-        lb: "v0.13.7"
-        kube_dash: "v2.7.0"
       pihole_config_dir: "{{ config_dir }}/pihole"
       truenas:
         host: "{{ truenas_host }}"
