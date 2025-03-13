@@ -2,7 +2,7 @@ locals {
   prefix       = "mail-"
   dovecotName  = "${local.prefix}dovecot"
   data_volume  = "mail-directory"
-  replicas     = 1
+  replicas     = 0
   devcotImage  = "ramank775/dovecot:${var.tag}"
   tunnelImage  = "ramank775/tunnel-client:${var.tunnel_client_tag}"
   tunnelName   = "${local.prefix}tunnel"
@@ -444,10 +444,10 @@ options {
   # };
 };
 
-plugin query "/usr/lib/aarch64-linux-gnu/bind/filter-aaaa.so" {
-  filter-aaaa-on-v4 yes;
-  filter-aaaa-on-v6 yes;
-};
+# plugin query "/usr/lib/aarch64-linux-gnu/bind/filter-aaaa.so" {
+#   filter-aaaa-on-v4 yes;
+#   filter-aaaa-on-v6 yes;
+# };
     EOF
   }
 }
@@ -462,7 +462,7 @@ resource "kubernetes_deployment" "bind9-deployment" {
   }
 
   spec {
-    replicas = local.replicas
+    replicas = 1
 
     selector {
       match_labels = {

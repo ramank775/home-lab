@@ -21,6 +21,7 @@ variable "namespaces" {
     crons      = "homelab-crons"
     resources  = "homelab-resources"
     media      = "media"
+    mail       = "mail"
     monitoring = "monitoring"
   }
 }

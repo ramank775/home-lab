@@ -65,6 +65,15 @@ module "media" {
   }
 }
 
+module "mail" {
+  source             = "./mail"
+  namespace          = var.namespaces.mail
+  dovecot_config_dir = var.dovecot_config_dir
+  spampd_config_dir = var.spampd_config_dir
+  mail_dns_server   = var.mail_dns_server
+
+}
+
 module "monitoring" {
   source       = "./monitoring"
   namespace    = var.namespaces.monitoring
