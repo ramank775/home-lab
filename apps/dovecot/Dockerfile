@@ -16,7 +16,6 @@ RUN apt-get -y update && apt-get -y install \
   dovecot-imapd \
   dovecot-ldap \
   dovecot-lmtpd \
-  dovecot-lua \
   dovecot-managesieved \
   dovecot-mysql \
   dovecot-pgsql \
