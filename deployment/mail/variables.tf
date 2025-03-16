@@ -6,7 +6,7 @@ variable "namespace" {
 
 variable "dovecot-tag" {
   description = "dovecot image tag"
-  default     = "2.3.21"
+  default     = "2.3.20"
   sensitive   = false
   type        = string
 }

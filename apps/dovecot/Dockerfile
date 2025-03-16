@@ -33,8 +33,6 @@ RUN apt-get -y update && apt-get -y install \
   rm -rf /etc/dovecot && \
   mkdir /srv/mail && \
   chown vmail:vmail /srv/mail && \
-  mkdir /run/dovecot && \
-  chown vmail:vmail /run/dovecot && \
   make-ssl-cert generate-default-snakeoil && \
   mkdir /etc/dovecot && \
   ln -s /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/dovecot/cert.pem && \
