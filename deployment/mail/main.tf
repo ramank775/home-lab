@@ -95,6 +95,11 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
             container_port = 24
           }
 
+          env {
+            name  = "SPAMC_HOST"
+            value = "spamassassin-service"
+          }
+
           volume_mount {
             name       = "dovecot-data"
             mount_path = "/srv/mail"
