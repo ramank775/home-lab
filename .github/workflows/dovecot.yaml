@@ -26,7 +26,8 @@ jobs:
       - name: Extract version from Dockerfile
         id: extract_version
         run: |
-          VERSION=$(grep "^FROM " apps/dovecot/Dockerfile | awk -F':' '{print $2}' | awk '{print $1}')
+          # VERSION=$(grep "^FROM " apps/dovecot/Dockerfile | awk -F':' '{print $2}' | awk '{print $1}')
+          VERSION=2.3.21
           echo "::set-output name=tags::ramank775/dovecot:$VERSION"
       - name: Build and push
         uses: docker/build-push-action@v6
