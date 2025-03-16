@@ -65,4 +65,4 @@ RUN chown -R vmail:vmail /usr/lib/dovecot/sieve && \
   chmod +x /usr/lib/dovecot/sieve/sa-learn.sh
   
 
-USER vmail
+# USER vmail

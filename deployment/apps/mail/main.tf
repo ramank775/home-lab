@@ -83,6 +83,7 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
         container {
           name  = local.dovecotName
           image = local.devcotImage
+          image_pull_policy = "Always"
           port {
             container_port = 143
           }
