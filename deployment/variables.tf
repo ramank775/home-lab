@@ -91,6 +91,11 @@ variable "lb_iprange" {
   description = "Load Balancer IP range"
 }
 
+variable "dns_server_ip" {
+  type        = string
+  description = "External DNS server IP"
+}
+
 variable "slack_endpoint" {
   type        = string
   description = "Slack group wehbook endpoint"
@@ -161,79 +166,45 @@ variable "spampd_config_dir" {
   description = "Spampd configuration directory"
 }
 
-variable "mail_db_type" {
-  type        = string
-  description = "Database type"
-  default     = "mysqli"
+variable "mail_db_config" {
+  type = object({
+    type = string
+    host = string
+    port = number
+    name = string
+    user = string
+    pass = string
+  })
+  description = "Mail database connection"
+  sensitive   = true
+  default = {
+    "type" = "mysqli"
+    "host" = ""
+    "port" = 3306
+    "name" = "mail"
+    "user" = "mailer"
+    "pass" = ""
+  }
 }
 
-variable "mail_db_host" {
-  type        = string
-  description = "Database host"
-}
-
-variable "mail_db_port" {
-  type        = string
-  description = "Database port"
-  default     = "3306"
-}
-
-variable "mail_db_name" {
-  type        = string
-  description = "Database name"
-  default     = "mail"
-}
-
-variable "mail_db_user" {
-  type        = string
-  description = "Database name"
-  default     = "mailer"
-}
-
-variable "mail_db_pass" {
-  type        = string
-  description = "Database password"
+variable "postfix_admin_config" {
+  type = object({
+    encrypt  = string
+    password = string
+  })
+  description = "Postfix admin configuration"
   sensitive   = true
 }
 
-variable "mail_dns_server" {
-  type        = string
-  description = "DNS server IP for mail server"
-}
-
-
-variable "postfix_admin_setup_password" {
-  type        = string
-  description = "Postfix admin setup password"
-  sensitive   = true
-}
-
-variable "postfix_admin_encrypt" {
-  type        = string
-  description = "Encrypt algo for postfix admin"
-  default     = "md5crypt"
-}
-
-variable "remote_smtp_server" {
-  type        = string
-  description = "Smtp server"
-}
-
-variable "remote_smtp_port" {
-  type        = string
-  description = "Smtp port"
-}
-
-variable "remote_smtp_user" {
-  type        = string
-  description = "Smtp username"
-  default     = "no-reply@homelab.arpa"
-}
-
-variable "remote_smtp_pass" {
-  type        = string
-  description = "Smtp password"
-  default     = "SuPeRSeCrEt"
+variable "remote_smtp_options" {
+  type = object({
+    server = string
+    port   = number
+    user   = string
+    pass   = string
+  })
+  sensitive = true
+  description = "Remote SMTP server options"
 }
 
 variable "vaultwarden_options" {

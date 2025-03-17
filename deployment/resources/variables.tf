@@ -30,6 +30,11 @@ variable "replicas" {
   }
 }
 
+variable "dns_server_ip" {
+  type        = string
+  description = "External IP for DNS server"
+}
+
 variable "pihole_config_dir" {
   type        = string
   description = "Pihole config director contains adlists and local dns"

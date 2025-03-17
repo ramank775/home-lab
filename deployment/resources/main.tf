@@ -5,6 +5,12 @@
 #   replicas      = var.replicas.nats
 # }
 
+module "bind9" {
+  source      = "./bind9"
+  namespace   = var.namespace
+  external_ip = var.dns_server_ip
+}
+
 module "smtp-relay" {
   source          = "./smtp-relay"
   namespace       = var.namespace

@@ -6,7 +6,7 @@ locals {
   devcotImage = "ramank775/dovecot:${var.dovecot-tag}"
   spampdImage = "ramank775/spampd:${var.spampd_tag}"
   spampdName  = "${local.prefix}-spampd"
-
+  postfixadmin = "${local.prefix}-postfix-admin"
 
 }
 
@@ -218,7 +218,7 @@ resource "kubernetes_config_map" "spampd_config" {
     "miab_spf_dmarc.cf" = file("${var.spampd_config_dir}/miab_spf_dmarc.cf")
     "dns.cf"            = <<EOT
 dns_available yes
-dns_server ${var.mail_dns_server}
+dns_server ${var.dns_server}
 # dns_timeout 5
     EOT
 
@@ -566,6 +566,144 @@ resource "kubernetes_service" "spamassasin_service" {
 
     selector = {
       "app" = "spamassassin"
+    }
+  }
+}
+
+resource "kubernetes_deployment" "postfix-admin" {
+  metadata {
+    name      = local.postfixadmin
+    namespace = var.namespace
+    labels = {
+      "app" = local.postfixadmin
+    }
+  }
+
+  spec {
+    replicas = local.replicas
+    selector {
+      match_labels = {
+        "app" = local.postfixadmin
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          app = local.postfixadmin
+        }
+      }
+
+      spec {
+        container {
+          name              = local.postfixadmin
+          image             = "postfixadmin:3.3.12-apache"
+          image_pull_policy = "IfNotPresent"
+          port {
+            container_port = 80
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_TYPE"
+            value = var.db_config.type
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_HOST"
+            value = var.db_config.host
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_PORT"
+            value = var.db_config.port
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_NAME"
+            value = var.db_config.name
+          }
+
+          env {
+            name  = "POSTFIXADMIN_DB_USER"
+            value = var.db_config.user
+          }
+          env {
+            name  = "POSTFIXADMIN_DB_PASSWORD"
+            value = var.db_config.pass
+          }
+          env {
+            name  = "POSTFIXADMIN_SMTP_SERVER"
+            value = var.db_config.host
+          }
+          env {
+            name  = "POSTFIXADMIN_SMTP_PORT"
+            value = var.db_config.port
+          }
+          env {
+            name  = "POSTFIXADMIN_SETUP_PASSWORD"
+            value = var.postfix_admin_config.password
+          }
+          env {
+            name  = "POSTFIXADMIN_ENCRYPT"
+            value = var.postfix_admin_config.encrypt
+          }
+          env {
+            name  = "POSTFIXADMIN_DKIM"
+            value = "YES"
+          }
+          env {
+            name  = "POSTFIXADMIN_DKIM_ALL_ADMINS"
+            value = "YES"
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "postfixadmin_service" {
+  metadata {
+    namespace = var.namespace
+    name      = "${local.postfixadmin}-service"
+    labels = {
+      "app" = local.postfixadmin
+    }
+  }
+  spec {
+    type = "ClusterIP"
+    port {
+      name        = "portal"
+      port        = 80
+      target_port = 80
+      protocol    = "TCP"
+    }
+
+    selector = {
+      "app" = local.postfixadmin
+    }
+  }
+}
+
+resource "kubernetes_ingress_v1" "postfixadmin_ingress" {
+  metadata {
+    name      = "${local.postfixadmin}-ingress"
+    namespace = var.namespace
+    annotations = {
+      "kubernetes.io/ingress.class"                      = "traefik"
+      "traefik.ingress.kubernetes.io/router.middlewares" = "kube-system-redirect@kubernetescrd"
+    }
+  }
+  spec {
+    rule {
+      host = "admin.${var.domain}"
+      http {
+        path {
+          path = "/"
+          backend {
+            service {
+              name = "${local.postfixadmin}-service"
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
