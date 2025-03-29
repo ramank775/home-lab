@@ -3,6 +3,10 @@ terraform {
     kubernetes = {
       source = "hashicorp/kubernetes"
     }
+    postgresql = {
+      source = "cyrilgdn/postgresql"
+      version = "1.25.0"
+    }
   }
   backend "kubernetes" {
     secret_suffix = "deployment-state"
@@ -21,6 +25,15 @@ provider "helm" {
     host        = var.kube_host
     insecure    = var.kube_insecure
   }
+}
+
+provider "postgresql" {
+  host     = var.shared_db.proxy_host
+  port     = var.shared_db.port
+  database = var.shared_db.default_dbName
+  username = var.shared_db.user
+  password = var.shared_db.passwd
+  sslmode = var.shared_db.sslmode
 }
 
 data "terraform_remote_state" "deployment" {

@@ -107,6 +107,9 @@ resource "kubernetes_service" "bind9_service" {
     labels = {
       app = local.bind9Name
     }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
   }
   spec {
     type             = "LoadBalancer"

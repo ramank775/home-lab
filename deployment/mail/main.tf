@@ -1,11 +1,11 @@
 locals {
-  prefix      = "mail"
-  dovecotName = "${local.prefix}-dovecot"
-  data_volume = "mail-directory"
-  replicas    = 1
-  devcotImage = "ramank775/dovecot:${var.dovecot-tag}"
-  spampdImage = "ramank775/spampd:${var.spampd_tag}"
-  spampdName  = "${local.prefix}-spampd"
+  prefix       = "mail"
+  dovecotName  = "${local.prefix}-dovecot"
+  data_volume  = "mail-directory"
+  replicas     = 1
+  devcotImage  = "ramank775/dovecot:${var.dovecot-tag}"
+  spampdImage  = "ramank775/spampd:${var.spampd_tag}"
+  spampdName   = "${local.prefix}-spampd"
   postfixadmin = "${local.prefix}-postfix-admin"
 
 }
@@ -184,11 +184,14 @@ resource "kubernetes_service" "dovecot_service" {
 }
 
 resource "kubernetes_service" "dovecot_external_service" {
-   metadata {
+  metadata {
     namespace = var.namespace
     name      = "${local.dovecotName}-external"
     labels = {
       "app" = local.dovecotName
+    }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
     }
   }
   spec {
@@ -271,19 +274,19 @@ resource "kubernetes_deployment" "spampd" {
             value = "0.0.0.0:24"
           }
           env {
-            name = "DEBUG"
+            name  = "DEBUG"
             value = "true"
           }
           env {
-            name = "SPAMPD_SA_MODE"
+            name  = "SPAMPD_SA_MODE"
             value = "remote"
           }
           env {
-            name = "SPAMPD_SACLIENT_HOST"
+            name  = "SPAMPD_SACLIENT_HOST"
             value = "spamassassin-service"
           }
           env {
-            name = "SPAMPD_SACLIENT_PORT"
+            name  = "SPAMPD_SACLIENT_PORT"
             value = "783"
           }
 
@@ -352,6 +355,9 @@ resource "kubernetes_service" "spampd_external_service" {
     name      = "${local.spampdName}-external"
     labels = {
       app = local.spampdName
+    }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
     }
   }
   spec {

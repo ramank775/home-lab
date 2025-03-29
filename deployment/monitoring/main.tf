@@ -518,6 +518,9 @@ resource "kubernetes_service" "graphite_exporter_lb" {
       app   = "graphite-exporter"
       stack = "monitoring"
     }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
   }
 
   spec {

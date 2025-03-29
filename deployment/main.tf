@@ -25,9 +25,9 @@ module "apps" {
   # tunnel_proxy_host                = var.tunnel_proxy_host
   # tunnel_remote_port               = var.tunnel_remote_port
   # tunnel_ssh_key                   = var.tunnel_ssh_key
-  node_selector                    = var.apps_node_selector
-  static_site_pass                 = var.static_site_pass
-  static_site_user                 = var.static_site_user
+  node_selector    = var.apps_node_selector
+  static_site_pass = var.static_site_pass
+  static_site_user = var.static_site_user
   # dovecot_config_dir               = var.dovecot_config_dir
   # spampd_config_dir                = var.spampd_config_dir
   # mail_db_type                     = var.mail_db_type
@@ -77,6 +77,16 @@ module "mail" {
   smtp_options         = module.resources.smtp_options
   domain               = "mail.${var.domain}"
   postfix_admin_config = var.postfix_admin_config
+}
+
+module "code" {
+  source    = "./code"
+  namespace = var.namespaces.code
+  forgejo_database = {
+    type   = var.shared_db.type
+    host   = var.shared_db.host
+  }
+  forgejo_ip = var.code_server_ip
 }
 
 module "monitoring" {

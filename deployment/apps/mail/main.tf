@@ -81,8 +81,8 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
 
       spec {
         container {
-          name  = local.dovecotName
-          image = local.devcotImage
+          name              = local.dovecotName
+          image             = local.devcotImage
           image_pull_policy = "Always"
           port {
             container_port = 143
@@ -176,11 +176,14 @@ resource "kubernetes_service" "dovecot_service" {
 }
 
 resource "kubernetes_service" "dovecot_external_service" {
-   metadata {
+  metadata {
     namespace = var.namespace
     name      = "${local.dovecotName}-external"
     labels = {
       "app" = local.dovecotName
+    }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
     }
   }
   spec {
@@ -717,19 +720,22 @@ resource "kubernetes_service" "spampd_external_service" {
     labels = {
       app = local.spampdName
     }
+    annotations = {
+      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+    }
   }
   spec {
     type = "LoadBalancer"
     port {
-      name = "lmtp"
-      port = 24
+      name        = "lmtp"
+      port        = 24
       target_port = 24
-      protocol = "TCP"
+      protocol    = "TCP"
     }
 
     selector = {
       app = local.spampdName
     }
   }
-  
+
 }

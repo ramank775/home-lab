@@ -23,6 +23,7 @@ variable "namespaces" {
     media      = "media"
     mail       = "mail"
     monitoring = "monitoring"
+    code       = "code"
   }
 }
 
@@ -203,7 +204,7 @@ variable "remote_smtp_options" {
     user   = string
     pass   = string
   })
-  sensitive = true
+  sensitive   = true
   description = "Remote SMTP server options"
 }
 
@@ -245,3 +246,23 @@ variable "monitoring_config_dir" {
 
 }
 
+variable "shared_db" {
+  description = "Shared database configurations"
+  type = object({
+    type           = string
+    proxy_host     = string
+    host           = string
+    port           = number
+    user           = string
+    passwd         = string
+    default_dbName = string
+    sslmode        = string
+  })
+  sensitive = true
+}
+
+variable "code_server_ip" {
+  type        = string
+  description = "IP address of the code server"
+  
+}
