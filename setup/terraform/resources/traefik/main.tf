@@ -4,7 +4,7 @@ locals {
 
 resource "kubernetes_manifest" "traefix-insecure-server-transport" {
   manifest = {
-    apiVersion = "traefik.containo.us/v1alpha1"
+    apiVersion = "traefik.io/v1alpha1"
     kind       = "ServersTransport"
     metadata = {
       name      = "traefix-insecure-server-transport"
@@ -29,7 +29,7 @@ resource "kubernetes_service" "traefix-dashboard-service" {
     type = "ClusterIP"
     port {
       name        = "traefik"
-      port        = 9000
+      port        = 8080
       target_port = "traefik"
       protocol    = "TCP"
     }
@@ -42,7 +42,7 @@ resource "kubernetes_service" "traefix-dashboard-service" {
 
 resource "kubernetes_manifest" "https-redirect-middleware" {
   manifest = {
-    apiVersion = "traefik.containo.us/v1alpha1"
+    apiVersion = "traefik.io/v1alpha1"
     kind       = "Middleware"
     metadata = {
       name      = "redirect"
@@ -76,7 +76,7 @@ resource "kubernetes_ingress_v1" "traefik-ingress" {
             service {
               name = "traefik-dashboard"
               port {
-                number = 9000
+                number = 8080
               }
             }
           }
