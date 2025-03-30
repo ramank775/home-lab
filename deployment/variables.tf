@@ -1,3 +1,29 @@
+variable "shared_db" {
+  description = "Shared database configurations"
+  type = object({
+    type           = string
+    proxy_host     = string
+    host           = string
+    port           = number
+    user           = string
+    passwd         = string
+    default_dbName = string
+    sslmode        = string
+  })
+  sensitive = true
+}
+
+variable "minio" {
+  description = "Minio configurations"
+  type = object({
+    proxy_server = string
+    server       = string
+    user         = string
+    pass         = string
+  })
+  sensitive = true
+}
+
 variable "kube_config" {
   type        = string
   description = "path to kube config"
@@ -246,23 +272,13 @@ variable "monitoring_config_dir" {
 
 }
 
-variable "shared_db" {
-  description = "Shared database configurations"
-  type = object({
-    type           = string
-    proxy_host     = string
-    host           = string
-    port           = number
-    user           = string
-    passwd         = string
-    default_dbName = string
-    sslmode        = string
-  })
-  sensitive = true
-}
-
 variable "code_server_ip" {
   type        = string
   description = "IP address of the code server"
-  
+}
+
+variable "n8n_license_key" {
+  description = "The n8n license key"
+  type        = string
+  sensitive   = true
 }

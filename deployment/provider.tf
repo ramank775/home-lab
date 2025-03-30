@@ -4,8 +4,12 @@ terraform {
       source = "hashicorp/kubernetes"
     }
     postgresql = {
-      source = "cyrilgdn/postgresql"
+      source  = "cyrilgdn/postgresql"
       version = "1.25.0"
+    }
+    minio = {
+      source  = "aminueza/minio"
+      version = "3.3.0"
     }
   }
   backend "kubernetes" {
@@ -33,7 +37,13 @@ provider "postgresql" {
   database = var.shared_db.default_dbName
   username = var.shared_db.user
   password = var.shared_db.passwd
-  sslmode = var.shared_db.sslmode
+  sslmode  = var.shared_db.sslmode
+}
+
+provider "minio" {
+  minio_server   = var.minio.proxy_server
+  minio_user     = var.minio.user
+  minio_password = var.minio.pass
 }
 
 data "terraform_remote_state" "deployment" {

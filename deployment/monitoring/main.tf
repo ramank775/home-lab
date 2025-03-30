@@ -1,5 +1,6 @@
 locals {
   storageClass = "truenas-iscsi-csi"
+  buckets      = toset(["loki-bucket", "tempo-bucket", "pyroscope-bucket"])
 }
 
 resource "kubernetes_namespace" "monitoring-namespace" {
@@ -7,6 +8,70 @@ resource "kubernetes_namespace" "monitoring-namespace" {
     name = var.namespace
   }
 }
+
+resource "minio_s3_bucket" "s3_bucket" {
+  for_each = local.buckets
+  bucket   = each.value
+}
+
+resource "minio_s3_bucket_policy" "monitoring_bucket_policy" {
+  for_each = local.buckets
+  bucket   = each.value
+  policy   = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam:::user/monitoring"
+      },
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::${each.value}/*",
+        "arn:aws:s3:::${each.value}"
+      ]
+    }
+  ]
+}
+EOF
+}
+
+resource "minio_iam_user" "monitoring_minio_user" {
+  name = "monitoring"
+}
+
+resource "minio_iam_policy" "monitoring_minio_policy" {
+  depends_on = [
+    minio_s3_bucket.s3_bucket
+  ]
+  name   = "monitoring-user-policy"
+  policy =jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "s3:*"
+        Resource = flatten([
+          for bucket in local.buckets : [
+            "arn:aws:s3:::${bucket}/*",
+            "arn:aws:s3:::${bucket}",
+          ]
+        ])
+      },
+    ]
+  })
+}
+
+resource "minio_iam_user_policy_attachment" "monitoring_minio_policy_attachment" {
+  depends_on = [
+    minio_iam_user.monitoring_minio_user,
+    minio_iam_policy.monitoring_minio_policy
+  ]
+  user_name   = minio_iam_user.monitoring_minio_user.id
+  policy_name = minio_iam_policy.monitoring_minio_policy.id
+}
+
 
 # Prometheus Installation
 resource "helm_release" "prometheus" {
@@ -54,84 +119,119 @@ resource "helm_release" "loki" {
   namespace  = var.namespace
   chart      = "loki"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "6.16.0"
+  version    = "6.29.0"
+
+  depends_on = [
+    minio_s3_bucket.s3_bucket,
+    minio_iam_user.monitoring_minio_user,
+    minio_iam_policy.monitoring_minio_policy,
+    minio_iam_user_policy_attachment.monitoring_minio_policy_attachment,
+    minio_s3_bucket_policy.monitoring_bucket_policy
+  ]
 
   values = [
     <<EOF
-    deploymentMode: SingleBinary
-    loki:
-      podLabels:
-        stack: monitoring
-      auth_enabled: false
-      persistence:
-        enabled: true
-        storageClassName: "${var.storageClassName}"
-        size: 10Gi
-      storage:
-        type: filesystem
-      commonConfig:
-        replication_factor: 1
-      schemaConfig:
-        configs:
-        - from: "2024-01-01"
-          store: tsdb
-          index:
-            prefix: loki_index_
-            period: 24h
-          object_store: filesystem # we're storing on filesystem so there's no real persistence here.
-          schema: v13
-      memcached:
-        chunk_cache:
-          enabled: false
-        results_cache:
-          enabled: false
-    test:
+deploymentMode: SingleBinary
+loki:
+  podLabels:
+    stack: monitoring
+  auth_enabled: false
+  storage:
+    use_thanos_objstore: true
+    bucketNames:
+      chunks: loki-bucket
+    object_store:
+      type: s3
+      s3:
+        endpoint: "${var.minio_endpoint}"
+        insecure: true
+        access_key_id: "${minio_iam_user.monitoring_minio_user.id}"
+        secret_access_key: "${minio_iam_user.monitoring_minio_user.secret}"
+  storage_config:
+    use_thanos_objstore: true
+    object_store:
+      s3:
+        bucket_name: loki-bucket
+        endpoint: "${var.minio_endpoint}"
+        insecure: true
+        access_key_id: "${minio_iam_user.monitoring_minio_user.id}"
+        secret_access_key: "${minio_iam_user.monitoring_minio_user.secret}"
+
+  commonConfig:
+    replication_factor: 1
+  schemaConfig:
+    configs:
+    - from: "2024-01-01"
+      store: tsdb
+      index:
+        prefix: loki_index_
+        period: 24h
+      object_store: s3
+      schema: v13
+  memcached:
+    chunk_cache:
       enabled: false
-    chunksCache:
+    results_cache:
       enabled: false
-    resultsCache:
-      enabled: false
-    lokiCanary:
-      enabled: false
-    gateway:
-      enabled: false
-    singleBinary:
-        replicas: 1
-    read:
-      replicas: 0
-    backend:
-      replicas: 0
-    write:
-      replicas: 0
-    ingester:
-      replicas: 0
-    querier:
-      replicas: 0
-    queryFrontend:
-      replicas: 0
-    queryScheduler:
-      replicas: 0
-    distributor:
-      replicas: 0
-    compactor:
-      replicas: 0
-    indexGateway:
-      replicas: 0
-    bloomCompactor:
-      replicas: 0
-    bloomGateway:
-      replicas: 0
+test:
+  enabled: false
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+lokiCanary:
+  enabled: false
+gateway:
+  enabled: false
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: true
+    enableStatefulSetAutoDeletePVC: true
+    storageClass: "${var.storageClassName}"
+    size: 10Gi
+read:
+  replicas: 0
+backend:
+  replicas: 0
+write:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0
     EOF
   ]
 }
 
 # Tempo Installation for distributed tracing
 resource "helm_release" "tempo" {
+  depends_on = [
+    minio_s3_bucket.s3_bucket,
+    minio_iam_user.monitoring_minio_user,
+    minio_iam_policy.monitoring_minio_policy,
+    minio_iam_user_policy_attachment.monitoring_minio_policy_attachment,
+    minio_s3_bucket_policy.monitoring_bucket_policy
+  ]
   name       = "tempo"
   namespace  = var.namespace
   chart      = "tempo"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "1.10.3"
+  version    = "1.19.0"
 
   values = [
     <<EOF
@@ -141,9 +241,16 @@ resource "helm_release" "tempo" {
       stack: monitoring
     storage:
       trace:
-        backend: local
+        backend: s3
+      s3:
+        bucket_name: tempo-bucket
+        endpoint: "${var.minio_endpoint}"
+        insecure: true
+        access_key_id: "${minio_iam_user.monitoring_minio_user.id}"
+        secret_access_key: "${minio_iam_user.monitoring_minio_user.secret}"
     persistence:
       enabled: true
+      enableStatefulSetAutoDeletePVC: true
       storageClassName: "${var.storageClassName}"
       size: 10Gi
     EOF
@@ -152,11 +259,18 @@ resource "helm_release" "tempo" {
 
 # Pyroscope Installation for continuous profiling
 resource "helm_release" "pyroscope" {
+  depends_on = [
+    minio_s3_bucket.s3_bucket,
+    minio_iam_user.monitoring_minio_user,
+    minio_iam_policy.monitoring_minio_policy,
+    minio_iam_user_policy_attachment.monitoring_minio_policy_attachment,
+    minio_s3_bucket_policy.monitoring_bucket_policy
+  ]
   name       = "pyroscope"
   namespace  = var.namespace
   chart      = "pyroscope"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "1.7.1"
+  version    = "1.13.1"
 
   values = [
     <<EOF
@@ -167,6 +281,15 @@ resource "helm_release" "pyroscope" {
         enabled: true
         storageClassName: "${var.storageClassName}"
         size: 10Gi
+      structuredConfig:
+        storage:
+          backend: s3
+          s3:
+            bucket_name: pyroscope-bucket
+            endpoint: "${var.minio_endpoint}"
+            insecure: true
+            access_key_id: "${minio_iam_user.monitoring_minio_user.id}"
+            secret_access_key: "${minio_iam_user.monitoring_minio_user.secret}"
     alloy:
       enabled: false
     EOF

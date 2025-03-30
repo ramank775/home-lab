@@ -26,3 +26,8 @@ variable "config_dir" {
   description = "Directory contains configuration files for monitoring"
 
 }
+
+variable "minio_endpoint" {
+  type        = string
+  description = "Minio endpoint for monitoring stack"  
+}
