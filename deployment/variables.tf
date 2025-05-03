@@ -272,8 +272,23 @@ variable "monitoring_config_dir" {
 
 }
 
-variable "code_server_ip" {
-  type        = string
+variable "code" {
+  type = object({
+    server_ip   = string
+    public_host = string
+    email_options = object({
+      incoming = object({
+        user    = optional(string)
+        passwd  = optional(string)
+        address = string
+      })
+      noreply = object({
+        user    = optional(string)
+        passwd  = optional(string)
+        address = string
+      })
+    })
+  })
   description = "IP address of the code server"
 }
 

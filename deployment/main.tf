@@ -74,7 +74,12 @@ module "code" {
     type = var.shared_db.type
     host = var.shared_db.host
   }
-  forgejo_ip = var.code_server_ip
+  forgejo_ip  = var.code.server_ip
+  public_host = var.code.public_host
+  smtp        = module.resources.smtp_options
+  imap        = module.mail.private_imap_options
+  email       = var.code.email_options
+
 }
 
 module "monitoring" {
