@@ -63,3 +63,13 @@ module "n8n" {
   minio           = var.minio
   n8n_license_key = var.n8n_license_key
 }
+
+module "postiz" {
+  source            = "./postiz"
+  namespace         = var.namespace
+  domain            = var.postiz.domain
+  database          = var.shared_db
+  social_app_config = var.postiz.social_credentials_file
+  smtp              = var.smtp_options
+  email             = var.postiz.email
+}

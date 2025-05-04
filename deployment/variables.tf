@@ -297,3 +297,15 @@ variable "n8n_license_key" {
   type        = string
   sensitive   = true
 }
+
+variable "postiz" {
+  type = object({
+    domain                  = string
+    social_credentials_file = string
+    email                   = object({
+      user    = string
+      pass    = string
+      address = string
+    })
+  })
+}

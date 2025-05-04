@@ -17,9 +17,6 @@ module "apps" {
   namespace = var.namespaces.apps
   domain    = var.domain
   replicas  = var.apps_replicas
-  //nats_url           = module.resources.nats.endpoint
-  //nats_cluster_id    = module.resources.nats.cluster_id
-  //slack_endpoint     = var.slack_endpoint
   node_selector                    = var.apps_node_selector
   static_site_pass                 = var.static_site_pass
   static_site_user                 = var.static_site_user
@@ -33,6 +30,8 @@ module "apps" {
     server = var.minio.server
   }
   n8n_license_key = var.n8n_license_key
+  postiz          = var.postiz
+
 }
 
 # module "cron" {
