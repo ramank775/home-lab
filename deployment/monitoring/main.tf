@@ -45,8 +45,8 @@ resource "minio_iam_policy" "monitoring_minio_policy" {
   depends_on = [
     minio_s3_bucket.s3_bucket
   ]
-  name   = "monitoring-user-policy"
-  policy =jsonencode({
+  name = "monitoring-user-policy"
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -81,7 +81,7 @@ resource "helm_release" "prometheus" {
 
   chart      = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "25.27.0"
+  version    = "27.16.0"
 
   values = [
     <<EOF
@@ -231,7 +231,7 @@ resource "helm_release" "tempo" {
   namespace  = var.namespace
   chart      = "tempo"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "1.19.0"
+  version    = "1.21.1"
 
   values = [
     <<EOF
@@ -270,7 +270,7 @@ resource "helm_release" "pyroscope" {
   namespace  = var.namespace
   chart      = "pyroscope"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "1.13.1"
+  version    = "1.13.4"
 
   values = [
     <<EOF
@@ -352,10 +352,13 @@ resource "helm_release" "grafana" {
   namespace  = var.namespace
   chart      = "grafana"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "8.5.2"
+  version    = "9.0.0"
 
   values = [
     <<EOF
+    deploymentStrategy:
+      type: Recreate
+    
     persistence:
       enabled: true
       storageClassName: "${var.storageClassName}"
@@ -400,6 +403,7 @@ resource "helm_release" "grafana-alloy" {
   name       = "grafana-alloy"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "alloy"
+  version    = "1.0.3"
   namespace  = var.namespace
 
   set {
