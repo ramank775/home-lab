@@ -219,6 +219,7 @@ resource "kubernetes_config_map" "spampd_config" {
 
   data = {
     "miab_spf_dmarc.cf" = file("${var.spampd_config_dir}/miab_spf_dmarc.cf")
+    "spam_report.cf" = file("${var.spampd_config_dir}/spam_report.cf")
     "dns.cf"            = <<EOT
 dns_available yes
 dns_server ${var.dns_server}
@@ -504,6 +505,11 @@ resource "kubernetes_stateful_set" "spamassassin" {
             container_port = 783
           }
           volume_mount {
+            name       = "spamassasin-spam-report-config"
+            mount_path = "/etc/spamassassin/spam_report.cf"
+            sub_path   = "spam_report.cf"
+          }
+          volume_mount {
             name       = "spamassasin-config"
             mount_path = "/etc/spamassassin/miab_spf_dmarc.cf"
             sub_path   = "miab_spf_dmarc.cf"
@@ -517,6 +523,16 @@ resource "kubernetes_stateful_set" "spamassassin" {
             name       = "spamassasin-bayes-config"
             mount_path = "/etc/spamassassin/bayes.cf"
             sub_path   = "bayes.cf"
+          }
+        }
+        volume {
+          name = "spamassasin-spam-report-config"
+          config_map {
+            name = "${local.spampdName}-config"
+            items {
+              key  = "spam_report.cf"
+              path = "spam_report.cf"
+            }
           }
         }
         volume {
