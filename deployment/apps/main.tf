@@ -73,3 +73,9 @@ module "postiz" {
   smtp              = var.smtp_options
   email             = var.postiz.email
 }
+
+module "searxng" {
+  source    = "./searxng"
+  namespace = var.namespace
+  domain    = "search.${var.domain}"
+}
