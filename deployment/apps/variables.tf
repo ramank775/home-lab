@@ -144,3 +144,10 @@ variable "postiz" {
     })
   })
 }
+
+variable "crawl4ai" {
+  description = "Crawl4AI configuration"
+  type = object({
+    llm_credential_file = string
+  })
+}

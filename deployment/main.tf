@@ -13,10 +13,10 @@ module "resources" {
 }
 
 module "apps" {
-  source    = "./apps"
-  namespace = var.namespaces.apps
-  domain    = var.domain
-  replicas  = var.apps_replicas
+  source                           = "./apps"
+  namespace                        = var.namespaces.apps
+  domain                           = var.domain
+  replicas                         = var.apps_replicas
   node_selector                    = var.apps_node_selector
   static_site_pass                 = var.static_site_pass
   static_site_user                 = var.static_site_user
@@ -31,7 +31,7 @@ module "apps" {
   }
   n8n_license_key = var.n8n_license_key
   postiz          = var.postiz
-
+  crawl4ai        = var.crawl4ai
 }
 
 # module "cron" {

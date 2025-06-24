@@ -135,7 +135,7 @@ worker:
 
 webhook:
   mode: queue
-  url: "https://webhook.${var.domain}"
+  url: "https://${var.domain}/"
 
 ingress:
   enabled: true

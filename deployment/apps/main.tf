@@ -79,3 +79,10 @@ module "searxng" {
   namespace = var.namespace
   domain    = "search.${var.domain}"
 }
+
+module "crawl4ai" {
+  source                = "./crawl4ai"
+  namespace             = var.namespace
+  domain                = "scrapper.${var.domain}"
+  llm_credentail_file   = var.crawl4ai.llm_credential_file
+}
