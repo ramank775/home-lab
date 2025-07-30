@@ -151,3 +151,27 @@ variable "crawl4ai" {
     llm_credential_file = string
   })
 }
+
+variable "plausible" {
+  description = "Plausible configuration"
+  type = object({
+    url    = string
+    clickhouse = object({
+      url = string
+    })
+    mailer = object({
+      name  = string
+      email = string
+    })
+  })
+  default = {
+    url    = "https://plausible.example.com"
+    clickhouse = {
+      url = "http://clickhouse.example.com:8123"
+    }
+    mailer = {
+      name  = "Plausible Analytics"
+      email = "plausible@example.com"
+    }
+  }
+}

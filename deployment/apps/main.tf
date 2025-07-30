@@ -86,3 +86,13 @@ module "crawl4ai" {
   domain                = "scrapper.${var.domain}"
   llm_credentail_file   = var.crawl4ai.llm_credential_file
 }
+
+module "plausible" {
+  source        = "./plausible"
+  namespace     = var.namespace
+  base_url      = var.plausible.url
+  clickhouse    = var.plausible.clickhouse
+  postgresql    = var.shared_db
+  mailer        = var.plausible.mailer
+  smtp_options  = var.smtp_options
+}

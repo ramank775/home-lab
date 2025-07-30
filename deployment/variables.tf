@@ -316,3 +316,17 @@ variable "crawl4ai" {
     llm_credential_file = string
   })
 }
+
+variable "plausible" {
+  description = "Plausible configuration"
+  type = object({
+    url    = string
+    clickhouse = object({
+      url = string
+    })
+    mailer = object({
+      name  = string
+      email = string
+    })
+  })
+}
