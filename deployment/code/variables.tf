@@ -10,7 +10,7 @@ variable "default_storage_class" {
 
 variable "forgejo_version" {
   description = "Helm chart version for foregjo"
-  default     = "11.0.5"
+  default     = "13.0.1"
 }
 
 variable "forgejo_database" {
