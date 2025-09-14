@@ -328,5 +328,6 @@ variable "plausible" {
       name  = string
       email = string
     })
+    google_oauth_credentials_file_path = string
   })
 }

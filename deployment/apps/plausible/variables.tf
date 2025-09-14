@@ -67,3 +67,8 @@ variable "smtp_options" {
     "security" = "off"
   }
 }
+
+variable "google_oauth_credentials_file_path" {
+  description = "Path to the Google OAuth credentials file."
+  type        = string
+}

@@ -47,6 +47,23 @@ resource "kubernetes_persistent_volume_claim" "plausible_data" {
   }
 }
 
+resource "kubernetes_secret" "plausible_google_oauth" {
+  metadata {
+    name      = "plausible-google-oauth"
+    namespace = var.namespace
+    labels = {
+      "app" = "plausible"
+    }
+  }
+
+  data = {
+    client_id     = jsondecode(file(var.google_oauth_credentials_file_path))["web"]["client_id"]
+    client_secret = jsondecode(file(var.google_oauth_credentials_file_path))["web"]["client_secret"]
+  }
+
+  type = "Opaque"
+}
+
 resource "kubernetes_deployment" "plausible" {
   metadata {
     name      = "plausible"
@@ -166,6 +183,38 @@ resource "kubernetes_deployment" "plausible" {
             value = var.mailer.name
           }
 
+          env {
+            name = "DISABLE_REGISTRATION"
+            value = "invite_only"
+          }
+
+          env {
+            name = "ENABLE_EMAIL_VERIFICATION"
+            value = "true"
+          }
+
+
+          env {
+            name  = "GOOGLE_CLIENT_ID"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.plausible_google_oauth.metadata[0].name
+                key  = "client_id"
+              }
+            }
+          }
+
+          env {
+            name  = "GOOGLE_CLIENT_SECRET"
+            value_from {
+              secret_key_ref {
+                name = kubernetes_secret.plausible_google_oauth.metadata[0].name
+                key  = "client_secret"
+              }
+            }
+          }
+
+          
           volume_mount {
             name       = "plausible-data"
             mount_path = "/var/lib/plausible"

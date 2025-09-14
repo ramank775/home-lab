@@ -163,6 +163,7 @@ variable "plausible" {
       name  = string
       email = string
     })
+    google_oauth_credentials_file_path = string
   })
   default = {
     url    = "https://plausible.example.com"
@@ -173,5 +174,6 @@ variable "plausible" {
       name  = "Plausible Analytics"
       email = "plausible@example.com"
     }
+    google_oauth_credentials_file_path = "/path/to/google_oauth_credentials.json"
   }
 }
