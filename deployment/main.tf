@@ -51,7 +51,8 @@ module "media" {
   domains = {
     "media-mgmt" = "media-mgmt.${var.domain}"
     "prowlarr"   = "tracker.${var.domain}"
-    "jellyseerr" = "jellyseerr.${var.domain}"
+    "jellyseerr" = "jellyseerr.${var.domain}",
+    "spotdl"     = "spotdl.${var.domain}",
   }
 }
 

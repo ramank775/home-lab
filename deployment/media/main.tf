@@ -55,7 +55,7 @@ resource "kubernetes_persistent_volume_claim" "sonarr-config" {
   spec {
     resources {
       requests = {
-        "storage" = "1Gi"
+        "storage" = "2Gi"
       }
     }
     storage_class_name = "truenas-iscsi-csi"
@@ -349,6 +349,88 @@ resource "kubernetes_service" "prowlarr" {
   ]
 }
 
+resource "kubernetes_deployment" "spotdl" {
+  metadata {
+    name      = "spotdl"
+    namespace = var.namespace
+    labels = {
+      "media.app" = "spotdl"
+    }
+  }
+
+  spec {
+    replicas = 1
+    selector {
+      match_labels = {
+        "media.app" = "spotdl"
+      }
+    }
+    template {
+      metadata {
+        labels = {
+          "media.app" = "spotdl"
+        }
+      }
+      spec {
+        container {
+          name  = "spotdl"
+          image = "spotdl/spotify-downloader:latest"
+          args    = [
+            "web", 
+            "--host", "0.0.0.0",
+            "--port", "8080", 
+            "--web-use-output-dir",
+            "--output", "/music/{album}/{title}.{output-ext}",
+            "--log-level", "DEBUG"
+          ]
+          env {
+            name  = "PUID"
+            value = 8000
+          }
+          env {
+            name  = "PGID"
+            value = 8000
+          }
+          env {
+            name  = "TZ"
+            value = "Asia/Kolkata"
+          }
+          volume_mount {
+            name       = "media-data"
+            mount_path = "/music"
+            sub_path = "music"
+          }
+        }
+        volume {
+          name = "media-data"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume_claim.media-data.metadata.0.name
+          }
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_service" "spotdl" {
+  metadata {
+    name      = "spotdl"
+    namespace = var.namespace
+  }
+  spec {
+    type = "ClusterIP"
+    selector = {
+      "media.app" = "spotdl"
+    }
+    port {
+      port = 8080
+    }
+  }
+  depends_on = [
+    kubernetes_deployment.spotdl
+  ]
+}
+
 resource "kubernetes_persistent_volume_claim" "jellyseerr-config" {
   metadata {
     name      = "jellyseerr-config"
@@ -553,6 +635,22 @@ resource "kubernetes_ingress_v1" "media-management" {
               name = kubernetes_service.radarr.metadata.0.name
               port {
                 number = 7878
+              }
+            }
+          }
+        }
+      }
+    }
+    rule {
+      host = var.domains.spotdl
+      http {
+        path {
+          path = "/"
+          backend {
+            service {
+              name = kubernetes_service.spotdl.metadata.0.name
+              port {
+                number = 8080
               }
             }
           }

@@ -18,5 +18,6 @@ variable "domains" {
     "media-mgmt" = "media-mgmt.homelab.arpa"
     "prowlarr"   = "tracker.homelab.arpa"
     "jellyseerr" = "jellyseerr.homelab.arpa"
+    "spotdl"     = "spotdl.homelab.arpa"
   }
 }
