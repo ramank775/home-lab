@@ -158,7 +158,7 @@ resource "kubernetes_persistent_volume_claim" "radarr-config" {
   spec {
     resources {
       requests = {
-        "storage" = "1Gi"
+        "storage" = "2Gi"
       }
     }
     storage_class_name = "truenas-iscsi-csi"
