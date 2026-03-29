@@ -310,6 +310,15 @@ variable "postiz" {
   })
 }
 
+variable "visitor_badge" {
+  description = "Visitor badge configuration"
+  type = object({
+    md5_key       = string
+    admin_api_key = string
+  })
+  sensitive = true
+}
+
 variable "crawl4ai" {
   description = "Crawl4AI configuration"
   type = object({

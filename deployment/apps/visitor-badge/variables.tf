@@ -18,7 +18,7 @@ variable "image" {
 
 variable "tag" {
   description = "Visitor badge image tag"
-  default     = "v1.1.0"
+  default     = "v1.2.0"
   sensitive   = false
   type        = string
 }
@@ -40,4 +40,29 @@ variable "node_selector" {
   type        = map(string)
   description = "Node selector for tcp tunnel client"
   default     = {}
+}
+
+variable "md5_key" {
+  type        = string
+  description = "Secret key for page ID hashing"
+  sensitive   = true
+}
+
+variable "admin_api_key" {
+  type        = string
+  description = "API key for admin endpoints"
+  sensitive   = true
+  default     = ""
+}
+
+variable "backup_image" {
+  type        = string
+  description = "Backup sidecar image name"
+  default     = "ramank775/visitor-badge-backup"
+}
+
+variable "backup_tag" {
+  type        = string
+  description = "Backup sidecar image tag"
+  default     = "v1.2.0"
 }

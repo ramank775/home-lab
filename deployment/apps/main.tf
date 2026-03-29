@@ -9,6 +9,8 @@ module "visitor_badge" {
   namespace     = var.namespace
   replicas      = var.replicas.visitor_badge
   node_selector = var.node_selector
+  md5_key       = var.visitor_badge.md5_key
+  admin_api_key = var.visitor_badge.admin_api_key
 }
 
 module "vaultwarden" {

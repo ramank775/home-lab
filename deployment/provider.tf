@@ -32,7 +32,7 @@ provider "helm" {
 }
 
 provider "postgresql" {
-  host     = var.shared_db.proxy_host
+  host     = var.shared_db.host
   port     = var.shared_db.port
   database = var.shared_db.default_dbName
   username = var.shared_db.user

@@ -31,8 +31,9 @@ module "apps" {
   }
   n8n_license_key = var.n8n_license_key
   postiz          = var.postiz
-  crawl4ai        = var.crawl4ai
-  plausible       = var.plausible
+  crawl4ai      = var.crawl4ai
+  plausible     = var.plausible
+  visitor_badge = var.visitor_badge
 }
 
 # module "cron" {
