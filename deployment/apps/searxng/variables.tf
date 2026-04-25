@@ -13,5 +13,5 @@ variable "domain" {
 variable "chart_version" {
   description = "The version of the SearxNG Helm chart to deploy."
   type        = string
-  default     = "1.0.7"
+  default     = "1.1.0"
 }

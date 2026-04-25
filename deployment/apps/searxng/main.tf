@@ -12,29 +12,45 @@ resource "helm_release" "searxng" {
   version          = var.chart_version
   create_namespace = true
 
+  # Chart 1.1.0's Ingress template hardcodes the backend service name as
+  # "searxng" but the Service is now named "searxng-http", producing a 404.
+  # Disable the chart's Ingress and define our own below.
   set {
-    name = "ingress.enabled"
-    value = true
+    name  = "ingress.enabled"
+    value = false
+  }
+}
+
+resource "kubernetes_ingress_v1" "searxng" {
+  metadata {
+    name      = "searxng"
+    namespace = var.namespace
+    annotations = {
+      "kubernetes.io/ingress.class" = "traefik"
+    }
   }
 
-  set {
-    name = "ingress.className"
-    value = "traefik"
+  spec {
+    rule {
+      host = var.domain
+
+      http {
+        path {
+          path      = "/"
+          path_type = "Prefix"
+
+          backend {
+            service {
+              name = "searxng-http"
+              port {
+                number = 8080
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
-  set {
-    name = "ingress.hosts[0].host"
-    value = var.domain
-  }
-
-  set {
-    name = "ingress.hosts[0].paths[0].path"
-    value = "/"
-  }
-
-  set {
-    name = "ingress.hosts[0].paths[0].pathType"
-    value = "Prefix"
-  }
-  
+  depends_on = [helm_release.searxng]
 }
