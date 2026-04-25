@@ -19,8 +19,6 @@ variable "image_repo" {
 variable "image_tag" {
   description = "The Docker image tag for the application"
   type        = string
-  default     = "v1.41.1"
-
 }
 
 variable "database" {

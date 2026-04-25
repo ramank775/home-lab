@@ -1,15 +1,16 @@
 module "resources" {
-  source            = "./resources"
-  namespace         = var.namespaces.resources
-  replicas          = var.resources_replicas
-  node_selector     = var.resources_node_selector
-  domain            = var.domain
-  smtp_relay_host   = "[${var.remote_smtp_options.server}]:${var.remote_smtp_options.port}"
-  smtp_relay_user   = var.remote_smtp_options.user
-  smtp_relay_pass   = var.remote_smtp_options.pass
-  pihole_config_dir = var.pihole_config_dir
-  cloudflared       = var.cloudflared
-  dns_server_ip     = var.dns_server_ip
+  source                             = "./resources"
+  namespace                          = var.namespaces.resources
+  replicas                           = var.resources_replicas
+  node_selector                      = var.resources_node_selector
+  domain                             = var.domain
+  smtp_relay_host                    = "[${var.remote_smtp_options.server}]:${var.remote_smtp_options.port}"
+  smtp_relay_user                    = var.remote_smtp_options.user
+  smtp_relay_pass                    = var.remote_smtp_options.pass
+  pihole_config_dir                  = var.pihole_config_dir
+  cloudflared                        = var.cloudflared
+  dns_server_ip                      = var.dns_server_ip
+  kubernetes_dashboard_chart_version = local.versions.charts.kubernetes_dashboard
 }
 
 module "apps" {
@@ -29,11 +30,18 @@ module "apps" {
   minio = {
     server = var.minio.server
   }
-  n8n_license_key = var.n8n_license_key
-  postiz          = var.postiz
-  crawl4ai      = var.crawl4ai
-  plausible     = var.plausible
-  visitor_badge = var.visitor_badge
+  n8n_license_key                = var.n8n_license_key
+  postiz                         = var.postiz
+  crawl4ai                       = var.crawl4ai
+  plausible                      = var.plausible
+  visitor_badge                  = var.visitor_badge
+  searxng_chart_version          = local.versions.charts.searxng
+  n8n_chart_version              = local.versions.charts.n8n
+  n8n_image_tag                  = local.versions.images.n8n
+  postiz_image_tag               = local.versions.images.postiz
+  plausible_version              = local.versions.images.plausible
+  visitor_badge_image_tag        = local.versions.images.visitor_badge
+  visitor_badge_backup_image_tag = local.versions.images.visitor_badge_backup
 }
 
 # module "cron" {
@@ -67,6 +75,9 @@ module "mail" {
   smtp_options         = module.resources.smtp_options
   domain               = "mail.${var.domain}"
   postfix_admin_config = var.postfix_admin_config
+  dovecot-tag          = local.versions.images.dovecot
+  spampd_tag           = local.versions.images.spampd
+  spamassassin_tag     = local.versions.images.spamassassin
 }
 
 module "code" {
@@ -76,19 +87,25 @@ module "code" {
     type = var.shared_db.type
     host = var.shared_db.host
   }
-  forgejo_ip  = var.code.server_ip
-  public_host = var.code.public_host
-  smtp        = module.resources.smtp_options
-  imap        = module.mail.private_imap_options
-  email       = var.code.email_options
-
+  forgejo_ip      = var.code.server_ip
+  public_host     = var.code.public_host
+  smtp            = module.resources.smtp_options
+  imap            = module.mail.private_imap_options
+  email           = var.code.email_options
+  forgejo_version = local.versions.charts.forgejo
 }
 
 module "monitoring" {
-  source         = "./monitoring"
-  namespace      = var.namespaces.monitoring
-  domain         = "monitoring.${var.domain}"
-  external_ips   = var.monitroing_external_ips
-  config_dir     = var.monitoring_config_dir
-  minio_endpoint = var.minio.server
+  source                   = "./monitoring"
+  namespace                = var.namespaces.monitoring
+  domain                   = "monitoring.${var.domain}"
+  external_ips             = var.monitroing_external_ips
+  config_dir               = var.monitoring_config_dir
+  minio_endpoint           = var.minio.server
+  prometheus_chart_version = local.versions.charts.prometheus
+  loki_chart_version       = local.versions.charts.loki
+  tempo_chart_version      = local.versions.charts.tempo
+  pyroscope_chart_version  = local.versions.charts.pyroscope
+  grafana_chart_version    = local.versions.charts.grafana
+  alloy_chart_version      = local.versions.charts.alloy
 }

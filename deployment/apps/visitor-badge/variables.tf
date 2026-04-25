@@ -18,7 +18,6 @@ variable "image" {
 
 variable "tag" {
   description = "Visitor badge image tag"
-  default     = "v1.2.0"
   sensitive   = false
   type        = string
 }
@@ -64,5 +63,4 @@ variable "backup_image" {
 variable "backup_tag" {
   type        = string
   description = "Backup sidecar image tag"
-  default     = "v1.2.0"
 }

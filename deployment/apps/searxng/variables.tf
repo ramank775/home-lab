@@ -1,7 +1,7 @@
 variable "namespace" {
   description = "The namespace where the SearxNG application will be deployed."
   type        = string
-  default     = "searxng" 
+  default     = "searxng"
 }
 
 variable "domain" {
@@ -13,5 +13,4 @@ variable "domain" {
 variable "chart_version" {
   description = "The version of the SearxNG Helm chart to deploy."
   type        = string
-  default     = "1.1.0"
 }

@@ -81,7 +81,7 @@ resource "helm_release" "prometheus" {
 
   chart      = "prometheus"
   repository = "https://prometheus-community.github.io/helm-charts"
-  version    = "27.16.0"
+  version    = var.prometheus_chart_version
 
   values = [
     <<EOF
@@ -119,7 +119,7 @@ resource "helm_release" "loki" {
   namespace  = var.namespace
   chart      = "loki"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "6.29.0"
+  version    = var.loki_chart_version
 
   depends_on = [
     minio_s3_bucket.s3_bucket,
@@ -231,7 +231,7 @@ resource "helm_release" "tempo" {
   namespace  = var.namespace
   chart      = "tempo"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "1.21.1"
+  version    = var.tempo_chart_version
 
   values = [
     <<EOF
@@ -270,7 +270,7 @@ resource "helm_release" "pyroscope" {
   namespace  = var.namespace
   chart      = "pyroscope"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "1.13.4"
+  version    = var.pyroscope_chart_version
 
   values = [
     <<EOF
@@ -352,7 +352,7 @@ resource "helm_release" "grafana" {
   namespace  = var.namespace
   chart      = "grafana"
   repository = "https://grafana.github.io/helm-charts"
-  version    = "9.0.0"
+  version    = var.grafana_chart_version
 
   values = [
     <<EOF
@@ -403,7 +403,7 @@ resource "helm_release" "grafana-alloy" {
   name       = "grafana-alloy"
   repository = "https://grafana.github.io/helm-charts"
   chart      = "alloy"
-  version    = "1.0.3"
+  version    = var.alloy_chart_version
   namespace  = var.namespace
 
   set {

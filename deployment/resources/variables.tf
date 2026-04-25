@@ -25,7 +25,7 @@ variable "replicas" {
   type        = map(number)
   description = "Replica count for resources"
   default = {
-    nats = 0
+    nats       = 0
     smtp_relay = 1
   }
 }
@@ -41,23 +41,28 @@ variable "pihole_config_dir" {
 }
 
 variable "cloudflared" {
-  type = map(string)
+  type        = map(string)
   description = "cloudflared tunnel options"
 }
 
 
 variable "smtp_relay_host" {
   description = "SMTP Relay server"
-  type = string
+  type        = string
 }
 
 variable "smtp_relay_user" {
   description = "SMTP Relay server username"
-  type = string
+  type        = string
 }
 
 variable "smtp_relay_pass" {
   description = "SMTP Relay sever password"
-  type = string
-  sensitive = true
+  type        = string
+  sensitive   = true
+}
+
+variable "kubernetes_dashboard_chart_version" {
+  type        = string
+  description = "Helm chart version for kubernetes-dashboard"
 }

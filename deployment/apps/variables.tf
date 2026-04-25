@@ -164,7 +164,7 @@ variable "crawl4ai" {
 variable "plausible" {
   description = "Plausible configuration"
   type = object({
-    url    = string
+    url = string
     clickhouse = object({
       url = string
     })
@@ -175,7 +175,7 @@ variable "plausible" {
     google_oauth_credentials_file_path = string
   })
   default = {
-    url    = "https://plausible.example.com"
+    url = "https://plausible.example.com"
     clickhouse = {
       url = "http://clickhouse.example.com:8123"
     }
@@ -185,4 +185,39 @@ variable "plausible" {
     }
     google_oauth_credentials_file_path = "/path/to/google_oauth_credentials.json"
   }
+}
+
+variable "searxng_chart_version" {
+  type        = string
+  description = "Helm chart version for searxng"
+}
+
+variable "n8n_chart_version" {
+  type        = string
+  description = "Helm chart version for n8n"
+}
+
+variable "n8n_image_tag" {
+  type        = string
+  description = "n8n container image tag"
+}
+
+variable "postiz_image_tag" {
+  type        = string
+  description = "postiz container image tag"
+}
+
+variable "plausible_version" {
+  type        = string
+  description = "Plausible container image tag"
+}
+
+variable "visitor_badge_image_tag" {
+  type        = string
+  description = "visitor-badge container image tag"
+}
+
+variable "visitor_badge_backup_image_tag" {
+  type        = string
+  description = "visitor-badge backup sidecar image tag"
 }

@@ -3,7 +3,7 @@ module "resources" {
   namespace     = var.namespace
   node_selector = var.node_selector
   domain        = var.domain
-  versions      = var.versions
+  versions      = coalesce(var.versions, local.versions.charts)
   truenas       = var.truenas
   lb_iprange    = var.lb_iprange
 }

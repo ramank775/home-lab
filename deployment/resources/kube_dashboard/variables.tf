@@ -3,8 +3,7 @@ variable "domain" {
   description = "Default Domain name cluster endpoint"
 }
 
-# variable "dash_version" {
-#   type        = string
-#   description = "Kubernetes Dashboard version"
-#   default = "v2.7.0"
-# }
+variable "chart_version" {
+  type        = string
+  description = "Helm chart version for kubernetes-dashboard"
+}

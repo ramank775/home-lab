@@ -12,7 +12,6 @@ variable "namespace" {
 
 variable "dovecot-tag" {
   description = "dovecot image tag"
-  default     = "2.3.21.1"
   sensitive   = false
   type        = string
 }
@@ -24,7 +23,6 @@ variable "dovecot_config_dir" {
 
 variable "spampd_tag" {
   description = "spampd image tag"
-  default     = "v2.70.0-rc.1"
   sensitive   = false
   type        = string
 }
@@ -42,10 +40,8 @@ variable "spampd_config_dir" {
 
 variable "spamassassin_tag" {
   description = "spampd image tag"
-  default     = "latest"
   sensitive   = false
   type        = string
-
 }
 
 variable "dns_server" {

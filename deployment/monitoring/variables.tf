@@ -29,5 +29,35 @@ variable "config_dir" {
 
 variable "minio_endpoint" {
   type        = string
-  description = "Minio endpoint for monitoring stack"  
+  description = "Minio endpoint for monitoring stack"
+}
+
+variable "prometheus_chart_version" {
+  type        = string
+  description = "Helm chart version for kube-prometheus-stack/prometheus"
+}
+
+variable "loki_chart_version" {
+  type        = string
+  description = "Helm chart version for loki"
+}
+
+variable "tempo_chart_version" {
+  type        = string
+  description = "Helm chart version for tempo"
+}
+
+variable "pyroscope_chart_version" {
+  type        = string
+  description = "Helm chart version for pyroscope"
+}
+
+variable "grafana_chart_version" {
+  type        = string
+  description = "Helm chart version for grafana"
+}
+
+variable "alloy_chart_version" {
+  type        = string
+  description = "Helm chart version for grafana-alloy"
 }

@@ -1,19 +1,18 @@
 variable "namespace" {
   description = "The namespace in which to deploy Plausible."
   type        = string
-  default     = "plausible"  
+  default     = "plausible"
 }
 
 variable "plausible_version" {
   description = "The version of Plausible to deploy."
   type        = string
-  default     = "v3.0.1" 
 }
 
 variable "replicas" {
   description = "The number of replicas for the Plausible deployment."
   type        = number
-  default     = 1  
+  default     = 1
 }
 
 variable "base_url" {
@@ -48,14 +47,14 @@ variable "postgresql" {
 variable "mailer" {
   description = "Mailer configuration for Plausible."
   type = object({
-    name     = string
-    email     = string
+    name  = string
+    email = string
   })
   default = {
     name  = "Plausible Analytics"
     email = "plausible@example.com"
   }
-  
+
 }
 
 variable "smtp_options" {

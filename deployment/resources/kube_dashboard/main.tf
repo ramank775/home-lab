@@ -59,7 +59,7 @@ resource "helm_release" "kubernetes-dashboard" {
   namespace       = local.namespace
   wait            = true
   upgrade_install = true
-  version         = "7.10.4"
+  version         = var.chart_version
 
   set {
     name  = "app.model"
@@ -77,7 +77,7 @@ resource "helm_release" "kubernetes-dashboard" {
   }
 
   set {
-    name = "app.ingress.useDefaultAnnotations"
+    name  = "app.ingress.useDefaultAnnotations"
     value = false
   }
 

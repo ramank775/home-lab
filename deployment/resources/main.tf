@@ -42,7 +42,7 @@ module "cloudflared" {
 }
 
 module "kube-dashboard" {
-  source = "./kube_dashboard"
-  domain = "kube.${var.domain}"
-  # dash_version = var.versions.kube_dash
+  source        = "./kube_dashboard"
+  domain        = "kube.${var.domain}"
+  chart_version = var.kubernetes_dashboard_chart_version
 }

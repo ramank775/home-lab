@@ -11,6 +11,8 @@ module "visitor_badge" {
   node_selector = var.node_selector
   md5_key       = var.visitor_badge.md5_key
   admin_api_key = var.visitor_badge.admin_api_key
+  tag           = var.visitor_badge_image_tag
+  backup_tag    = var.visitor_badge_backup_image_tag
 }
 
 module "vaultwarden" {
@@ -37,6 +39,8 @@ module "n8n" {
   database        = var.shared_db
   minio           = var.minio
   n8n_license_key = var.n8n_license_key
+  helm_version    = var.n8n_chart_version
+  image_tag       = var.n8n_image_tag
 }
 
 module "postiz" {
@@ -47,28 +51,31 @@ module "postiz" {
   social_app_config = var.postiz.social_credentials_file
   smtp              = var.smtp_options
   email             = var.postiz.email
+  image_tag         = var.postiz_image_tag
 }
 
 module "searxng" {
-  source    = "./searxng"
-  namespace = var.namespace
-  domain    = "search.${var.domain}"
+  source        = "./searxng"
+  namespace     = var.namespace
+  domain        = "search.${var.domain}"
+  chart_version = var.searxng_chart_version
 }
 
 module "crawl4ai" {
-  source                = "./crawl4ai"
-  namespace             = var.namespace
-  domain                = "scrapper.${var.domain}"
-  llm_credentail_file   = var.crawl4ai.llm_credential_file
+  source              = "./crawl4ai"
+  namespace           = var.namespace
+  domain              = "scrapper.${var.domain}"
+  llm_credentail_file = var.crawl4ai.llm_credential_file
 }
 
 module "plausible" {
-  source        = "./plausible"
-  namespace     = var.namespace
-  base_url      = var.plausible.url
-  clickhouse    = var.plausible.clickhouse
-  postgresql    = var.shared_db
-  mailer        = var.plausible.mailer
-  smtp_options  = var.smtp_options
+  source                             = "./plausible"
+  namespace                          = var.namespace
+  base_url                           = var.plausible.url
+  clickhouse                         = var.plausible.clickhouse
+  postgresql                         = var.shared_db
+  mailer                             = var.plausible.mailer
+  smtp_options                       = var.smtp_options
   google_oauth_credentials_file_path = var.plausible.google_oauth_credentials_file_path
+  plausible_version                  = var.plausible_version
 }
