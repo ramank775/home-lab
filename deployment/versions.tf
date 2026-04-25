@@ -21,6 +21,23 @@ locals {
       dovecot              = "2.3.21.1"
       spampd               = "v2.70.0-rc.1"
       spamassassin         = "latest"
+      crawl4ai             = "latest"
+      static_site          = "latest"
+      bind9                = "latest"
+      blog_feature_post    = "v1.0.2"
+      blog_oauth_provider  = "latest"
+      vaultwarden          = "latest"
+      vaultwarden_nginx    = "stable-alpine-slim"
+      postfixadmin         = "3.3.12-apache"
+      graphite_exporter    = "latest"
+      sonarr               = "latest"
+      radarr               = "latest"
+      prowlarr             = "latest"
+      spotdl               = "latest"
+      jellyseerr           = "latest"
+      flaresolverr         = "latest"
+      redis                = "alpine"
+      busybox              = "latest"
     }
   }
 }

@@ -87,7 +87,7 @@ resource "kubernetes_deployment" "sonarr" {
       }
       spec {
         container {
-          image = "lscr.io/linuxserver/sonarr:latest"
+          image = "lscr.io/linuxserver/sonarr:${var.sonarr_image_tag}"
           name  = "sonarr"
           port {
             container_port = 8989
@@ -190,7 +190,7 @@ resource "kubernetes_deployment" "radarr" {
       }
       spec {
         container {
-          image = "lscr.io/linuxserver/radarr:latest"
+          image = "lscr.io/linuxserver/radarr:${var.radarr_image_tag}"
           name  = "radarr"
           port {
             container_port = 7878
@@ -296,7 +296,7 @@ resource "kubernetes_deployment" "prowlarr" {
 
       spec {
         container {
-          image = "lscr.io/linuxserver/prowlarr:latest"
+          image = "lscr.io/linuxserver/prowlarr:${var.prowlarr_image_tag}"
           name  = "prowlarr"
           env {
             name  = "PUID"
@@ -374,11 +374,11 @@ resource "kubernetes_deployment" "spotdl" {
       spec {
         container {
           name  = "spotdl"
-          image = "spotdl/spotify-downloader:latest"
-          args    = [
-            "web", 
+          image = "spotdl/spotify-downloader:${var.spotdl_image_tag}"
+          args = [
+            "web",
             "--host", "0.0.0.0",
-            "--port", "8080", 
+            "--port", "8080",
             "--web-use-output-dir",
             "--output", "/music/{album}/{title}.{output-ext}",
             "--log-level", "DEBUG"
@@ -398,7 +398,7 @@ resource "kubernetes_deployment" "spotdl" {
           volume_mount {
             name       = "media-data"
             mount_path = "/music"
-            sub_path = "music"
+            sub_path   = "music"
           }
         }
         volume {
@@ -475,7 +475,7 @@ resource "kubernetes_deployment" "jellyseerr" {
 
       spec {
         container {
-          image = "fallenbagel/jellyseerr:latest"
+          image = "fallenbagel/jellyseerr:${var.jellyseerr_image_tag}"
           name  = "jellyseerr"
           env {
             name  = "TZ"
@@ -559,7 +559,7 @@ resource "kubernetes_deployment" "flaresovlerr" {
       spec {
         container {
           name  = "flaresolverr"
-          image = "ghcr.io/flaresolverr/flaresolverr:latest"
+          image = "ghcr.io/flaresolverr/flaresolverr:${var.flaresolverr_image_tag}"
           env {
             name  = "TZ"
             value = "Asia/Kolkata"

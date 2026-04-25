@@ -5,7 +5,7 @@ locals {
 
 resource "kubernetes_deployment" "smtp-relay" {
   metadata {
-    name = local.appname
+    name      = local.appname
     namespace = var.namespace
     labels = {
       app = local.appname
@@ -26,35 +26,35 @@ resource "kubernetes_deployment" "smtp-relay" {
       }
       spec {
         container {
-          name = local.appname
-          image = local.image
+          name              = local.appname
+          image             = local.image
           image_pull_policy = "IfNotPresent"
           env {
-            name = "SMTP_RELAY_HOST"
+            name  = "SMTP_RELAY_HOST"
             value = var.smtp_relay_host
           }
           env {
-            name = "SMTP_RELAY_MYHOSTNAME"
+            name  = "SMTP_RELAY_MYHOSTNAME"
             value = "smtp-relay.${var.domain}"
           }
           env {
-            name = "SMTP_RELAY_USERNAME"
+            name  = "SMTP_RELAY_USERNAME"
             value = var.smtp_relay_user
           }
           env {
-            name = "SMTP_RELAY_PASSWORD"
+            name  = "SMTP_RELAY_PASSWORD"
             value = var.smtp_relay_pass
           }
           env {
-            name = "SMTP_RELAY_MYNETWORKS"
+            name  = "SMTP_RELAY_MYNETWORKS"
             value = var.smtp_relay_networks
           }
           env {
-            name = "SMTP_RELAY_WRAPPERMODE"
+            name  = "SMTP_RELAY_WRAPPERMODE"
             value = "no"
           }
           env {
-            name = "SMTP_TLS_SECURITY_LEVEL"
+            name  = "SMTP_TLS_SECURITY_LEVEL"
             value = "encrypt"
           }
         }

@@ -60,9 +60,9 @@ resource "kubernetes_config_map" "vw-proxy-config" {
 }
 
 resource "kubernetes_deployment" "vaultwarden" {
-  depends_on = [ 
+  depends_on = [
     kubernetes_persistent_volume_claim.vaultwarden_data
-   ]
+  ]
   metadata {
     name      = local.app
     namespace = var.namespace
@@ -87,7 +87,7 @@ resource "kubernetes_deployment" "vaultwarden" {
         container {
           name              = local.app
           image_pull_policy = "Always"
-          image             = "vaultwarden/server"
+          image             = "vaultwarden/server:${var.image_tag}"
           env {
             name  = "WEBSOCKET_ENABLED"
             value = "true"
@@ -135,7 +135,7 @@ resource "kubernetes_deployment" "vaultwarden" {
         container {
           name              = "${local.app}-nginx"
           image_pull_policy = "Always"
-          image             = "nginx:stable-alpine-slim"
+          image             = "nginx:${var.nginx_image_tag}"
           port {
             container_port = 80
           }

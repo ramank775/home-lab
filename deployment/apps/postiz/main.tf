@@ -74,7 +74,7 @@ resource "kubernetes_stateful_set_v1" "redis" {
       spec {
         container {
           name              = "${local.appname}-redis"
-          image             = "redis:alpine"
+          image             = "redis:${var.redis_image_tag}"
           image_pull_policy = "Always"
         }
       }

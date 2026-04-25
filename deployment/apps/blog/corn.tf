@@ -1,6 +1,6 @@
 locals {
-  image    = "ramank775/blog_feature_post:v1.0.2"
-  appname  = "blog-feature-posts"
+  image        = "ramank775/blog_feature_post:${var.feature_post_image_tag}"
+  appname      = "blog-feature-posts"
   cron_replica = 0
 }
 

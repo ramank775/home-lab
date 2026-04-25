@@ -221,3 +221,38 @@ variable "visitor_badge_backup_image_tag" {
   type        = string
   description = "visitor-badge backup sidecar image tag"
 }
+
+variable "crawl4ai_image_tag" {
+  type        = string
+  description = "crawl4ai container image tag"
+}
+
+variable "blog_feature_post_image_tag" {
+  type        = string
+  description = "Image tag for blog feature post cron"
+}
+
+variable "blog_oauth_provider_image_tag" {
+  type        = string
+  description = "Image tag for netlify-cms OAuth provider"
+}
+
+variable "vaultwarden_image_tag" {
+  type        = string
+  description = "vaultwarden/server container image tag"
+}
+
+variable "vaultwarden_nginx_image_tag" {
+  type        = string
+  description = "Image tag for vaultwarden's nginx sidecar"
+}
+
+variable "redis_image_tag" {
+  type        = string
+  description = "Shared image tag for the redis sidecar used in postiz/visitor-badge/mail"
+}
+
+variable "busybox_image_tag" {
+  type        = string
+  description = "Image tag for busybox init containers"
+}

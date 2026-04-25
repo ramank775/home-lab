@@ -11,6 +11,7 @@ module "resources" {
   cloudflared                        = var.cloudflared
   dns_server_ip                      = var.dns_server_ip
   kubernetes_dashboard_chart_version = local.versions.charts.kubernetes_dashboard
+  bind9_image_tag                    = local.versions.images.bind9
 }
 
 module "apps" {
@@ -42,6 +43,13 @@ module "apps" {
   plausible_version              = local.versions.images.plausible
   visitor_badge_image_tag        = local.versions.images.visitor_badge
   visitor_badge_backup_image_tag = local.versions.images.visitor_badge_backup
+  crawl4ai_image_tag             = local.versions.images.crawl4ai
+  blog_feature_post_image_tag    = local.versions.images.blog_feature_post
+  blog_oauth_provider_image_tag  = local.versions.images.blog_oauth_provider
+  vaultwarden_image_tag          = local.versions.images.vaultwarden
+  vaultwarden_nginx_image_tag    = local.versions.images.vaultwarden_nginx
+  redis_image_tag                = local.versions.images.redis
+  busybox_image_tag              = local.versions.images.busybox
 }
 
 # module "cron" {
@@ -63,21 +71,29 @@ module "media" {
     "jellyseerr" = "jellyseerr.${var.domain}",
     "spotdl"     = "spotdl.${var.domain}",
   }
+  sonarr_image_tag       = local.versions.images.sonarr
+  radarr_image_tag       = local.versions.images.radarr
+  prowlarr_image_tag     = local.versions.images.prowlarr
+  spotdl_image_tag       = local.versions.images.spotdl
+  jellyseerr_image_tag   = local.versions.images.jellyseerr
+  flaresolverr_image_tag = local.versions.images.flaresolverr
 }
 
 module "mail" {
-  source               = "./mail"
-  namespace            = var.namespaces.mail
-  dovecot_config_dir   = var.dovecot_config_dir
-  spampd_config_dir    = var.spampd_config_dir
-  dns_server           = var.dns_server_ip
-  db_config            = var.mail_db_config
-  smtp_options         = module.resources.smtp_options
-  domain               = "mail.${var.domain}"
-  postfix_admin_config = var.postfix_admin_config
-  dovecot-tag          = local.versions.images.dovecot
-  spampd_tag           = local.versions.images.spampd
-  spamassassin_tag     = local.versions.images.spamassassin
+  source                 = "./mail"
+  namespace              = var.namespaces.mail
+  dovecot_config_dir     = var.dovecot_config_dir
+  spampd_config_dir      = var.spampd_config_dir
+  dns_server             = var.dns_server_ip
+  db_config              = var.mail_db_config
+  smtp_options           = module.resources.smtp_options
+  domain                 = "mail.${var.domain}"
+  postfix_admin_config   = var.postfix_admin_config
+  dovecot-tag            = local.versions.images.dovecot
+  spampd_tag             = local.versions.images.spampd
+  spamassassin_tag       = local.versions.images.spamassassin
+  postfixadmin_image_tag = local.versions.images.postfixadmin
+  redis_image_tag        = local.versions.images.redis
 }
 
 module "code" {
@@ -96,16 +112,17 @@ module "code" {
 }
 
 module "monitoring" {
-  source                   = "./monitoring"
-  namespace                = var.namespaces.monitoring
-  domain                   = "monitoring.${var.domain}"
-  external_ips             = var.monitroing_external_ips
-  config_dir               = var.monitoring_config_dir
-  minio_endpoint           = var.minio.server
-  prometheus_chart_version = local.versions.charts.prometheus
-  loki_chart_version       = local.versions.charts.loki
-  tempo_chart_version      = local.versions.charts.tempo
-  pyroscope_chart_version  = local.versions.charts.pyroscope
-  grafana_chart_version    = local.versions.charts.grafana
-  alloy_chart_version      = local.versions.charts.alloy
+  source                      = "./monitoring"
+  namespace                   = var.namespaces.monitoring
+  domain                      = "monitoring.${var.domain}"
+  external_ips                = var.monitroing_external_ips
+  config_dir                  = var.monitoring_config_dir
+  minio_endpoint              = var.minio.server
+  prometheus_chart_version    = local.versions.charts.prometheus
+  loki_chart_version          = local.versions.charts.loki
+  tempo_chart_version         = local.versions.charts.tempo
+  pyroscope_chart_version     = local.versions.charts.pyroscope
+  grafana_chart_version       = local.versions.charts.grafana
+  alloy_chart_version         = local.versions.charts.alloy
+  graphite_exporter_image_tag = local.versions.images.graphite_exporter
 }

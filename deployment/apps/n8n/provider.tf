@@ -4,7 +4,7 @@ terraform {
       source = "cyrilgdn/postgresql"
     }
     minio = {
-      source  = "aminueza/minio"
+      source = "aminueza/minio"
     }
   }
 }

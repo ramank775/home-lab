@@ -9,6 +9,11 @@ variable "plausible_version" {
   type        = string
 }
 
+variable "busybox_image_tag" {
+  description = "Image tag for the busybox init container"
+  type        = string
+}
+
 variable "replicas" {
   description = "The number of replicas for the Plausible deployment."
   type        = number

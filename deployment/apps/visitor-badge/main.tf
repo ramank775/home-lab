@@ -28,7 +28,7 @@ resource "kubernetes_persistent_volume_claim" "redis_data_volume" {
 
 resource "kubernetes_service" "redis-service" {
   metadata {
-    name = "${local.appname}-redis-service"
+    name      = "${local.appname}-redis-service"
     namespace = var.namespace
     labels = {
       app = "${local.appname}-redis-service"
@@ -37,8 +37,8 @@ resource "kubernetes_service" "redis-service" {
   spec {
     type = "ClusterIP"
     port {
-      name = "redis"
-      port = 6379
+      name        = "redis"
+      port        = 6379
       target_port = 6379
     }
     selector = {
@@ -73,7 +73,7 @@ resource "kubernetes_stateful_set_v1" "redis" {
       spec {
         container {
           name              = "${local.appname}-redis"
-          image             = "redis:alpine"
+          image             = "redis:${var.redis_image_tag}"
           image_pull_policy = "Always"
           volume_mount {
             name       = "data"

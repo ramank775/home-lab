@@ -90,7 +90,7 @@ resource "kubernetes_deployment" "plausible" {
       spec {
         init_container {
           name    = "fix-perms"
-          image   = "busybox"
+          image   = "busybox:${var.busybox_image_tag}"
           command = ["sh", "-c"]
           args    = ["chmod ugo+rw -R /var/lib/plausible"]
           volume_mount {
@@ -184,18 +184,18 @@ resource "kubernetes_deployment" "plausible" {
           }
 
           env {
-            name = "DISABLE_REGISTRATION"
+            name  = "DISABLE_REGISTRATION"
             value = "invite_only"
           }
 
           env {
-            name = "ENABLE_EMAIL_VERIFICATION"
+            name  = "ENABLE_EMAIL_VERIFICATION"
             value = "true"
           }
 
 
           env {
-            name  = "GOOGLE_CLIENT_ID"
+            name = "GOOGLE_CLIENT_ID"
             value_from {
               secret_key_ref {
                 name = kubernetes_secret.plausible_google_oauth.metadata[0].name
@@ -205,7 +205,7 @@ resource "kubernetes_deployment" "plausible" {
           }
 
           env {
-            name  = "GOOGLE_CLIENT_SECRET"
+            name = "GOOGLE_CLIENT_SECRET"
             value_from {
               secret_key_ref {
                 name = kubernetes_secret.plausible_google_oauth.metadata[0].name
@@ -214,7 +214,7 @@ resource "kubernetes_deployment" "plausible" {
             }
           }
 
-          
+
           volume_mount {
             name       = "plausible-data"
             mount_path = "/var/lib/plausible"

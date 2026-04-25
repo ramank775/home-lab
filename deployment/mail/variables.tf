@@ -80,3 +80,13 @@ variable "postfix_admin_config" {
   sensitive   = true
 }
 
+variable "postfixadmin_image_tag" {
+  type        = string
+  description = "Image tag for postfixadmin"
+}
+
+variable "redis_image_tag" {
+  type        = string
+  description = "Image tag for the redis sidecar"
+}
+

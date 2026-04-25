@@ -25,3 +25,13 @@ variable "node_selector" {
   description = "Node selector for blog feature posts"
   default     = {}
 }
+
+variable "feature_post_image_tag" {
+  type        = string
+  description = "Image tag for blog feature post cron"
+}
+
+variable "oauth_provider_image_tag" {
+  type        = string
+  description = "Image tag for netlify-cms OAuth provider"
+}

@@ -41,7 +41,7 @@ resource "kubernetes_deployment" "crawl4ai" {
       spec {
         container {
           name  = "crawl4ai"
-          image = "unclecode/crawl4ai:latest"
+          image = "unclecode/crawl4ai:${var.image_tag}"
 
           port {
             container_port = 11235
@@ -62,7 +62,7 @@ resource "kubernetes_deployment" "crawl4ai" {
           name = "dshm"
 
           empty_dir {
-            medium = "Memory"
+            medium     = "Memory"
             size_limit = "1Gi"
           }
         }

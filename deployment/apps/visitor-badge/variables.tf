@@ -64,3 +64,8 @@ variable "backup_tag" {
   type        = string
   description = "Backup sidecar image tag"
 }
+
+variable "redis_image_tag" {
+  type        = string
+  description = "Image tag for the redis sidecar"
+}

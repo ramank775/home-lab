@@ -9,6 +9,7 @@ module "bind9" {
   source      = "./bind9"
   namespace   = var.namespace
   external_ip = var.dns_server_ip
+  image_tag   = var.bind9_image_tag
 }
 
 module "smtp-relay" {

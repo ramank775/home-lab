@@ -66,3 +66,8 @@ variable "kubernetes_dashboard_chart_version" {
   type        = string
   description = "Helm chart version for kubernetes-dashboard"
 }
+
+variable "bind9_image_tag" {
+  type        = string
+  description = "Container image tag for bind9"
+}

@@ -3,7 +3,7 @@ output "endpoint" {
 }
 
 output "monitoring_endpoint" {
-    value = "nats.${var.namespace}.svc.${var.cluster_domain}:8222"
+  value = "nats.${var.namespace}.svc.${var.cluster_domain}:8222"
 }
 
 output "cluster_id" {

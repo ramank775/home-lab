@@ -21,3 +21,33 @@ variable "domains" {
     "spotdl"     = "spotdl.homelab.arpa"
   }
 }
+
+variable "sonarr_image_tag" {
+  type        = string
+  description = "Container image tag for sonarr"
+}
+
+variable "radarr_image_tag" {
+  type        = string
+  description = "Container image tag for radarr"
+}
+
+variable "prowlarr_image_tag" {
+  type        = string
+  description = "Container image tag for prowlarr"
+}
+
+variable "spotdl_image_tag" {
+  type        = string
+  description = "Container image tag for spotdl"
+}
+
+variable "jellyseerr_image_tag" {
+  type        = string
+  description = "Container image tag for jellyseerr"
+}
+
+variable "flaresolverr_image_tag" {
+  type        = string
+  description = "Container image tag for flaresolverr"
+}

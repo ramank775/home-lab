@@ -5,23 +5,26 @@ resource "kubernetes_namespace" "homelab_apps_namespace" {
 }
 
 module "visitor_badge" {
-  source        = "./visitor-badge"
-  namespace     = var.namespace
-  replicas      = var.replicas.visitor_badge
-  node_selector = var.node_selector
-  md5_key       = var.visitor_badge.md5_key
-  admin_api_key = var.visitor_badge.admin_api_key
-  tag           = var.visitor_badge_image_tag
-  backup_tag    = var.visitor_badge_backup_image_tag
+  source          = "./visitor-badge"
+  namespace       = var.namespace
+  replicas        = var.replicas.visitor_badge
+  node_selector   = var.node_selector
+  md5_key         = var.visitor_badge.md5_key
+  admin_api_key   = var.visitor_badge.admin_api_key
+  tag             = var.visitor_badge_image_tag
+  backup_tag      = var.visitor_badge_backup_image_tag
+  redis_image_tag = var.redis_image_tag
 }
 
 module "vaultwarden" {
-  source        = "./vaultwarden"
-  namespace     = var.namespace
-  domain        = "vw.${var.domain}"
-  public_domain = lookup(var.vaultwarden_options, "public_domain", "vw.${var.domain}")
-  sender_mail   = lookup(var.vaultwarden_options, "from_mail", "vaultwarden@${var.domain}")
-  smtp_options  = var.smtp_options
+  source          = "./vaultwarden"
+  namespace       = var.namespace
+  domain          = "vw.${var.domain}"
+  public_domain   = lookup(var.vaultwarden_options, "public_domain", "vw.${var.domain}")
+  sender_mail     = lookup(var.vaultwarden_options, "from_mail", "vaultwarden@${var.domain}")
+  smtp_options    = var.smtp_options
+  image_tag       = var.vaultwarden_image_tag
+  nginx_image_tag = var.vaultwarden_nginx_image_tag
 }
 
 module "blog" {
@@ -30,6 +33,8 @@ module "blog" {
   domain                           = var.blog_domain
   github_config                    = var.github_config
   nats_streaming_http_producer_url = var.nats_streaming_http_producer_url
+  feature_post_image_tag           = var.blog_feature_post_image_tag
+  oauth_provider_image_tag         = var.blog_oauth_provider_image_tag
 }
 
 module "n8n" {
@@ -52,6 +57,7 @@ module "postiz" {
   smtp              = var.smtp_options
   email             = var.postiz.email
   image_tag         = var.postiz_image_tag
+  redis_image_tag   = var.redis_image_tag
 }
 
 module "searxng" {
@@ -66,6 +72,7 @@ module "crawl4ai" {
   namespace           = var.namespace
   domain              = "scrapper.${var.domain}"
   llm_credentail_file = var.crawl4ai.llm_credential_file
+  image_tag           = var.crawl4ai_image_tag
 }
 
 module "plausible" {
@@ -78,4 +85,5 @@ module "plausible" {
   smtp_options                       = var.smtp_options
   google_oauth_credentials_file_path = var.plausible.google_oauth_credentials_file_path
   plausible_version                  = var.plausible_version
+  busybox_image_tag                  = var.busybox_image_tag
 }

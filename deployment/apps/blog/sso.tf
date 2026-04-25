@@ -28,7 +28,7 @@ resource "kubernetes_deployment" "blog_sso" {
         container {
           name              = local.appName
           image_pull_policy = "Always"
-          image             = "ramank775/netlify-cms-github-oauth-provider:latest"
+          image             = "ramank775/netlify-cms-github-oauth-provider:${var.oauth_provider_image_tag}"
 
           env {
             name  = "NODE_ENV"

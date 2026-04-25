@@ -219,7 +219,7 @@ resource "kubernetes_config_map" "spampd_config" {
 
   data = {
     "miab_spf_dmarc.cf" = file("${var.spampd_config_dir}/miab_spf_dmarc.cf")
-    "spam_report.cf" = file("${var.spampd_config_dir}/spam_report.cf")
+    "spam_report.cf"    = file("${var.spampd_config_dir}/spam_report.cf")
     "dns.cf"            = <<EOT
 dns_available yes
 dns_server ${var.dns_server}
@@ -445,7 +445,7 @@ resource "kubernetes_stateful_set_v1" "redis" {
       spec {
         container {
           name              = "${local.prefix}-redis"
-          image             = "redis:alpine"
+          image             = "redis:${var.redis_image_tag}"
           image_pull_policy = "Always"
           volume_mount {
             name       = "data"
@@ -618,7 +618,7 @@ resource "kubernetes_deployment" "postfix-admin" {
       spec {
         container {
           name              = local.postfixadmin
-          image             = "postfixadmin:3.3.12-apache"
+          image             = "postfixadmin:${var.postfixadmin_image_tag}"
           image_pull_policy = "IfNotPresent"
           port {
             container_port = 80

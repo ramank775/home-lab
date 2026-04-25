@@ -98,9 +98,9 @@ resource "kubernetes_stateful_set_v1" "pihole" {
             sub_path   = "custom.list"
           }
           volume_mount {
-            name = "dnsmasq-config"
+            name       = "dnsmasq-config"
             mount_path = "/etc/dnsmasq.d/override-max-dns.conf"
-            sub_path = "dnsmasq.conf"
+            sub_path   = "dnsmasq.conf"
           }
         }
         volume {
@@ -187,7 +187,7 @@ resource "kubernetes_service" "pihole-dns-service" {
   }
 
   spec {
-    type = "LoadBalancer"
+    type                    = "LoadBalancer"
     external_traffic_policy = "Local"
     port {
       name        = "dns"

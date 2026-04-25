@@ -20,3 +20,8 @@ variable "llm_credentail_file" {
   description = "Path to the YAML file containing LLM credentials."
   type        = string
 }
+
+variable "image_tag" {
+  description = "Container image tag for crawl4ai."
+  type        = string
+}

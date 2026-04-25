@@ -7,3 +7,8 @@ variable "external_ip" {
   type        = string
   description = "External IP for bind9 dns server"
 }
+
+variable "image_tag" {
+  type        = string
+  description = "Container image tag for bind9"
+}

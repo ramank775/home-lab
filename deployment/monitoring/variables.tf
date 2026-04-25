@@ -61,3 +61,8 @@ variable "alloy_chart_version" {
   type        = string
   description = "Helm chart version for grafana-alloy"
 }
+
+variable "graphite_exporter_image_tag" {
+  type        = string
+  description = "Image tag for the prometheus graphite-exporter"
+}

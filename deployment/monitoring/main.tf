@@ -586,7 +586,7 @@ resource "kubernetes_deployment" "graphite_exporter" {
       spec {
         container {
           name  = "graphite-exporter"
-          image = "quay.io/prometheus/graphite-exporter:latest"
+          image = "quay.io/prometheus/graphite-exporter:${var.graphite_exporter_image_tag}"
           args = [
             "--graphite.mapping-config=/tmp/graphite_mapping.yaml",
             "--log.level=debug"

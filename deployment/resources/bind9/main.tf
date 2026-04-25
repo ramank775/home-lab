@@ -68,7 +68,7 @@ resource "kubernetes_deployment" "bind9-deployment" {
       spec {
         container {
           name  = local.bind9Name
-          image = "ubuntu/bind9:latest"
+          image = "ubuntu/bind9:${var.image_tag}"
 
           port {
             container_port = 53

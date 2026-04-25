@@ -21,6 +21,11 @@ variable "image_tag" {
   type        = string
 }
 
+variable "redis_image_tag" {
+  description = "Image tag for the redis sidecar"
+  type        = string
+}
+
 variable "database" {
   description = "The database to use for the application"
   type = object({

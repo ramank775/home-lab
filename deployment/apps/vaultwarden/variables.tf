@@ -30,3 +30,13 @@ variable "sender_mail" {
   description = "Sender mail for vaultwarden"
   default     = "vaultwarden@homelab.arpa"
 }
+
+variable "image_tag" {
+  type        = string
+  description = "Container image tag for vaultwarden/server"
+}
+
+variable "nginx_image_tag" {
+  type        = string
+  description = "Container image tag for the nginx sidecar"
+}
