@@ -130,6 +130,10 @@ resource "kubernetes_deployment" "postiz_app" {
   spec {
     replicas = var.replicas
 
+    strategy {
+      type = "Recreate"
+    }
+
     selector {
       match_labels = {
         app = local.appname

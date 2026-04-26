@@ -72,6 +72,9 @@ resource "kubernetes_deployment" "vaultwarden" {
   }
   spec {
     replicas = local.replicas
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         "app" = local.app

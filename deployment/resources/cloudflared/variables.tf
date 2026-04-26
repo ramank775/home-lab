@@ -23,8 +23,7 @@ variable "image" {
 }
 
 variable "tag" {
-  description = "TCP tunnel client image tag"
-  default     = "2024.10.0"
+  description = "Cloudflared tunnel client image tag"
   sensitive   = false
   type        = string
 }

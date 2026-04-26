@@ -21,6 +21,7 @@ module "smtp-relay" {
   smtp_relay_host = var.smtp_relay_host
   smtp_relay_user = var.smtp_relay_user
   smtp_relay_pass = var.smtp_relay_pass
+  tag             = var.smtp_relay_image_tag
 }
 
 module "pihole" {
@@ -30,6 +31,7 @@ module "pihole" {
   node_selector     = var.node_selector
   replicas          = 1
   pihole_config_dir = var.pihole_config_dir
+  tag               = var.pihole_image_tag
 }
 
 module "cloudflared" {
@@ -40,6 +42,7 @@ module "cloudflared" {
   cloudflared_cred_file   = var.cloudflared.cred_file
   cloudflared_config_file = var.cloudflared.config_file
   cloudflared_cert_file   = var.cloudflared.cert_file
+  tag                     = var.cloudflared_image_tag
 }
 
 module "kube-dashboard" {

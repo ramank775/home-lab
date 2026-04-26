@@ -92,9 +92,13 @@ resource "kubernetes_service" "smtp-internal-service" {
       "app" = local.appname
     }
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
     namespace = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
 
   spec {

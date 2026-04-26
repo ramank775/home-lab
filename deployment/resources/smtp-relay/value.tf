@@ -23,8 +23,7 @@ variable "image" {
 }
 
 variable "tag" {
-  description = "image tag"
-  default     = "latest"
+  description = "smtp-relay image tag"
   sensitive   = false
   type        = string
 }

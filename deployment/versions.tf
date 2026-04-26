@@ -2,20 +2,20 @@ locals {
   versions = {
     charts = {
       searxng              = "1.1.0"
-      n8n                  = "1.5.3"
-      forgejo              = "13.0.1"
-      prometheus           = "27.16.0"
-      loki                 = "6.29.0"
-      tempo                = "1.21.1"
-      pyroscope            = "1.13.4"
-      grafana              = "9.0.0"
-      alloy                = "1.0.3"
+      n8n                  = "1.16.37"
+      forgejo              = "17.0.0"
+      prometheus           = "29.2.1"
+      loki                 = "7.0.0"
+      tempo                = "1.24.4"
+      pyroscope            = "2.0.1"
+      grafana              = "10.5.15"
+      alloy                = "1.8.0"
       kubernetes_dashboard = "7.10.4"
     }
     images = {
       n8n                  = "1.84.3"
       postiz               = "v1.41.1"
-      plausible            = "v3.0.1"
+      plausible            = "v3.2.0"
       visitor_badge        = "v1.2.0"
       visitor_badge_backup = "v1.2.0"
       dovecot              = "2.3.21.1"
@@ -28,7 +28,7 @@ locals {
       blog_oauth_provider  = "latest"
       vaultwarden          = "latest"
       vaultwarden_nginx    = "stable-alpine-slim"
-      postfixadmin         = "3.3.12-apache"
+      postfixadmin         = "4.0.1-apache"
       graphite_exporter    = "latest"
       sonarr               = "latest"
       radarr               = "latest"
@@ -38,6 +38,9 @@ locals {
       flaresolverr         = "latest"
       redis                = "alpine"
       busybox              = "latest"
+      cloudflared          = "2026.3.0"
+      smtp_relay           = "latest"
+      pihole               = "latest"
     }
   }
 }

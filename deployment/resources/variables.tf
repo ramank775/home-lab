@@ -71,3 +71,18 @@ variable "bind9_image_tag" {
   type        = string
   description = "Container image tag for bind9"
 }
+
+variable "cloudflared_image_tag" {
+  type        = string
+  description = "Container image tag for cloudflared tunnel client"
+}
+
+variable "smtp_relay_image_tag" {
+  type        = string
+  description = "Container image tag for smtp-relay"
+}
+
+variable "pihole_image_tag" {
+  type        = string
+  description = "Container image tag for pihole"
+}

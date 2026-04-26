@@ -30,7 +30,6 @@ variable "image" {
 
 variable "tag" {
   description = "pihole image tag"
-  default     = "latest"
   sensitive   = false
   type        = string
 }

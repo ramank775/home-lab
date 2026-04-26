@@ -191,8 +191,11 @@ resource "kubernetes_service" "dovecot_external_service" {
       "app" = local.dovecotName
     }
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
+  }
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
   spec {
     type = "LoadBalancer"
@@ -358,8 +361,11 @@ resource "kubernetes_service" "spampd_external_service" {
       app = local.spampdName
     }
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
+  }
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
   spec {
     type = "LoadBalancer"
@@ -592,6 +598,34 @@ resource "kubernetes_service" "spamassasin_service" {
   }
 }
 
+resource "kubernetes_config_map" "postfixadmin_config" {
+  metadata {
+    name      = "${local.postfixadmin}-config"
+    namespace = var.namespace
+  }
+  data = {
+    "config.local.php" = <<-EOT
+      <?php
+      $CONF['database_type'] = '${var.db_config.type}';
+      $CONF['database_host'] = '${var.db_config.host}';
+      $CONF['database_port'] = '${var.db_config.port}';
+      $CONF['database_user'] = '${var.db_config.user}';
+      $CONF['database_password'] = '${var.db_config.pass}';
+      $CONF['database_name'] = '${var.db_config.name}';
+      $CONF['setup_password'] = '${var.postfix_admin_config.password}';
+      $CONF['smtp_server'] = '${var.db_config.host}';
+      $CONF['smtp_port'] = '${var.db_config.port}';
+      $CONF['encrypt'] = '${var.postfix_admin_config.encrypt}';
+      $CONF['configured'] = true;
+      $CONF['dkim'] = 'YES';
+      $CONF['dkim_all_admins'] = 'YES';
+      $CONF['footer_text'] = 'Return to mail.one9x.com';
+      $CONF['footer_link'] = 'https://mail.one9x.com';
+      ?>
+    EOT
+  }
+}
+
 resource "kubernetes_deployment" "postfix-admin" {
   metadata {
     name      = local.postfixadmin
@@ -636,11 +670,6 @@ resource "kubernetes_deployment" "postfix-admin" {
             value = var.db_config.port
           }
           env {
-            name  = "POSTFIXADMIN_DB_NAME"
-            value = var.db_config.name
-          }
-
-          env {
             name  = "POSTFIXADMIN_DB_USER"
             value = var.db_config.user
           }
@@ -648,29 +677,17 @@ resource "kubernetes_deployment" "postfix-admin" {
             name  = "POSTFIXADMIN_DB_PASSWORD"
             value = var.db_config.pass
           }
-          env {
-            name  = "POSTFIXADMIN_SMTP_SERVER"
-            value = var.db_config.host
+          volume_mount {
+            name       = "config-local"
+            mount_path = "/var/www/html/config.local.php"
+            sub_path   = "config.local.php"
+            read_only  = true
           }
-          env {
-            name  = "POSTFIXADMIN_SMTP_PORT"
-            value = var.db_config.port
-          }
-          env {
-            name  = "POSTFIXADMIN_SETUP_PASSWORD"
-            value = var.postfix_admin_config.password
-          }
-          env {
-            name  = "POSTFIXADMIN_ENCRYPT"
-            value = var.postfix_admin_config.encrypt
-          }
-          env {
-            name  = "POSTFIXADMIN_DKIM"
-            value = "YES"
-          }
-          env {
-            name  = "POSTFIXADMIN_DKIM_ALL_ADMINS"
-            value = "YES"
+        }
+        volume {
+          name = "config-local"
+          config_map {
+            name = kubernetes_config_map.postfixadmin_config.metadata[0].name
           }
         }
       }

@@ -57,6 +57,9 @@ resource "kubernetes_deployment" "static_server" {
 
   spec {
     replicas = local.replicas
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         "app" = local.static_server
@@ -148,9 +151,13 @@ resource "kubernetes_service" "static_server_sftp" {
       "app" = local.sftp_server
     }
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
     namespace = var.namespace
+  }
+
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
 
   spec {

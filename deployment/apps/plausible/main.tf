@@ -75,6 +75,9 @@ resource "kubernetes_deployment" "plausible" {
 
   spec {
     replicas = var.replicas
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         "app" = "plausible"
@@ -244,6 +247,13 @@ resource "kubernetes_service" "plausible" {
     labels = {
       "app" = "plausible"
     }
+    annotations = {
+      "metallb.io/address-pool" = "homelab-ip"
+    }
+  }
+
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
 
   spec {

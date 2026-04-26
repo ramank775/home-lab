@@ -12,6 +12,9 @@ module "resources" {
   dns_server_ip                      = var.dns_server_ip
   kubernetes_dashboard_chart_version = local.versions.charts.kubernetes_dashboard
   bind9_image_tag                    = local.versions.images.bind9
+  cloudflared_image_tag              = local.versions.images.cloudflared
+  smtp_relay_image_tag               = local.versions.images.smtp_relay
+  pihole_image_tag                   = local.versions.images.pihole
 }
 
 module "apps" {

@@ -140,6 +140,8 @@ loki:
     use_thanos_objstore: true
     bucketNames:
       chunks: loki-bucket
+      ruler: loki-bucket
+      admin: loki-bucket
     object_store:
       type: s3
       s3:
@@ -646,8 +648,12 @@ resource "kubernetes_service" "graphite_exporter_lb" {
       stack = "monitoring"
     }
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
+  }
+
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
 
   spec {
@@ -670,8 +676,11 @@ resource "kubernetes_service" "monitoring-lb" {
     name      = "monitoring-lb"
     namespace = var.namespace
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
+  }
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
   spec {
     type             = "LoadBalancer"

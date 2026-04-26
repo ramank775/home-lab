@@ -108,8 +108,11 @@ resource "kubernetes_service" "bind9_service" {
       app = local.bind9Name
     }
     annotations = {
-      "metallb.universe.tf/ip-allocated-from-pool" = "homelab-ip"
+      "metallb.io/address-pool" = "homelab-ip"
     }
+  }
+  lifecycle {
+    ignore_changes = [metadata[0].annotations["metallb.io/ip-allocated-from-pool"]]
   }
   spec {
     type             = "LoadBalancer"

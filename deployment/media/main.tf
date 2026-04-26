@@ -74,6 +74,9 @@ resource "kubernetes_deployment" "sonarr" {
 
   spec {
     replicas = 1
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         "media.app" = "sonarr"
@@ -177,6 +180,9 @@ resource "kubernetes_deployment" "radarr" {
 
   spec {
     replicas = 1
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         "media.app" = "radarr"
@@ -281,6 +287,10 @@ resource "kubernetes_deployment" "prowlarr" {
   spec {
     replicas = 1
 
+    strategy {
+      type = "Recreate"
+    }
+
     selector {
       match_labels = {
         "media.app" = "prowlarr"
@@ -360,6 +370,9 @@ resource "kubernetes_deployment" "spotdl" {
 
   spec {
     replicas = 1
+    strategy {
+      type = "Recreate"
+    }
     selector {
       match_labels = {
         "media.app" = "spotdl"
@@ -459,6 +472,10 @@ resource "kubernetes_deployment" "jellyseerr" {
 
   spec {
     replicas = 1
+
+    strategy {
+      type = "Recreate"
+    }
 
     selector {
       match_labels = {
