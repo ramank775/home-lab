@@ -14,11 +14,7 @@ module "qbittorrent" {
 
   initialization = {
     hostname = "qbittorrent"
-    ipv4     = { address = "10.0.0.43/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:56:03:41"
+    ipv4     = var.ips["qbittorrent"]
   }
 
   mount_points = [{
@@ -44,11 +40,7 @@ module "jellyfin" {
 
   initialization = {
     hostname = "jellyfin"
-    ipv4     = { address = "10.0.0.42/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:6E:64:5E"
+    ipv4     = var.ips["jellyfin"]
   }
 
   operating_system = { type = "ubuntu" }

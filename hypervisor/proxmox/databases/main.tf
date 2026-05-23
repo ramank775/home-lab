@@ -11,11 +11,7 @@ module "pg_1" {
 
   initialization = {
     hostname = "pg-1"
-    ipv4     = { address = "10.0.0.6/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:F0:11:67"
+    ipv4     = var.ips["pg_1"]
   }
 
   mount_points = [{
@@ -40,11 +36,7 @@ module "pg_2" {
 
   initialization = {
     hostname = "pg-2"
-    ipv4     = { address = "10.0.0.7/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:BD:3A:73"
+    ipv4     = var.ips["pg_2"]
   }
 
   mount_points = [{
@@ -70,11 +62,7 @@ module "etcd_1" {
 
   initialization = {
     hostname = "etcd-1"
-    ipv4     = { address = "10.0.0.3/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:2C:F0:68"
+    ipv4     = var.ips["etcd_1"]
   }
 
   mount_points = [{
@@ -99,11 +87,7 @@ module "clickhouse_1" {
 
   initialization = {
     hostname = "clickhouse-1"
-    ipv4     = { address = "10.0.0.8/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:81:2F:83"
+    ipv4     = var.ips["clickhouse_1"]
   }
 
   mount_points = [{

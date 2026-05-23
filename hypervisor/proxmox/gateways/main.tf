@@ -14,11 +14,7 @@ module "public_gateway" {
 
   initialization = {
     hostname = "public-gateway"
-    ipv4     = { address = "10.0.0.20/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:0F:27:72"
+    ipv4     = var.ips["public_gateway"]
   }
 
   startup = { order = 100 }
@@ -40,11 +36,7 @@ module "private_gateway" {
 
   initialization = {
     hostname = "private-gateway"
-    ipv4     = { address = "10.0.0.21/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:80:DA:C2"
+    ipv4     = var.ips["private_gateway"]
   }
 
   startup = { order = 100 }
@@ -63,11 +55,7 @@ module "haproxy_1" {
 
   initialization = {
     hostname = "haproxy-1"
-    ipv4     = { address = "10.0.0.22/24", gateway = "10.0.0.1" }
-  }
-
-  network = {
-    mac_address = "BC:24:11:67:9D:4C"
+    ipv4     = var.ips["haproxy_1"]
   }
 
   startup = { order = 100 }

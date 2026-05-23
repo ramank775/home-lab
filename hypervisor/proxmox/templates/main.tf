@@ -15,9 +15,8 @@ module "debian_cloud" {
   }]
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:25:9F:7D"
-    firewall    = true
+    bridge   = "vmbr0"
+    firewall = true
   }]
 
   cloud_init = {

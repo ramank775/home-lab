@@ -28,8 +28,7 @@ module "k3s_1" {
   }]
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:D6:AB:06"
+    bridge = "vmbr0"
   }]
 
   agent      = { enabled = true }
@@ -53,8 +52,7 @@ module "k3s_node_1" {
   }]
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:04:AF:2A"
+    bridge = "vmbr0"
   }]
 
   agent      = { enabled = true }

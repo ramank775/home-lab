@@ -13,12 +13,11 @@ module "nextcloud" {
 
   initialization = {
     hostname = "nextcloud"
-    ipv4     = { address = "10.0.0.41/24", gateway = "10.0.0.1" }
+    ipv4     = var.ips["nextcloud"]
   }
 
   network = {
-    mac_address = "BC:24:11:E2:7D:BB"
-    firewall    = true
+    firewall = true
   }
 
   operating_system = { type = "ubuntu" }
@@ -67,8 +66,7 @@ module "home_assistance" {
   }
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "02:FA:E1:50:BC:53"
+    bridge = "vmbr0"
   }]
 
   agent = {
@@ -112,8 +110,7 @@ module "wp_serverless" {
   ]
 
   network_devices = [{
-    bridge      = "vmbr1"
-    mac_address = "BC:24:11:3A:D2:5B"
-    firewall    = true
+    bridge   = "vmbr1"
+    firewall = true
   }]
 }

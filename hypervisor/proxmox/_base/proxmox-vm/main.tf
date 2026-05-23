@@ -111,5 +111,12 @@ resource "proxmox_virtual_environment_vm" "this" {
 
   lifecycle {
     prevent_destroy = true
+
+    # PVE owns the assigned MAC address. Including it in our config means
+    # drift if PVE ever regenerates it. We track everything else about the
+    # NIC (bridge, vlan, firewall flag) — just not the MAC.
+    ignore_changes = [
+      mac_addresses,
+    ]
   }
 }

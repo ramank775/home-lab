@@ -29,9 +29,8 @@ module "talocity" {
   }]
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:F9:5C:E2"
-    firewall    = true
+    bridge   = "vmbr0"
+    firewall = true
   }]
 
   agent      = { enabled = true }
@@ -55,9 +54,8 @@ module "ai_dev" {
   }]
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:81:EF:3D"
-    firewall    = true
+    bridge   = "vmbr0"
+    firewall = true
   }]
 
   agent      = { enabled = true }
@@ -81,9 +79,8 @@ module "spampd_dev" {
   }]
 
   network_devices = [{
-    bridge      = "vmbr0"
-    mac_address = "BC:24:11:41:8D:DC"
-    firewall    = true
+    bridge   = "vmbr0"
+    firewall = true
   }]
 
   agent      = { enabled = true }

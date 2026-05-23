@@ -92,5 +92,10 @@ resource "proxmox_virtual_environment_container" "this" {
 
   lifecycle {
     prevent_destroy = true
+
+    # PVE owns the assigned MAC. We don't try to track it in config.
+    ignore_changes = [
+      network_interface[0].mac_address,
+    ]
   }
 }

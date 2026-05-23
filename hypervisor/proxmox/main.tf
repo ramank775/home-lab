@@ -6,16 +6,19 @@ module "k3s" {
 module "databases" {
   source    = "./databases"
   node_name = var.pve_node_name
+  ips       = var.lxc_ips
 }
 
 module "gateways" {
   source    = "./gateways"
   node_name = var.pve_node_name
+  ips       = var.lxc_ips
 }
 
 module "media" {
   source    = "./media"
   node_name = var.pve_node_name
+  ips       = var.lxc_ips
 }
 
 module "dev" {
@@ -31,4 +34,5 @@ module "templates" {
 module "one_offs" {
   source    = "./one-offs"
   node_name = var.pve_node_name
+  ips       = var.lxc_ips
 }

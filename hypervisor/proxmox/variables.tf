@@ -25,3 +25,12 @@ variable "pve_node_name" {
   description = "Name of this Proxmox node (single-node deployment)."
   type        = string
 }
+
+variable "lxc_ips" {
+  description = "Static IP assignments for LXCs. Map keyed by hostname; value is `<addr>/<mask>` plus gateway."
+  type = map(object({
+    address = string
+    gateway = string
+  }))
+  default = {}
+}
