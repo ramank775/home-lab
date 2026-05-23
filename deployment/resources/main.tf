@@ -45,8 +45,8 @@ module "cloudflared" {
   tag                     = var.cloudflared_image_tag
 }
 
-module "kube-dashboard" {
-  source        = "./kube_dashboard"
+module "headlamp" {
+  source        = "./headlamp"
   domain        = "kube.${var.domain}"
-  chart_version = var.kubernetes_dashboard_chart_version
+  chart_version = var.headlamp_chart_version
 }

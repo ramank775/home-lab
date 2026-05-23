@@ -10,7 +10,7 @@ module "resources" {
   pihole_config_dir                  = var.pihole_config_dir
   cloudflared                        = var.cloudflared
   dns_server_ip                      = var.dns_server_ip
-  kubernetes_dashboard_chart_version = local.versions.charts.kubernetes_dashboard
+  headlamp_chart_version             = local.versions.charts.headlamp
   bind9_image_tag                    = local.versions.images.bind9
   cloudflared_image_tag              = local.versions.images.cloudflared
   smtp_relay_image_tag               = local.versions.images.smtp_relay
@@ -35,6 +35,8 @@ module "apps" {
     server = var.minio.server
   }
   n8n_license_key                = var.n8n_license_key
+  joplin                         = var.joplin
+  joplin_image_tag               = local.versions.images.joplin
   postiz                         = var.postiz
   crawl4ai                       = var.crawl4ai
   plausible                      = var.plausible
@@ -72,14 +74,14 @@ module "media" {
     "media-mgmt" = "media-mgmt.${var.domain}"
     "prowlarr"   = "tracker.${var.domain}"
     "jellyseerr" = "jellyseerr.${var.domain}",
-    "spotdl"     = "spotdl.${var.domain}",
+    "metube"     = "metube.${var.domain}",
   }
   sonarr_image_tag       = local.versions.images.sonarr
   radarr_image_tag       = local.versions.images.radarr
   prowlarr_image_tag     = local.versions.images.prowlarr
-  spotdl_image_tag       = local.versions.images.spotdl
   jellyseerr_image_tag   = local.versions.images.jellyseerr
   flaresolverr_image_tag = local.versions.images.flaresolverr
+  metube_image_tag       = local.versions.images.metube
 }
 
 module "mail" {

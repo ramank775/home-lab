@@ -359,12 +359,12 @@ resource "kubernetes_service" "prowlarr" {
   ]
 }
 
-resource "kubernetes_deployment" "spotdl" {
+resource "kubernetes_deployment" "metube" {
   metadata {
-    name      = "spotdl"
+    name      = "metube"
     namespace = var.namespace
     labels = {
-      "media.app" = "spotdl"
+      "media.app" = "metube"
     }
   }
 
@@ -375,43 +375,62 @@ resource "kubernetes_deployment" "spotdl" {
     }
     selector {
       match_labels = {
-        "media.app" = "spotdl"
+        "media.app" = "metube"
       }
     }
     template {
       metadata {
         labels = {
-          "media.app" = "spotdl"
+          "media.app" = "metube"
         }
       }
       spec {
         container {
-          name  = "spotdl"
-          image = "spotdl/spotify-downloader:${var.spotdl_image_tag}"
-          args = [
-            "web",
-            "--host", "0.0.0.0",
-            "--port", "8080",
-            "--web-use-output-dir",
-            "--output", "/music/{album}/{title}.{output-ext}",
-            "--log-level", "DEBUG"
-          ]
-          env {
-            name  = "PUID"
-            value = 8000
+          name  = "metube"
+          image = "alexta69/metube:${var.metube_image_tag}"
+          port {
+            container_port = 8081
           }
           env {
-            name  = "PGID"
-            value = 8000
+            name  = "UID"
+            value = "8000"
           }
           env {
-            name  = "TZ"
-            value = "Asia/Kolkata"
+            name  = "GID"
+            value = "8000"
+          }
+          env {
+            name  = "DOWNLOAD_DIR"
+            value = "/downloads"
+          }
+          env {
+            name  = "STATE_DIR"
+            value = "/state"
+          }
+          env {
+            name  = "TEMP_DIR"
+            value = "/state/tmp"
+          }
+          env {
+            name  = "OUTPUT_TEMPLATE"
+            value = "music/%(uploader)s/%(title)s.%(ext)s"
+          }
+          env {
+            name  = "OUTPUT_TEMPLATE_PLAYLIST"
+            value = "music/%(playlist)s/%(playlist_index)s - %(title)s.%(ext)s"
+          }
+          env {
+            name  = "DEFAULT_OPTION_PLAYLIST_STRICT_MODE"
+            value = "true"
           }
           volume_mount {
             name       = "media-data"
-            mount_path = "/music"
-            sub_path   = "music"
+            mount_path = "/downloads"
+            sub_path   = "media"
+          }
+          volume_mount {
+            name       = "state"
+            mount_path = "/state"
           }
         }
         volume {
@@ -420,27 +439,32 @@ resource "kubernetes_deployment" "spotdl" {
             claim_name = kubernetes_persistent_volume_claim.media-data.metadata.0.name
           }
         }
+        volume {
+          name = "state"
+          empty_dir {}
+        }
       }
     }
   }
 }
 
-resource "kubernetes_service" "spotdl" {
+resource "kubernetes_service" "metube" {
   metadata {
-    name      = "spotdl"
+    name      = "metube"
     namespace = var.namespace
   }
   spec {
     type = "ClusterIP"
     selector = {
-      "media.app" = "spotdl"
+      "media.app" = "metube"
     }
     port {
-      port = 8080
+      port        = 8081
+      target_port = 8081
     }
   }
   depends_on = [
-    kubernetes_deployment.spotdl
+    kubernetes_deployment.metube
   ]
 }
 
@@ -659,15 +683,15 @@ resource "kubernetes_ingress_v1" "media-management" {
       }
     }
     rule {
-      host = var.domains.spotdl
+      host = var.domains.metube
       http {
         path {
           path = "/"
           backend {
             service {
-              name = kubernetes_service.spotdl.metadata.0.name
+              name = kubernetes_service.metube.metadata.0.name
               port {
-                number = 8080
+                number = 8081
               }
             }
           }

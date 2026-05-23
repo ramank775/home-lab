@@ -145,6 +145,23 @@ variable "postiz" {
   })
 }
 
+variable "joplin" {
+  description = "Joplin server configuration"
+  type = object({
+    email = object({
+      from_name    = string
+      from_address = string
+      reply_to     = optional(string)
+    })
+  })
+  default = {
+    email = {
+      from_name    = "Joplin"
+      from_address = "joplin@homelab.arpa"
+    }
+  }
+}
+
 variable "visitor_badge" {
   description = "Visitor badge configuration"
   type = object({
@@ -210,6 +227,11 @@ variable "postiz_image_tag" {
 variable "plausible_version" {
   type        = string
   description = "Plausible container image tag"
+}
+
+variable "joplin_image_tag" {
+  type        = string
+  description = "joplin/server container image tag"
 }
 
 variable "visitor_badge_image_tag" {

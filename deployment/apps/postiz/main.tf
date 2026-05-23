@@ -72,6 +72,9 @@ resource "kubernetes_stateful_set_v1" "redis" {
         }
       }
       spec {
+        node_selector = {
+          "kubernetes.io/arch" = "amd64"
+        }
         container {
           name              = "${local.appname}-redis"
           image             = "redis:${var.redis_image_tag}"

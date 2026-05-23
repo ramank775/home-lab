@@ -302,12 +302,29 @@ variable "postiz" {
   type = object({
     domain                  = string
     social_credentials_file = string
-    email                   = object({
+    email = object({
       user    = string
       pass    = string
       address = string
     })
   })
+}
+
+variable "joplin" {
+  description = "Joplin server configuration"
+  type = object({
+    email = object({
+      from_name    = string
+      from_address = string
+      reply_to     = optional(string)
+    })
+  })
+  default = {
+    email = {
+      from_name    = "Joplin"
+      from_address = "joplin@homelab.arpa"
+    }
+  }
 }
 
 variable "visitor_badge" {
@@ -329,7 +346,7 @@ variable "crawl4ai" {
 variable "plausible" {
   description = "Plausible configuration"
   type = object({
-    url    = string
+    url = string
     clickhouse = object({
       url = string
     })

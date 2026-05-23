@@ -75,6 +75,16 @@ module "crawl4ai" {
   image_tag           = var.crawl4ai_image_tag
 }
 
+module "joplin" {
+  source    = "./joplin"
+  namespace = var.namespace
+  domain    = "notes.${var.domain}"
+  database  = var.shared_db
+  smtp      = var.smtp_options
+  email     = var.joplin.email
+  image_tag = var.joplin_image_tag
+}
+
 module "plausible" {
   source                             = "./plausible"
   namespace                          = var.namespace

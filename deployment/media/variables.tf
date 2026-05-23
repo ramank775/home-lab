@@ -18,7 +18,7 @@ variable "domains" {
     "media-mgmt" = "media-mgmt.homelab.arpa"
     "prowlarr"   = "tracker.homelab.arpa"
     "jellyseerr" = "jellyseerr.homelab.arpa"
-    "spotdl"     = "spotdl.homelab.arpa"
+    "metube"     = "metube.homelab.arpa"
   }
 }
 
@@ -37,11 +37,6 @@ variable "prowlarr_image_tag" {
   description = "Container image tag for prowlarr"
 }
 
-variable "spotdl_image_tag" {
-  type        = string
-  description = "Container image tag for spotdl"
-}
-
 variable "jellyseerr_image_tag" {
   type        = string
   description = "Container image tag for jellyseerr"
@@ -50,4 +45,9 @@ variable "jellyseerr_image_tag" {
 variable "flaresolverr_image_tag" {
   type        = string
   description = "Container image tag for flaresolverr"
+}
+
+variable "metube_image_tag" {
+  type        = string
+  description = "Container image tag for metube"
 }

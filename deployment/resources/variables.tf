@@ -62,9 +62,9 @@ variable "smtp_relay_pass" {
   sensitive   = true
 }
 
-variable "kubernetes_dashboard_chart_version" {
+variable "headlamp_chart_version" {
   type        = string
-  description = "Helm chart version for kubernetes-dashboard"
+  description = "Helm chart version for headlamp"
 }
 
 variable "bind9_image_tag" {
