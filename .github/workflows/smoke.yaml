@@ -1,0 +1,16 @@
+name: forgejo runner smoke
+
+on:
+  push:
+    paths:
+      - .github/workflows/smoke.yaml
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: docker
+    steps:
+      - name: hostname
+        run: echo "hello from $(hostname)"
+      - name: docker version
+        run: docker version

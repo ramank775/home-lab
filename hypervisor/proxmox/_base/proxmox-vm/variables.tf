@@ -151,6 +151,16 @@ variable "cloud_init" {
       password = optional(string)
       keys     = optional(list(string), [])
     }))
+    user_data_file_id = optional(string)
+  })
+  default = null
+}
+
+variable "clone" {
+  description = "Clone from an existing VM (e.g. a cloud-init template). Set to null to create from scratch."
+  type = object({
+    vm_id = number
+    full  = optional(bool, true)
   })
   default = null
 }

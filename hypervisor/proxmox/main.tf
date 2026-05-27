@@ -36,3 +36,11 @@ module "one_offs" {
   node_name = var.pve_node_name
   ips       = var.lxc_ips
 }
+
+module "ci" {
+  source                         = "./ci"
+  node_name                      = var.pve_node_name
+  forgejo_runner_uuid            = var.forgejo_runner_uuid
+  forgejo_runner_token           = var.forgejo_runner_token
+  forgejo_runner_debian_password = var.forgejo_runner_debian_password
+}

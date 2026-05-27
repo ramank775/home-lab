@@ -34,3 +34,21 @@ variable "lxc_ips" {
   }))
   default = {}
 }
+
+variable "forgejo_runner_uuid" {
+  description = "Forgejo Actions runner UUID (from an existing runner's .runner file, server.connections.forgejo.uuid)."
+  type        = string
+  sensitive   = true
+}
+
+variable "forgejo_runner_token" {
+  description = "Forgejo Actions runner per-runner token (from an existing runner's .runner file, server.connections.forgejo.token). NOT the one-shot registration token from the admin UI."
+  type        = string
+  sensitive   = true
+}
+
+variable "forgejo_runner_debian_password" {
+  description = "Plain-text password for the `debian` user on the runner VM (baked into cloud-init via chpasswd)."
+  type        = string
+  sensitive   = true
+}

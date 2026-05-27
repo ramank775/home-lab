@@ -62,6 +62,14 @@ resource "proxmox_virtual_environment_vm" "this" {
     }
   }
 
+  dynamic "clone" {
+    for_each = var.clone == null ? [] : [var.clone]
+    content {
+      vm_id = clone.value.vm_id
+      full  = clone.value.full
+    }
+  }
+
   dynamic "agent" {
     for_each = var.agent == null ? [] : [var.agent]
     content {
@@ -93,6 +101,8 @@ resource "proxmox_virtual_environment_vm" "this" {
           keys     = user_account.value.keys
         }
       }
+
+      user_data_file_id = initialization.value.user_data_file_id
     }
   }
 

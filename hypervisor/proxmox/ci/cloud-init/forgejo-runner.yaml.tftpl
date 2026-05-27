@@ -1,0 +1,115 @@
+#cloud-config
+hostname: ${hostname}
+fqdn: ${hostname}.homelab.arpa
+manage_etc_hosts: true
+
+# Preserve the template's pre-baked `debian` user + password.
+# When cicustom user-data is in use, PVE's ciuser/cipassword are ignored,
+# so we set the password explicitly here from a TF-provided sensitive var.
+# We also create the `forgejo-runner` system user early (before write_files-deferred)
+# so the .runner file's owner: directive resolves. The `docker` group is added
+# later in runcmd, after docker.io is installed — referencing it here would
+# fail cc_users_groups (group doesn't exist yet) and abort cloud-init's init
+# stage, leaving systemd-networkd un-configured and eth0 with no DHCP lease.
+users:
+  - default
+  - name: forgejo-runner
+    system: true
+    home: /var/lib/forgejo-runner
+    shell: /usr/sbin/nologin
+chpasswd:
+  expire: false
+  users:
+    - name: debian
+      password: ${debian_password}
+      type: text
+ssh_pwauth: true
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+  - qemu-guest-agent
+  - docker.io
+  - jq
+
+write_files:
+  - path: /etc/systemd/system/forgejo-runner.service
+    permissions: '0644'
+    content: |
+      [Unit]
+      Description=Forgejo Actions Runner
+      After=docker.service network-online.target
+      Wants=docker.service network-online.target
+
+      [Service]
+      Type=simple
+      User=forgejo-runner
+      Group=docker
+      WorkingDirectory=/var/lib/forgejo-runner
+      ExecStart=/usr/local/bin/forgejo-runner daemon --config /etc/forgejo-runner/config.yaml
+      Restart=on-failure
+      RestartSec=10s
+
+      [Install]
+      WantedBy=multi-user.target
+
+  - path: /var/lib/forgejo-runner/.runner
+    permissions: '0600'
+    owner: 'forgejo-runner:forgejo-runner'
+    defer: true
+    content: |
+      {
+        "WARNING": "This file is managed by cloud-init / Terraform.",
+        "id": 0,
+        "uuid": "${runner_uuid}",
+        "name": "${hostname}",
+        "token": "${runner_token}",
+        "address": "${forgejo_url}",
+        "labels": null
+      }
+
+  - path: /etc/forgejo-runner/config.yaml
+    permissions: '0640'
+    content: |
+      log:
+        level: info
+      runner:
+        file: /var/lib/forgejo-runner/.runner
+        capacity: ${runner_concurrency}
+        timeout: 3h
+        insecure: false
+        fetch_timeout: 5s
+        fetch_interval: 2s
+        labels:
+          - docker:docker://node:20-bookworm
+          - ubuntu-latest:docker://node:20-bookworm
+      cache:
+        enabled: true
+        dir: /var/lib/forgejo-runner/cache
+      container:
+        network: bridge
+        privileged: false
+        options: ""
+        workdir_parent: /var/lib/forgejo-runner/work
+        valid_volumes: []
+        docker_host: ""
+        force_pull: true
+      host:
+        workdir_parent: /var/lib/forgejo-runner/host-work
+
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+  - systemctl enable --now docker
+  - usermod -aG docker forgejo-runner
+  - install -d -o forgejo-runner -g forgejo-runner -m 0750 /var/lib/forgejo-runner /var/lib/forgejo-runner/cache /var/lib/forgejo-runner/work
+  - chown -R forgejo-runner:forgejo-runner /etc/forgejo-runner /var/lib/forgejo-runner
+  - curl -fsSL -o /usr/local/bin/forgejo-runner "https://code.forgejo.org/forgejo/runner/releases/download/${runner_version}/forgejo-runner-$(echo ${runner_version} | sed 's/^v//')-linux-amd64"
+  - chmod +x /usr/local/bin/forgejo-runner
+  - systemctl daemon-reload
+  - systemctl enable --now forgejo-runner.service
+
+final_message: "forgejo-runner ${runner_version} provisioned"
