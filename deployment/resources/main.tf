@@ -50,3 +50,13 @@ module "headlamp" {
   domain        = "kube.${var.domain}"
   chart_version = var.headlamp_chart_version
 }
+
+module "temporal" {
+  source                  = "./temporal"
+  namespace               = var.namespace
+  domain                  = var.domain
+  database                = var.shared_db
+  server_image_tag        = var.temporal_server_image_tag
+  ui_image_tag            = var.temporal_ui_image_tag
+  elasticsearch_image_tag = var.elasticsearch_image_tag
+}

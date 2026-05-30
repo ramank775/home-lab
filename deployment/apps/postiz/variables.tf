@@ -62,3 +62,8 @@ variable "social_app_config" {
   description = "Path to file with social app configuration"
   type        = string
 }
+
+variable "temporal_address" {
+  description = "TEMPORAL_ADDRESS (host:port). Postiz v2 requires Temporal at boot for workflow scheduling."
+  type        = string
+}

@@ -4,8 +4,9 @@ locals {
 
 
 resource "random_password" "db_passwd" {
-  length  = 16
-  special = true
+  length           = 24
+  special          = true
+  override_special = "_-"
 }
 
 
@@ -183,6 +184,11 @@ resource "kubernetes_deployment" "postiz_app" {
           env {
             name  = "REDIS_URL"
             value = "redis://${local.appname}-redis-service:6379"
+          }
+
+          env {
+            name  = "TEMPORAL_ADDRESS"
+            value = var.temporal_address
           }
 
           env {

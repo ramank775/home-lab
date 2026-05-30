@@ -58,6 +58,7 @@ module "postiz" {
   email             = var.postiz.email
   image_tag         = var.postiz_image_tag
   redis_image_tag   = var.redis_image_tag
+  temporal_address  = var.temporal_address
 }
 
 module "searxng" {
@@ -83,6 +84,13 @@ module "joplin" {
   smtp      = var.smtp_options
   email     = var.joplin.email
   image_tag = var.joplin_image_tag
+}
+
+module "cloudbeaver" {
+  source    = "./cloudbeaver"
+  namespace = var.namespace
+  domain    = "db.${var.domain}"
+  image_tag = var.cloudbeaver_image_tag
 }
 
 module "plausible" {

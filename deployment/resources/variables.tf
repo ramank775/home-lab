@@ -86,3 +86,26 @@ variable "pihole_image_tag" {
   type        = string
   description = "Container image tag for pihole"
 }
+
+variable "shared_db" {
+  description = "Shared LXC Postgres connection. Used by Temporal for persistence/visibility DBs."
+  type = object({
+    host = string
+    port = number
+  })
+}
+
+variable "temporal_server_image_tag" {
+  type        = string
+  description = "Container image tag for temporalio/auto-setup"
+}
+
+variable "temporal_ui_image_tag" {
+  type        = string
+  description = "Container image tag for temporalio/ui"
+}
+
+variable "elasticsearch_image_tag" {
+  type        = string
+  description = "Container image tag for Temporal's Elasticsearch (v7 line)"
+}

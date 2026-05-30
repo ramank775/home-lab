@@ -159,6 +159,11 @@ variable "postiz" {
   })
 }
 
+variable "temporal_address" {
+  description = "TEMPORAL_ADDRESS for apps that consume Temporal (currently postiz)."
+  type        = string
+}
+
 variable "joplin" {
   description = "Joplin server configuration"
   type = object({
@@ -291,4 +296,9 @@ variable "redis_image_tag" {
 variable "busybox_image_tag" {
   type        = string
   description = "Image tag for busybox init containers"
+}
+
+variable "cloudbeaver_image_tag" {
+  type        = string
+  description = "CloudBeaver container image tag"
 }

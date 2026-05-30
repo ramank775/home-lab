@@ -1,21 +1,21 @@
 locals {
   versions = {
     charts = {
-      searxng              = "1.1.0"
-      n8n                  = "1.16.37"
-      forgejo              = "17.0.0"
-      prometheus           = "29.2.1"
-      loki                 = "7.0.0"
-      tempo                = "1.24.4"
-      pyroscope            = "2.0.1"
-      grafana              = "10.5.15"
-      alloy                = "1.8.0"
-      headlamp             = "0.42.0"
+      searxng    = "1.1.0"
+      n8n        = "1.16.37"
+      forgejo    = "17.0.0"
+      prometheus = "29.2.1"
+      loki       = "7.0.0"
+      tempo      = "1.24.4"
+      pyroscope  = "2.0.1"
+      grafana    = "10.5.15"
+      alloy      = "1.8.0"
+      headlamp   = "0.42.0"
     }
     images = {
       n8n                  = "1.84.3"
       joplin               = "3.6.1"
-      postiz               = "v1.41.1"
+      postiz               = "v2.21.8"
       plausible            = "v3.2.0"
       visitor_badge        = "v1.2.0"
       visitor_badge_backup = "v1.2.0"
@@ -42,6 +42,10 @@ locals {
       cloudflared          = "2026.3.0"
       smtp_relay           = "latest"
       pihole               = "latest"
+      cloudbeaver          = "25.0.1"
+      temporal_server      = "1.28.1"
+      temporal_ui          = "2.34.0"
+      elasticsearch        = "7.17.27"
     }
   }
 }

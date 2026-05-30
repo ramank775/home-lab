@@ -11,3 +11,8 @@ output "smtp_options" {
     port = module.smtp-relay.smtp_port
   }
 }
+
+output "temporal_address" {
+  description = "TEMPORAL_ADDRESS gRPC endpoint for in-cluster consumers"
+  value       = module.temporal.address
+}

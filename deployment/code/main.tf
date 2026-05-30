@@ -68,7 +68,7 @@ resource "helm_release" "forgejo" {
   chart      = "forgejo"
   repository = "oci://code.forgejo.org/forgejo-helm"
   version    = var.forgejo_version
-  
+
 
   values = [
     <<EOF

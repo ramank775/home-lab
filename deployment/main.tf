@@ -1,20 +1,24 @@
 module "resources" {
-  source                             = "./resources"
-  namespace                          = var.namespaces.resources
-  replicas                           = var.resources_replicas
-  node_selector                      = var.resources_node_selector
-  domain                             = var.domain
-  smtp_relay_host                    = "[${var.remote_smtp_options.server}]:${var.remote_smtp_options.port}"
-  smtp_relay_user                    = var.remote_smtp_options.user
-  smtp_relay_pass                    = var.remote_smtp_options.pass
-  pihole_config_dir                  = var.pihole_config_dir
-  cloudflared                        = var.cloudflared
-  dns_server_ip                      = var.dns_server_ip
-  headlamp_chart_version             = local.versions.charts.headlamp
-  bind9_image_tag                    = local.versions.images.bind9
-  cloudflared_image_tag              = local.versions.images.cloudflared
-  smtp_relay_image_tag               = local.versions.images.smtp_relay
-  pihole_image_tag                   = local.versions.images.pihole
+  source                    = "./resources"
+  namespace                 = var.namespaces.resources
+  replicas                  = var.resources_replicas
+  node_selector             = var.resources_node_selector
+  domain                    = var.domain
+  smtp_relay_host           = "[${var.remote_smtp_options.server}]:${var.remote_smtp_options.port}"
+  smtp_relay_user           = var.remote_smtp_options.user
+  smtp_relay_pass           = var.remote_smtp_options.pass
+  pihole_config_dir         = var.pihole_config_dir
+  cloudflared               = var.cloudflared
+  dns_server_ip             = var.dns_server_ip
+  headlamp_chart_version    = local.versions.charts.headlamp
+  bind9_image_tag           = local.versions.images.bind9
+  cloudflared_image_tag     = local.versions.images.cloudflared
+  smtp_relay_image_tag      = local.versions.images.smtp_relay
+  pihole_image_tag          = local.versions.images.pihole
+  shared_db                 = var.shared_db
+  temporal_server_image_tag = local.versions.images.temporal_server
+  temporal_ui_image_tag     = local.versions.images.temporal_ui
+  elasticsearch_image_tag   = local.versions.images.elasticsearch
 }
 
 module "apps" {
@@ -29,6 +33,7 @@ module "apps" {
   static_site_user                 = var.static_site_user
   vaultwarden_options              = var.vaultwarden_options
   smtp_options                     = module.resources.smtp_options
+  temporal_address                 = module.resources.temporal_address
   blog_domain                      = var.blog_domain
   github_config                    = var.github_config
   nats_streaming_http_producer_url = ""
@@ -57,6 +62,7 @@ module "apps" {
   vaultwarden_nginx_image_tag    = local.versions.images.vaultwarden_nginx
   redis_image_tag                = local.versions.images.redis
   busybox_image_tag              = local.versions.images.busybox
+  cloudbeaver_image_tag          = local.versions.images.cloudbeaver
 }
 
 # module "cron" {
