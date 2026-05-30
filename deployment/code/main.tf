@@ -112,12 +112,12 @@ service:
     type: LoadBalancer
     loadBalancerIP: "${var.forgejo_ip}"
     annotations:
-      metallb.universe.tf/allow-shared-ip: forgejo
+      metallb.io/allow-shared-ip: forgejo
   ssh:
     type: LoadBalancer
     loadBalancerIP: "${var.forgejo_ip}"
     annotations:
-      metallb.universe.tf/allow-shared-ip: forgejo
+      metallb.io/allow-shared-ip: forgejo
   
 gitea:
   admin:
