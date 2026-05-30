@@ -23,6 +23,8 @@ module "apps" {
   domain                           = var.domain
   replicas                         = var.apps_replicas
   node_selector                    = var.apps_node_selector
+  node_name                        = var.pve_node_name
+  ips                              = var.lxc_ips
   static_site_pass                 = var.static_site_pass
   static_site_user                 = var.static_site_user
   vaultwarden_options              = var.vaultwarden_options
@@ -114,6 +116,12 @@ module "code" {
   imap            = module.mail.private_imap_options
   email           = var.code.email_options
   forgejo_version = local.versions.charts.forgejo
+
+  # Proxmox-side Forgejo Actions runner VM
+  node_name                      = var.pve_node_name
+  forgejo_runner_uuid            = var.forgejo_runner_uuid
+  forgejo_runner_token           = var.forgejo_runner_token
+  forgejo_runner_debian_password = var.forgejo_runner_debian_password
 }
 
 module "monitoring" {
@@ -130,4 +138,29 @@ module "monitoring" {
   grafana_chart_version       = local.versions.charts.grafana
   alloy_chart_version         = local.versions.charts.alloy
   graphite_exporter_image_tag = local.versions.images.graphite_exporter
+}
+
+# --- Proxmox-side (LXCs and VMs) ------------------------------------------
+
+module "databases" {
+  source    = "./databases"
+  node_name = var.pve_node_name
+  ips       = var.lxc_ips
+}
+
+module "gateways" {
+  source    = "./resources/gateways"
+  node_name = var.pve_node_name
+  ips       = var.lxc_ips
+}
+
+module "media_proxmox" {
+  source    = "./media/proxmox"
+  node_name = var.pve_node_name
+  ips       = var.lxc_ips
+}
+
+module "dev" {
+  source    = "./dev"
+  node_name = var.pve_node_name
 }

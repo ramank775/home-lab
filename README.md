@@ -61,12 +61,30 @@ Setup Raspberry PI:
 
 ### Setup using Ansible and Terraform
 
-- Prepare ansible group_vars from [sample](setup/inventories/sample/)
-- Run ansible playbook to configure raspberry pi and K3s 
+Three Terraform roots + one Ansible tree, applied in order:
+
+- `setup/proxmox/` — Terraform root for k3s VMs + Debian cloud-init template. Needs Proxmox credentials.
+- `setup/ansible/` — Ansible playbook that installs k3s on already-running nodes (Pis or VMs from the previous step).
+- `setup/k3s/` — Terraform root for k8s cluster infra (traefik, metallb, longhorn, democratic-csi, system-updater). Needs k8s credentials.
+- `deployment/` — Terraform root for apps and shared services (k8s Helm charts + Proxmox LXCs/VMs that back the apps). Needs both k8s and Proxmox credentials.
+
+Order of operations for a fresh build:
+
 ```
-  $ ansible-playbook ./setup/setup.yml -i {ansible-dir-with-hosts.ini}
+# 1. Provision k3s nodes via Proxmox (skip if installing on Pis directly).
+terraform -chdir=setup/proxmox apply -var-file=$PWD/.lab/setup/proxmox/values.tfvars
+
+# 2. Install k3s on the nodes.
+ansible-playbook -i setup/ansible/inventories/sample/hosts.ini setup/ansible/setup.yml
+
+# 3. Cluster infra (traefik, metallb, longhorn, CSI).
+terraform -chdir=setup/k3s apply -var-file=$PWD/.lab/setup/k3s/values.tfvars
+
+# 4. Workloads.
+terraform -chdir=deployment apply -var-file=$PWD/.lab/deployment/values.tfvars
 ```
-- Rerun if anything fails
+
+Each Terraform root uses the kubernetes backend (state in cluster secrets `setup-proxmox-state`, `setup-state`, `deployment-state`). Only `setup/proxmox/` and `deployment/` need PROXMOX_VE_* credentials.
 
 ### Manual Setup
 
@@ -159,23 +177,13 @@ Setup Raspberry PI:
 
 - Download terraform cli and add it to system path. Download cli from [here](https://www.terraform.io/).
 - Clone this repo to local system.
-- Change directory to deployment
+- Populate `.lab/deployment/values.tfvars` (and `.lab/setup/k3s/values.tfvars` for the building-blocks tree). `.lab/` is gitignored.
+- Copy k3s cluster config to `deployment/.kube/kube_config` (or set `kube_config` in tfvars).
+- Plan and apply:
   ```sh
-  cd deployment
-  ```
-- Copy `values.local.tf.tmpl` to `values.local.tf` and update variables default value if requried.
-- Copy k3s cluster config to `deployment/.kube/kube_config`.
-- Run initialize terraform in deployment repo.
-  ```sh
-  terraform init
-  ```
-- Verify workload to be added by running
-  ```sh
-  terraform plan
-  ```
-- Apply the terraform plan by running
-  ```sh
-  terraform apply --auto-approve
+  terraform -chdir=deployment init
+  terraform -chdir=deployment plan  -var-file=$PWD/.lab/deployment/values.tfvars
+  terraform -chdir=deployment apply -var-file=$PWD/.lab/deployment/values.tfvars
   ```
 
 ### Current workload

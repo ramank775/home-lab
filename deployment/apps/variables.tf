@@ -26,6 +26,20 @@ variable "node_selector" {
   default     = {}
 }
 
+variable "node_name" {
+  type        = string
+  description = "Proxmox node to place Proxmox-backed apps on."
+}
+
+variable "ips" {
+  description = "Static IP assignments for LXCs (passed through to apps that need them)."
+  type = map(object({
+    address = string
+    gateway = string
+  }))
+  default = {}
+}
+
 # variable "nats_url" {
 #   type        = string
 #   description = "Nats cluster url"

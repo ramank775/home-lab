@@ -97,3 +97,21 @@ module "plausible" {
   plausible_version                  = var.plausible_version
   busybox_image_tag                  = var.busybox_image_tag
 }
+
+# --- Proxmox-backed apps (LXCs and VMs) -----------------------------------
+
+module "nextcloud" {
+  source    = "./nextcloud"
+  node_name = var.node_name
+  ips       = var.ips
+}
+
+module "home-assistant" {
+  source    = "./home-assistant"
+  node_name = var.node_name
+}
+
+module "wordpress" {
+  source    = "./wordpress"
+  node_name = var.node_name
+}

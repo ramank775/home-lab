@@ -15,6 +15,10 @@ terraform {
       source  = "aminueza/minio"
       version = "3.3.0"
     }
+    proxmox = {
+      source  = "bpg/proxmox"
+      version = ">= 0.66.0"
+    }
   }
   backend "kubernetes" {
     secret_suffix = "deployment-state"
@@ -48,6 +52,17 @@ provider "minio" {
   minio_server   = var.minio.proxy_server
   minio_user     = var.minio.user
   minio_password = var.minio.pass
+}
+
+provider "proxmox" {
+  endpoint  = var.pve_endpoint
+  api_token = var.pve_api_token
+  insecure  = var.pve_insecure
+
+  ssh {
+    agent    = true
+    username = var.pve_ssh_username
+  }
 }
 
 data "terraform_remote_state" "deployment" {
