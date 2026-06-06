@@ -9,6 +9,7 @@ module "home_assistance" {
   tablet_device = false
   boot_order    = ["scsi0"]
   tags          = ["community-script"]
+  started       = false
 
   cpu    = { cores = 2 }
   memory = { dedicated = 4096 }

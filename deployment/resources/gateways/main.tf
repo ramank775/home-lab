@@ -8,7 +8,7 @@ module "public_gateway" {
 
   cpu    = { cores = 1 }
   memory = { dedicated = 1024, swap = 512 }
-  disk   = { datastore_id = "fast-storage", size = 10 }
+  disk   = { datastore_id = "fs-1", size = 10 }
 
   features = { keyctl = true }
 

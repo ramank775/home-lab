@@ -8,7 +8,7 @@ module "qbittorrent" {
 
   cpu    = { cores = 2 }
   memory = { dedicated = 4196, swap = 512 }
-  disk   = { datastore_id = "fast-storage", size = 8 }
+  disk   = { datastore_id = "fs-1", size = 8 }
 
   features = { keyctl = true }
 
@@ -34,7 +34,7 @@ module "jellyfin" {
 
   cpu    = { cores = 8 }
   memory = { dedicated = 8192, swap = 512 }
-  disk   = { datastore_id = "fast-storage", size = 8 }
+  disk   = { datastore_id = "fs-1", size = 8 }
 
   features = { keyctl = true }
 
