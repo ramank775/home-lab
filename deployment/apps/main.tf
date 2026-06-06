@@ -76,6 +76,17 @@ module "crawl4ai" {
   image_tag           = var.crawl4ai_image_tag
 }
 
+module "listmonk" {
+  source    = "./listmonk"
+  namespace = var.namespace
+  domain    = "newsletter.${var.domain}"
+  database  = var.shared_db
+  smtp      = var.smtp_options
+  email     = var.listmonk.email
+  admin     = var.listmonk.admin
+  image_tag = var.listmonk_image_tag
+}
+
 module "joplin" {
   source    = "./joplin"
   namespace = var.namespace

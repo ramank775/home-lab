@@ -310,6 +310,21 @@ variable "postiz" {
   })
 }
 
+variable "listmonk" {
+  description = "Listmonk newsletter/mailing-list configuration"
+  type = object({
+    email = object({
+      from_name    = string
+      from_address = string
+    })
+    admin = object({
+      username = string
+      password = string
+    })
+  })
+  sensitive = true
+}
+
 variable "joplin" {
   description = "Joplin server configuration"
   type = object({

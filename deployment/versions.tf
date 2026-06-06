@@ -15,6 +15,7 @@ locals {
     images = {
       n8n                  = "1.84.3"
       joplin               = "3.6.1"
+      listmonk             = "v6.1.0"
       postiz               = "v2.21.8"
       plausible            = "v3.2.0"
       visitor_badge        = "v1.2.0"

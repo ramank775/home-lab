@@ -44,6 +44,8 @@ module "apps" {
   n8n_license_key                = var.n8n_license_key
   joplin                         = var.joplin
   joplin_image_tag               = local.versions.images.joplin
+  listmonk                       = var.listmonk
+  listmonk_image_tag             = local.versions.images.listmonk
   postiz                         = var.postiz
   crawl4ai                       = var.crawl4ai
   plausible                      = var.plausible
