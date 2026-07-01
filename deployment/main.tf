@@ -51,6 +51,7 @@ module "apps" {
   plausible                      = var.plausible
   visitor_badge                  = var.visitor_badge
   searxng_chart_version          = local.versions.charts.searxng
+  searxng_image_tag              = local.versions.images.searxng
   n8n_chart_version              = local.versions.charts.n8n
   n8n_image_tag                  = local.versions.images.n8n
   postiz_image_tag               = local.versions.images.postiz

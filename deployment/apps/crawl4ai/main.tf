@@ -43,6 +43,12 @@ resource "kubernetes_deployment" "crawl4ai" {
           name  = "crawl4ai"
           image = "unclecode/crawl4ai:${var.image_tag}"
 
+          # ponytail: 0.9.0 is secure-by-default — the /mcp/sse endpoint (and
+          # the HTTP API) require CRAWL4AI_API_TOKEN + Bearer auth, else it
+          # binds loopback only. Ingress below still exposes it cluster-wide,
+          # so add CRAWL4AI_API_TOKEN to crawl4ai-secret before relying on the
+          # MCP endpoint. Deferred: wire the token when the agent is stood up.
+
           port {
             container_port = 11235
           }

@@ -66,6 +66,7 @@ module "searxng" {
   namespace     = var.namespace
   domain        = "search.${var.domain}"
   chart_version = var.searxng_chart_version
+  image_tag     = var.searxng_image_tag
 }
 
 module "crawl4ai" {

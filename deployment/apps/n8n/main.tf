@@ -108,17 +108,6 @@ license:
 
 db:
   type: postgresdb
-# This required enterprise license key
-# binaryData:
-#   availableModes:
-#     - s3
-#   mode: "s3"
-#   s3:
-#     host: "${var.minio.server}"
-#     bucketName: "n8n-bucket"
-#     bucketRegion: "us-east-1"
-#     accessKey: "${minio_iam_user.n8n_minio_user.id}"
-#     accessSecret: "${minio_iam_user.n8n_minio_user.secret}"
 
 externalPostgresql:
   host: ${var.database.host}
@@ -126,6 +115,19 @@ externalPostgresql:
   username: "n8n"
   password: ${random_password.n8n_db_passwd.result}
   database: "n8n"
+
+# n8n 2.0 removed the in-memory binary-data mode. S3 mode is a *licensed*
+# feature (license expired 2025-04-09), so use filesystem — unlicensed and
+# satisfies the 2.0 requirement. Switch to s3 if the license is renewed.
+binaryData:
+  mode: filesystem
+
+# Task runners are on by default in n8n 2.0. Internal mode's Python runner
+# needs Python 3 in the image (absent) but the JS runner still works; the
+# Python warning is non-fatal. Use external mode only if Python Code nodes
+# are needed.
+taskRunners:
+  mode: internal
 
 redis:
   enabled: true

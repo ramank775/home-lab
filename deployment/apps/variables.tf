@@ -248,6 +248,11 @@ variable "searxng_chart_version" {
   description = "Helm chart version for searxng"
 }
 
+variable "searxng_image_tag" {
+  type        = string
+  description = "Container image tag for searxng"
+}
+
 variable "n8n_chart_version" {
   type        = string
   description = "Helm chart version for n8n"

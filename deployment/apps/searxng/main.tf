@@ -19,6 +19,17 @@ resource "helm_release" "searxng" {
     name  = "ingress.enabled"
     value = false
   }
+
+  # Pin the upstream image tag; the chart otherwise defaults to "latest".
+  set {
+    name  = "image.tag"
+    value = var.image_tag
+  }
+
+  # NOTE: chart 1.1.4 already enables the JSON search format by default
+  # (config.settings.data ships formats: [html, json]), which the mcp-searxng
+  # server needs. No override required. If config.settings.data is ever
+  # customized, it's one opaque string — preserve `json` under search.formats.
 }
 
 resource "kubernetes_ingress_v1" "searxng" {

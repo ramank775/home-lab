@@ -1,8 +1,8 @@
 locals {
   versions = {
     charts = {
-      searxng    = "1.1.0"
-      n8n        = "1.16.37"
+      searxng    = "1.1.4"
+      n8n        = "1.24.2"
       forgejo    = "17.0.0"
       prometheus = "29.2.1"
       loki       = "7.0.0"
@@ -13,7 +13,8 @@ locals {
       headlamp   = "0.42.0"
     }
     images = {
-      n8n                  = "1.84.3"
+      n8n                  = "2.27.5"
+      searxng              = "2026.6.30-d115c61a7"
       joplin               = "3.6.1"
       listmonk             = "v6.1.0"
       postiz               = "v2.21.8"
@@ -23,7 +24,7 @@ locals {
       dovecot              = "2.3.21.1"
       spampd               = "v2.70.0-rc.1"
       spamassassin         = "latest"
-      crawl4ai             = "latest"
+      crawl4ai             = "0.9.0"
       static_site          = "latest"
       bind9                = "latest"
       blog_feature_post    = "v1.0.2"

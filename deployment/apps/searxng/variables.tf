@@ -14,3 +14,8 @@ variable "chart_version" {
   description = "The version of the SearxNG Helm chart to deploy."
   type        = string
 }
+
+variable "image_tag" {
+  description = "The searxng/searxng container image tag (upstream date tag)."
+  type        = string
+}
