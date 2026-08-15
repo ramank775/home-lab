@@ -3,7 +3,8 @@ module "wp_serverless" {
   name          = "wp-serverless"
   node_name     = var.node_name
   vm_id         = 5000
-  on_boot       = true
+  on_boot       = false
+  started       = false
   scsi_hardware = "virtio-scsi-single"
   boot_order    = ["scsi0", "ide2", "net0"]
   tags          = ["production"]
