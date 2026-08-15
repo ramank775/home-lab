@@ -28,6 +28,9 @@ resource "proxmox_virtual_environment_file" "forgejo_runner_user_data" {
       runner_uuid        = var.forgejo_runner_uuid
       runner_token       = var.forgejo_runner_token
       runner_concurrency = 3
+      node_image         = var.forgejo_runner_node_image
+      forgejo_host       = var.public_host
+      forgejo_ip         = var.public_gateway_ip
       debian_password    = var.forgejo_runner_debian_password
     })
   }

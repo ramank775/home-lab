@@ -13,6 +13,11 @@ variable "forgejo_version" {
   type        = string
 }
 
+variable "forgejo_runner_node_image" {
+  description = "node docker image tag used for forgejo runner labels"
+  type        = string
+}
+
 variable "forgejo_database" {
   description = "Database configuration for forgejo"
   type = object({
@@ -21,8 +26,24 @@ variable "forgejo_database" {
   })
 }
 
+variable "minio" {
+  description = "Minio configuration (used for actions artifact storage)"
+  type = object({
+    proxy_server = string
+    server       = string
+    user         = string
+    pass         = string
+  })
+  sensitive = true
+}
+
 variable "forgejo_ip" {
   description = "value of the forgejo ip"
+  type        = string
+}
+
+variable "public_gateway_ip" {
+  description = "IP of the public gateway that terminates TLS for public_host; used to map the runner's artifact upload to a reachable, cert-valid endpoint"
   type        = string
 }
 

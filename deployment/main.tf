@@ -119,14 +119,17 @@ module "code" {
     type = var.shared_db.type
     host = var.shared_db.host
   }
-  forgejo_ip      = var.code.server_ip
-  public_host     = var.code.public_host
+  forgejo_ip        = var.code.server_ip
+  public_host       = var.code.public_host
+  public_gateway_ip = split("/", var.lxc_ips.public_gateway.address)[0]
+  minio             = var.minio
   smtp            = module.resources.smtp_options
   imap            = module.mail.private_imap_options
   email           = var.code.email_options
   forgejo_version = local.versions.charts.forgejo
 
   # Proxmox-side Forgejo Actions runner VM
+  forgejo_runner_node_image      = local.versions.images.forgejo_runner_node
   node_name                      = var.pve_node_name
   forgejo_runner_uuid            = var.forgejo_runner_uuid
   forgejo_runner_token           = var.forgejo_runner_token

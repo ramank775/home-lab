@@ -6,5 +6,8 @@ terraform {
     proxmox = {
       source = "bpg/proxmox"
     }
+    minio = {
+      source = "aminueza/minio"
+    }
   }
 }

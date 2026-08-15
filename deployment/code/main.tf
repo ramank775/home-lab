@@ -61,7 +61,10 @@ resource "helm_release" "forgejo" {
     postgresql_role.forgejo_db_user,
     postgresql_database.forgejo_db,
     kubernetes_secret.code-admin-creds,
-    kubernetes_namespace.code-ns
+    kubernetes_namespace.code-ns,
+    minio_s3_bucket.forgejo_artifacts,
+    minio_iam_user.forgejo_minio_user,
+    minio_iam_user_policy_attachment.forgejo_minio_policy_attachment
   ]
   name       = "forgejo"
   namespace  = var.namespace
@@ -147,6 +150,13 @@ gitea:
       LANDING_PAGE: "explore"
       DOMAIN: "${var.public_host}"
       ROOT_URL: "https://${var.public_host}"
+      # NOTE: do NOT set LOCAL_ROOT_URL to the public URL. It's the loopback
+      # address Forgejo's OWN workers (SSH `serv`, runner callbacks) use to reach
+      # the API server-to-server; the default (http://localhost:3000/) is correct.
+      # Overriding it with https://<public_host> routed every SSH git op back out
+      # through the public gateway — when that path was flaky, all pushes/clones
+      # failed with "Internal Server Connection Error" / "Key check failed".
+      # User-facing/artifact links come from ROOT_URL, not this.
       SSH_PORT: 2222
     database:
       DB_TYPE: ${var.forgejo_database.type}
@@ -164,6 +174,21 @@ gitea:
       REGISTER_EMAIL_CONFIRM: true
       DISABLE_REGISTRATION: true
       DEFAULT_KEEP_EMAIL_PRIVATE: true
+    actions:
+      ENABLED: true
+      # Resolve bare `uses:` (e.g. peaceiris/actions-hugo@v2) from GitHub instead of
+      # the default data.forgejo.org mirror, which only carries a subset of actions.
+      DEFAULT_ACTIONS_URL: github
+      # Artifacts (upload-artifact/download-artifact). Retention in days;
+      # storage backend configured in [storage.actions_artifacts] below.
+      ARTIFACT_RETENTION_DAYS: 30
+    storage.actions_artifacts:
+      STORAGE_TYPE: minio
+      MINIO_ENDPOINT: "${var.minio.server}"
+      MINIO_BUCKET: "${minio_s3_bucket.forgejo_artifacts.bucket}"
+      MINIO_ACCESS_KEY_ID: "${minio_iam_user.forgejo_minio_user.name}"
+      MINIO_SECRET_ACCESS_KEY: "${random_password.forgejo_minio_secret.result}"
+      MINIO_USE_SSL: false
     mailer:
       ENABLED: true
       SMTP_ADDR: "${var.smtp.host}"

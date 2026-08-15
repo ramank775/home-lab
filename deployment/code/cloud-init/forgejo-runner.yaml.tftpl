@@ -85,15 +85,18 @@ write_files:
         fetch_timeout: 5s
         fetch_interval: 2s
         labels:
-          - docker:docker://node:20-bookworm
-          - ubuntu-latest:docker://node:20-bookworm
+          - docker:docker://node:${node_image}
+          - ubuntu-latest:docker://node:${node_image}
       cache:
         enabled: true
         dir: /var/lib/forgejo-runner/cache
       container:
         network: bridge
         privileged: false
-        options: ""
+        # Job containers upload artifacts back to Forgejo at its public host, which
+        # doesn't resolve internally. Map it to the TLS gateway so DNS resolves and
+        # the cert matches (the gateway terminates SSL for public_host).
+        options: "--add-host ${forgejo_host}:${forgejo_ip}"
         workdir_parent: /var/lib/forgejo-runner/work
         valid_volumes: []
         docker_host: ""
