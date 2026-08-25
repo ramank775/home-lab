@@ -1,0 +1,19 @@
+---
+# Default fs.inotify.max_user_instances (128) is per-UID on the host and shared
+# by every pod running as that UID. Forgejo (and anything else using fsnotify)
+# dies with "too many open files" once the node fills up.
+- name: Raise inotify limits for k3s workloads
+  ansible.builtin.copy:
+    dest: /etc/sysctl.d/99-k3s-inotify.conf
+    content: |
+      fs.inotify.max_user_instances = 8192
+      fs.inotify.max_user_watches = 524288
+    owner: root
+    group: root
+    mode: '0644'
+  register: inotify_sysctl
+
+- name: Reload sysctl
+  ansible.builtin.command: sysctl --system
+  when: inotify_sysctl.changed
+  changed_when: true
