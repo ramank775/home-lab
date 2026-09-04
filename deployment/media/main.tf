@@ -515,8 +515,13 @@ resource "kubernetes_deployment" "jellyseerr" {
       }
 
       spec {
+        # seerr 3.x runs as node:node (1000:1000); the PVC was written by the
+        # old root-running jellyseerr image, so fsGroup re-owns it on mount.
+        security_context {
+          fs_group = 1000
+        }
         container {
-          image = "fallenbagel/jellyseerr:${var.jellyseerr_image_tag}"
+          image = "ghcr.io/seerr-team/seerr:${var.jellyseerr_image_tag}"
           name  = "jellyseerr"
           env {
             name  = "TZ"
