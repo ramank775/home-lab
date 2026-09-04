@@ -93,6 +93,6 @@ module "clickhouse_1" {
   mount_points = [{
     path   = "/mnt/data"
     volume = "fs-1:vm-204-disk-0"
-    size   = "100G"
+    size   = "20G"
   }]
 }
