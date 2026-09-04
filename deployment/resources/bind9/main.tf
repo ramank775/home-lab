@@ -2,7 +2,7 @@ locals {
   bind9Name = "bind9"
 }
 
-resource "kubernetes_config_map" "bind9-config" {
+resource "kubernetes_config_map_v1" "bind9-config" {
   metadata {
     name      = "${local.bind9Name}-config"
     namespace = var.namespace
@@ -40,7 +40,7 @@ options {
   }
 }
 
-resource "kubernetes_deployment" "bind9-deployment" {
+resource "kubernetes_deployment_v1" "bind9-deployment" {
   metadata {
     name      = local.bind9Name
     namespace = var.namespace
@@ -100,7 +100,7 @@ resource "kubernetes_deployment" "bind9-deployment" {
   }
 }
 
-resource "kubernetes_service" "bind9_service" {
+resource "kubernetes_service_v1" "bind9_service" {
   metadata {
     namespace = var.namespace
     name      = "${local.bind9Name}-service"

@@ -36,13 +36,13 @@ resource "random_password" "install-security-key" {
   special = true
 }
 
-resource "kubernetes_namespace" "code-ns" {
+resource "kubernetes_namespace_v1" "code-ns" {
   metadata {
     name = var.namespace
   }
 }
 
-resource "kubernetes_secret" "code-admin-creds" {
+resource "kubernetes_secret_v1" "code-admin-creds" {
   metadata {
     name      = local.admin_credentials_secret
     namespace = var.namespace
@@ -52,7 +52,7 @@ resource "kubernetes_secret" "code-admin-creds" {
     "password" = random_password.admin-password.result
   }
   depends_on = [
-    kubernetes_namespace.code-ns
+    kubernetes_namespace_v1.code-ns
   ]
 }
 
@@ -60,8 +60,8 @@ resource "helm_release" "forgejo" {
   depends_on = [
     postgresql_role.forgejo_db_user,
     postgresql_database.forgejo_db,
-    kubernetes_secret.code-admin-creds,
-    kubernetes_namespace.code-ns,
+    kubernetes_secret_v1.code-admin-creds,
+    kubernetes_namespace_v1.code-ns,
     minio_s3_bucket.forgejo_artifacts,
     minio_iam_user.forgejo_minio_user,
     minio_iam_user_policy_attachment.forgejo_minio_policy_attachment

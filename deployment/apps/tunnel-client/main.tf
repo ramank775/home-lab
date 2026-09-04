@@ -5,7 +5,7 @@ locals {
 
 }
 
-resource "kubernetes_secret" "ssh_key_proxy_server" {
+resource "kubernetes_secret_v1" "ssh_key_proxy_server" {
   metadata {
     name      = "tunnel-ssh-key"
     namespace = var.namespace
@@ -21,7 +21,7 @@ resource "kubernetes_secret" "ssh_key_proxy_server" {
 
 }
 
-resource "kubernetes_config_map" "tunnel_nginx_config_map" {
+resource "kubernetes_config_map_v1" "tunnel_nginx_config_map" {
   metadata {
     name      = "tunnel-nginx-config-map"
     namespace = var.namespace
@@ -40,7 +40,7 @@ resource "kubernetes_config_map" "tunnel_nginx_config_map" {
   }
 }
 
-resource "kubernetes_config_map" "tunnel-nginx-confd-config-map" {
+resource "kubernetes_config_map_v1" "tunnel-nginx-confd-config-map" {
   metadata {
     name      = "tunnel-nginx-confd-config-map"
     namespace = var.namespace
@@ -63,7 +63,7 @@ resource "kubernetes_config_map" "tunnel-nginx-confd-config-map" {
   }
 }
 
-resource "kubernetes_deployment" "tcp_tunnel_client_deployement" {
+resource "kubernetes_deployment_v1" "tcp_tunnel_client_deployement" {
   metadata {
     name      = local.appname
     namespace = var.namespace

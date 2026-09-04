@@ -24,7 +24,7 @@ resource "postgresql_database" "joplin_db" {
   depends_on             = [postgresql_role.db_user]
 }
 
-resource "kubernetes_deployment" "joplin_app" {
+resource "kubernetes_deployment_v1" "joplin_app" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -168,7 +168,7 @@ resource "kubernetes_deployment" "joplin_app" {
   }
 }
 
-resource "kubernetes_service" "joplin_app" {
+resource "kubernetes_service_v1" "joplin_app" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -206,7 +206,7 @@ resource "kubernetes_ingress_v1" "joplin_app" {
 
           backend {
             service {
-              name = kubernetes_service.joplin_app.metadata[0].name
+              name = kubernetes_service_v1.joplin_app.metadata[0].name
               port {
                 number = 80
               }

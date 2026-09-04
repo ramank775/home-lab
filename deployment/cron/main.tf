@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "homelab_cron_namespace" {
+resource "kubernetes_namespace_v1" "homelab_cron_namespace" {
   metadata {
     name = var.namespace
   }

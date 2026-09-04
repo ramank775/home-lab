@@ -4,7 +4,7 @@ locals {
   replicas = var.replicas
 }
 
-resource "kubernetes_config_map" "slack_notifier_config_map" {
+resource "kubernetes_config_map_v1" "slack_notifier_config_map" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -31,7 +31,7 @@ resource "kubernetes_config_map" "slack_notifier_config_map" {
   }
 }
 
-resource "kubernetes_deployment" "slack_notifier_deployement" {
+resource "kubernetes_deployment_v1" "slack_notifier_deployement" {
   metadata {
     name      = local.appname
     namespace = var.namespace

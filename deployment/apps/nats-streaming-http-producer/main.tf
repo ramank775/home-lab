@@ -4,7 +4,7 @@ locals {
   replicas = var.replicas
 }
 
-resource "kubernetes_deployment" "nats_streaming_http_producer_deployement" {
+resource "kubernetes_deployment_v1" "nats_streaming_http_producer_deployement" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -79,7 +79,7 @@ resource "kubernetes_deployment" "nats_streaming_http_producer_deployement" {
   }
 }
 
-resource "kubernetes_service" "nats_streaming_http_producer_service" {
+resource "kubernetes_service_v1" "nats_streaming_http_producer_service" {
   metadata {
     name      = local.appname
     namespace = var.namespace

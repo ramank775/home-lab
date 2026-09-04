@@ -6,7 +6,7 @@ locals {
   data_volume  = "visitor-badge-redis-data"
 }
 
-resource "kubernetes_persistent_volume_claim" "redis_data_volume" {
+resource "kubernetes_persistent_volume_claim_v1" "redis_data_volume" {
   metadata {
     name      = local.data_volume
     namespace = var.namespace
@@ -26,7 +26,7 @@ resource "kubernetes_persistent_volume_claim" "redis_data_volume" {
   }
 }
 
-resource "kubernetes_service" "redis-service" {
+resource "kubernetes_service_v1" "redis-service" {
   metadata {
     name      = "${local.appname}-redis-service"
     namespace = var.namespace
@@ -93,7 +93,7 @@ resource "kubernetes_stateful_set_v1" "redis" {
     }
   }
 }
-resource "kubernetes_deployment" "visitor_badge_deployement" {
+resource "kubernetes_deployment_v1" "visitor_badge_deployement" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -155,7 +155,7 @@ resource "kubernetes_deployment" "visitor_badge_deployement" {
   }
 }
 
-resource "kubernetes_service" "visitor_badge_service" {
+resource "kubernetes_service_v1" "visitor_badge_service" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -178,7 +178,7 @@ resource "kubernetes_service" "visitor_badge_service" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "backup_data_volume" {
+resource "kubernetes_persistent_volume_claim_v1" "backup_data_volume" {
   metadata {
     name      = "${local.appname}-backup-data"
     namespace = var.namespace

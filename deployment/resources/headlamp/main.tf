@@ -2,7 +2,7 @@ locals {
   namespace = "headlamp"
 }
 
-resource "kubernetes_namespace" "headlamp" {
+resource "kubernetes_namespace_v1" "headlamp" {
   metadata {
     name = local.namespace
   }
@@ -10,7 +10,7 @@ resource "kubernetes_namespace" "headlamp" {
 
 resource "helm_release" "headlamp" {
   depends_on = [
-    kubernetes_namespace.headlamp,
+    kubernetes_namespace_v1.headlamp,
   ]
   name            = "headlamp"
   repository      = "https://kubernetes-sigs.github.io/headlamp/"

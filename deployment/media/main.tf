@@ -1,10 +1,10 @@
-resource "kubernetes_namespace" "media" {
+resource "kubernetes_namespace_v1" "media" {
   metadata {
     name = var.namespace
   }
 }
 
-resource "kubernetes_persistent_volume" "media-directory" {
+resource "kubernetes_persistent_volume_v1" "media-directory" {
   metadata {
     name = "media-directory"
   }
@@ -28,7 +28,7 @@ resource "kubernetes_persistent_volume" "media-directory" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "media-data" {
+resource "kubernetes_persistent_volume_claim_v1" "media-data" {
   metadata {
     name      = "media-data"
     namespace = var.namespace
@@ -46,7 +46,7 @@ resource "kubernetes_persistent_volume_claim" "media-data" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "sonarr-config" {
+resource "kubernetes_persistent_volume_claim_v1" "sonarr-config" {
   metadata {
     name      = "sonarr-config"
     namespace = var.namespace
@@ -63,7 +63,7 @@ resource "kubernetes_persistent_volume_claim" "sonarr-config" {
   }
 }
 
-resource "kubernetes_deployment" "sonarr" {
+resource "kubernetes_deployment_v1" "sonarr" {
   metadata {
     name      = "sonarr"
     namespace = var.namespace
@@ -119,13 +119,13 @@ resource "kubernetes_deployment" "sonarr" {
         volume {
           name = "config"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.sonarr-config.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.sonarr-config.metadata.0.name
           }
         }
         volume {
           name = "media-data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.media-data.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.media-data.metadata.0.name
           }
         }
       }
@@ -133,7 +133,7 @@ resource "kubernetes_deployment" "sonarr" {
   }
 }
 
-resource "kubernetes_service" "sonarr" {
+resource "kubernetes_service_v1" "sonarr" {
   metadata {
     name      = "sonarr"
     namespace = var.namespace
@@ -148,11 +148,11 @@ resource "kubernetes_service" "sonarr" {
     }
   }
   depends_on = [
-    kubernetes_deployment.sonarr
+    kubernetes_deployment_v1.sonarr
   ]
 }
 
-resource "kubernetes_persistent_volume_claim" "radarr-config" {
+resource "kubernetes_persistent_volume_claim_v1" "radarr-config" {
   metadata {
     name      = "radarr-config"
     namespace = var.namespace
@@ -169,7 +169,7 @@ resource "kubernetes_persistent_volume_claim" "radarr-config" {
   }
 }
 
-resource "kubernetes_deployment" "radarr" {
+resource "kubernetes_deployment_v1" "radarr" {
   metadata {
     name      = "radarr"
     namespace = var.namespace
@@ -225,13 +225,13 @@ resource "kubernetes_deployment" "radarr" {
         volume {
           name = "config"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.radarr-config.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.radarr-config.metadata.0.name
           }
         }
         volume {
           name = "media-data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.media-data.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.media-data.metadata.0.name
           }
         }
       }
@@ -239,7 +239,7 @@ resource "kubernetes_deployment" "radarr" {
   }
 }
 
-resource "kubernetes_service" "radarr" {
+resource "kubernetes_service_v1" "radarr" {
   metadata {
     name      = "radarr"
     namespace = var.namespace
@@ -254,11 +254,11 @@ resource "kubernetes_service" "radarr" {
     }
   }
   depends_on = [
-    kubernetes_deployment.radarr
+    kubernetes_deployment_v1.radarr
   ]
 }
 
-resource "kubernetes_persistent_volume_claim" "prowlarr-config" {
+resource "kubernetes_persistent_volume_claim_v1" "prowlarr-config" {
   metadata {
     name      = "prowlarr-config"
     namespace = var.namespace
@@ -275,7 +275,7 @@ resource "kubernetes_persistent_volume_claim" "prowlarr-config" {
   }
 }
 
-resource "kubernetes_deployment" "prowlarr" {
+resource "kubernetes_deployment_v1" "prowlarr" {
   metadata {
     name      = "prowlarr"
     namespace = var.namespace
@@ -339,7 +339,7 @@ resource "kubernetes_deployment" "prowlarr" {
   }
 }
 
-resource "kubernetes_service" "prowlarr" {
+resource "kubernetes_service_v1" "prowlarr" {
   metadata {
     name      = "prowlarr"
     namespace = var.namespace
@@ -355,11 +355,11 @@ resource "kubernetes_service" "prowlarr" {
     }
   }
   depends_on = [
-    kubernetes_deployment.prowlarr
+    kubernetes_deployment_v1.prowlarr
   ]
 }
 
-resource "kubernetes_deployment" "metube" {
+resource "kubernetes_deployment_v1" "metube" {
   metadata {
     name      = "metube"
     namespace = var.namespace
@@ -436,7 +436,7 @@ resource "kubernetes_deployment" "metube" {
         volume {
           name = "media-data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.media-data.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.media-data.metadata.0.name
           }
         }
         volume {
@@ -448,7 +448,7 @@ resource "kubernetes_deployment" "metube" {
   }
 }
 
-resource "kubernetes_service" "metube" {
+resource "kubernetes_service_v1" "metube" {
   metadata {
     name      = "metube"
     namespace = var.namespace
@@ -464,11 +464,11 @@ resource "kubernetes_service" "metube" {
     }
   }
   depends_on = [
-    kubernetes_deployment.metube
+    kubernetes_deployment_v1.metube
   ]
 }
 
-resource "kubernetes_persistent_volume_claim" "jellyseerr-config" {
+resource "kubernetes_persistent_volume_claim_v1" "jellyseerr-config" {
   metadata {
     name      = "jellyseerr-config"
     namespace = var.namespace
@@ -485,7 +485,7 @@ resource "kubernetes_persistent_volume_claim" "jellyseerr-config" {
   }
 }
 
-resource "kubernetes_deployment" "jellyseerr" {
+resource "kubernetes_deployment_v1" "jellyseerr" {
   metadata {
     name      = "jellyseerr"
     namespace = var.namespace
@@ -551,7 +551,7 @@ resource "kubernetes_deployment" "jellyseerr" {
         volume {
           name = "config"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.jellyseerr-config.metadata.0.name
+            claim_name = kubernetes_persistent_volume_claim_v1.jellyseerr-config.metadata.0.name
           }
         }
       }
@@ -559,7 +559,7 @@ resource "kubernetes_deployment" "jellyseerr" {
   }
 }
 
-resource "kubernetes_service" "jellyseerr" {
+resource "kubernetes_service_v1" "jellyseerr" {
   metadata {
     name      = "jellyseerr"
     namespace = var.namespace
@@ -576,11 +576,11 @@ resource "kubernetes_service" "jellyseerr" {
     }
   }
   depends_on = [
-    kubernetes_deployment.jellyseerr
+    kubernetes_deployment_v1.jellyseerr
   ]
 }
 
-resource "kubernetes_deployment" "flaresovlerr" {
+resource "kubernetes_deployment_v1" "flaresovlerr" {
   metadata {
     name      = "flaresolverr"
     namespace = var.namespace
@@ -630,7 +630,7 @@ resource "kubernetes_deployment" "flaresovlerr" {
   }
 }
 
-resource "kubernetes_service" "flaresovlerr" {
+resource "kubernetes_service_v1" "flaresovlerr" {
   metadata {
     name      = "flaresolverr"
     namespace = var.namespace
@@ -646,7 +646,7 @@ resource "kubernetes_service" "flaresovlerr" {
     }
   }
   depends_on = [
-    kubernetes_deployment.prowlarr
+    kubernetes_deployment_v1.prowlarr
   ]
 }
 
@@ -667,7 +667,7 @@ resource "kubernetes_ingress_v1" "media-management" {
           path = "/sonarr"
           backend {
             service {
-              name = kubernetes_service.sonarr.metadata.0.name
+              name = kubernetes_service_v1.sonarr.metadata.0.name
               port {
                 number = 8989
               }
@@ -678,7 +678,7 @@ resource "kubernetes_ingress_v1" "media-management" {
           path = "/radarr"
           backend {
             service {
-              name = kubernetes_service.radarr.metadata.0.name
+              name = kubernetes_service_v1.radarr.metadata.0.name
               port {
                 number = 7878
               }
@@ -694,7 +694,7 @@ resource "kubernetes_ingress_v1" "media-management" {
           path = "/"
           backend {
             service {
-              name = kubernetes_service.metube.metadata.0.name
+              name = kubernetes_service_v1.metube.metadata.0.name
               port {
                 number = 8081
               }
@@ -710,7 +710,7 @@ resource "kubernetes_ingress_v1" "media-management" {
           path = "/"
           backend {
             service {
-              name = kubernetes_service.jellyseerr.metadata.0.name
+              name = kubernetes_service_v1.jellyseerr.metadata.0.name
               port {
                 number = 5055
               }
@@ -726,7 +726,7 @@ resource "kubernetes_ingress_v1" "media-management" {
           path = "/"
           backend {
             service {
-              name = kubernetes_service.prowlarr.metadata.0.name
+              name = kubernetes_service_v1.prowlarr.metadata.0.name
               port {
                 number = 9696
               }

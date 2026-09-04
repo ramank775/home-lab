@@ -3,7 +3,7 @@ locals {
   appname = "smtp-relay"
 }
 
-resource "kubernetes_deployment" "smtp-relay" {
+resource "kubernetes_deployment_v1" "smtp-relay" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -63,7 +63,7 @@ resource "kubernetes_deployment" "smtp-relay" {
   }
 }
 
-resource "kubernetes_service" "smtp-service" {
+resource "kubernetes_service_v1" "smtp-service" {
   metadata {
     name = local.appname
     labels = {
@@ -85,7 +85,7 @@ resource "kubernetes_service" "smtp-service" {
   }
 }
 
-resource "kubernetes_service" "smtp-internal-service" {
+resource "kubernetes_service_v1" "smtp-internal-service" {
   metadata {
     name = "${local.appname}-internal-service"
     labels = {

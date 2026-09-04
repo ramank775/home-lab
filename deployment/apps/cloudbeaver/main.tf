@@ -2,7 +2,7 @@ locals {
   appname = "cloudbeaver"
 }
 
-resource "kubernetes_persistent_volume_claim" "workspace" {
+resource "kubernetes_persistent_volume_claim_v1" "workspace" {
   metadata {
     name      = "${local.appname}-workspace"
     namespace = var.namespace
@@ -22,7 +22,7 @@ resource "kubernetes_persistent_volume_claim" "workspace" {
   }
 }
 
-resource "kubernetes_deployment" "cloudbeaver" {
+resource "kubernetes_deployment_v1" "cloudbeaver" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -92,7 +92,7 @@ resource "kubernetes_deployment" "cloudbeaver" {
         volume {
           name = "workspace"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.workspace.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.workspace.metadata[0].name
           }
         }
       }
@@ -100,7 +100,7 @@ resource "kubernetes_deployment" "cloudbeaver" {
   }
 }
 
-resource "kubernetes_service" "cloudbeaver" {
+resource "kubernetes_service_v1" "cloudbeaver" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -138,7 +138,7 @@ resource "kubernetes_ingress_v1" "cloudbeaver" {
 
           backend {
             service {
-              name = kubernetes_service.cloudbeaver.metadata[0].name
+              name = kubernetes_service_v1.cloudbeaver.metadata[0].name
               port {
                 number = 80
               }

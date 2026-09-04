@@ -45,7 +45,7 @@ resource "postgresql_database" "temporal_visibility" {
 # Temporal v1.28 advanced visibility requires ES v7. Single-node, JVM capped
 # at 256m matching upstream compose. amd64-only — JVM RAM headroom.
 
-resource "kubernetes_service" "elasticsearch" {
+resource "kubernetes_service_v1" "elasticsearch" {
   metadata {
     name      = "${local.appname}-elasticsearch"
     namespace = var.namespace
@@ -66,7 +66,7 @@ resource "kubernetes_service" "elasticsearch" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "elasticsearch_data" {
+resource "kubernetes_persistent_volume_claim_v1" "elasticsearch_data" {
   metadata {
     name      = "${local.appname}-elasticsearch-data"
     namespace = var.namespace
@@ -97,7 +97,7 @@ resource "kubernetes_stateful_set_v1" "elasticsearch" {
 
   spec {
     replicas     = 1
-    service_name = kubernetes_service.elasticsearch.metadata[0].name
+    service_name = kubernetes_service_v1.elasticsearch.metadata[0].name
     selector {
       match_labels = {
         app = "${local.appname}-elasticsearch"
@@ -189,7 +189,7 @@ resource "kubernetes_stateful_set_v1" "elasticsearch" {
         volume {
           name = "data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.elasticsearch_data.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.elasticsearch_data.metadata[0].name
           }
         }
       }
@@ -199,7 +199,7 @@ resource "kubernetes_stateful_set_v1" "elasticsearch" {
 
 # --- Temporal server (auto-setup) --------------------------------------------
 
-resource "kubernetes_service" "temporal_server" {
+resource "kubernetes_service_v1" "temporal_server" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -220,7 +220,7 @@ resource "kubernetes_service" "temporal_server" {
   }
 }
 
-resource "kubernetes_deployment" "temporal_server" {
+resource "kubernetes_deployment_v1" "temporal_server" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -293,7 +293,7 @@ resource "kubernetes_deployment" "temporal_server" {
           }
           env {
             name  = "ES_SEEDS"
-            value = kubernetes_service.elasticsearch.metadata[0].name
+            value = kubernetes_service_v1.elasticsearch.metadata[0].name
           }
           env {
             name  = "ES_VERSION"
@@ -341,7 +341,7 @@ resource "kubernetes_deployment" "temporal_server" {
 
 # --- Temporal UI --------------------------------------------------------------
 
-resource "kubernetes_service" "temporal_ui" {
+resource "kubernetes_service_v1" "temporal_ui" {
   metadata {
     name      = "${local.appname}-ui"
     namespace = var.namespace
@@ -362,7 +362,7 @@ resource "kubernetes_service" "temporal_ui" {
   }
 }
 
-resource "kubernetes_deployment" "temporal_ui" {
+resource "kubernetes_deployment_v1" "temporal_ui" {
   metadata {
     name      = "${local.appname}-ui"
     namespace = var.namespace
@@ -397,7 +397,7 @@ resource "kubernetes_deployment" "temporal_ui" {
 
           env {
             name  = "TEMPORAL_ADDRESS"
-            value = "${kubernetes_service.temporal_server.metadata[0].name}:7233"
+            value = "${kubernetes_service_v1.temporal_server.metadata[0].name}:7233"
           }
           env {
             name  = "TEMPORAL_CORS_ORIGINS"
@@ -428,7 +428,7 @@ resource "kubernetes_ingress_v1" "temporal_ui" {
           path = "/"
           backend {
             service {
-              name = kubernetes_service.temporal_ui.metadata[0].name
+              name = kubernetes_service_v1.temporal_ui.metadata[0].name
               port {
                 number = 80
               }

@@ -27,7 +27,7 @@ resource "random_password" "plausible_secret_key" {
   special = true
 }
 
-resource "kubernetes_persistent_volume_claim" "plausible_data" {
+resource "kubernetes_persistent_volume_claim_v1" "plausible_data" {
   metadata {
     name      = "plausible-data"
     namespace = var.namespace
@@ -47,7 +47,7 @@ resource "kubernetes_persistent_volume_claim" "plausible_data" {
   }
 }
 
-resource "kubernetes_secret" "plausible_google_oauth" {
+resource "kubernetes_secret_v1" "plausible_google_oauth" {
   metadata {
     name      = "plausible-google-oauth"
     namespace = var.namespace
@@ -64,7 +64,7 @@ resource "kubernetes_secret" "plausible_google_oauth" {
   type = "Opaque"
 }
 
-resource "kubernetes_deployment" "plausible" {
+resource "kubernetes_deployment_v1" "plausible" {
   metadata {
     name      = "plausible"
     namespace = var.namespace
@@ -201,7 +201,7 @@ resource "kubernetes_deployment" "plausible" {
             name = "GOOGLE_CLIENT_ID"
             value_from {
               secret_key_ref {
-                name = kubernetes_secret.plausible_google_oauth.metadata[0].name
+                name = kubernetes_secret_v1.plausible_google_oauth.metadata[0].name
                 key  = "client_id"
               }
             }
@@ -211,7 +211,7 @@ resource "kubernetes_deployment" "plausible" {
             name = "GOOGLE_CLIENT_SECRET"
             value_from {
               secret_key_ref {
-                name = kubernetes_secret.plausible_google_oauth.metadata[0].name
+                name = kubernetes_secret_v1.plausible_google_oauth.metadata[0].name
                 key  = "client_secret"
               }
             }
@@ -232,7 +232,7 @@ resource "kubernetes_deployment" "plausible" {
         volume {
           name = "plausible-data"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.plausible_data.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.plausible_data.metadata[0].name
           }
         }
       }
@@ -240,7 +240,7 @@ resource "kubernetes_deployment" "plausible" {
   }
 }
 
-resource "kubernetes_service" "plausible" {
+resource "kubernetes_service_v1" "plausible" {
   metadata {
     name      = "plausible"
     namespace = var.namespace

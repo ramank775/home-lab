@@ -24,7 +24,7 @@ resource "postgresql_database" "listmonk_db" {
   depends_on             = [postgresql_role.db_user]
 }
 
-resource "kubernetes_persistent_volume_claim" "listmonk_uploads" {
+resource "kubernetes_persistent_volume_claim_v1" "listmonk_uploads" {
   metadata {
     name      = "${local.appname}-uploads"
     namespace = var.namespace
@@ -58,7 +58,7 @@ locals {
   ]
 }
 
-resource "kubernetes_deployment" "listmonk_app" {
+resource "kubernetes_deployment_v1" "listmonk_app" {
   depends_on = [
     postgresql_database.listmonk_db,
   ]
@@ -167,7 +167,7 @@ resource "kubernetes_deployment" "listmonk_app" {
           name = "uploads"
 
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.listmonk_uploads.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.listmonk_uploads.metadata[0].name
           }
         }
       }
@@ -175,7 +175,7 @@ resource "kubernetes_deployment" "listmonk_app" {
   }
 }
 
-resource "kubernetes_service" "listmonk_app" {
+resource "kubernetes_service_v1" "listmonk_app" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -213,7 +213,7 @@ resource "kubernetes_ingress_v1" "listmonk_app" {
 
           backend {
             service {
-              name = kubernetes_service.listmonk_app.metadata[0].name
+              name = kubernetes_service_v1.listmonk_app.metadata[0].name
               port {
                 number = 80
               }

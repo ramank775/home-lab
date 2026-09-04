@@ -3,7 +3,7 @@ locals {
   buckets      = toset(["loki-bucket", "tempo-bucket", "pyroscope-bucket"])
 }
 
-resource "kubernetes_namespace" "monitoring-namespace" {
+resource "kubernetes_namespace_v1" "monitoring-namespace" {
   metadata {
     name = var.namespace
   }
@@ -299,7 +299,7 @@ resource "helm_release" "pyroscope" {
 }
 
 # Grafana Datasource ConfigMap (Integrate Prometheus, Loki, Tempo, Pyroscope)
-resource "kubernetes_config_map" "grafana_datasource" {
+resource "kubernetes_config_map_v1" "grafana_datasource" {
   metadata {
     name      = "grafana-datasources"
     namespace = var.namespace
@@ -384,12 +384,12 @@ resource "helm_release" "grafana" {
   ]
 
   depends_on = [
-    kubernetes_config_map.grafana_datasource
+    kubernetes_config_map_v1.grafana_datasource
   ]
 }
 
 
-resource "kubernetes_config_map" "alloy-config" {
+resource "kubernetes_config_map_v1" "alloy-config" {
   metadata {
     name      = "alloy-config"
     namespace = var.namespace
@@ -528,7 +528,7 @@ resource "helm_release" "grafana-alloy" {
 
   set {
     name  = "alloy.configMap.name"
-    value = kubernetes_config_map.alloy-config.metadata.0.name
+    value = kubernetes_config_map_v1.alloy-config.metadata.0.name
   }
 
   set {
@@ -544,13 +544,13 @@ resource "helm_release" "grafana-alloy" {
   }
 
   depends_on = [
-    kubernetes_config_map.alloy-config
+    kubernetes_config_map_v1.alloy-config
   ]
 }
 
 
 # Graphite Exporter
-resource "kubernetes_deployment" "graphite_exporter" {
+resource "kubernetes_deployment_v1" "graphite_exporter" {
   metadata {
     name      = "graphite-exporter"
     namespace = var.namespace
@@ -607,7 +607,7 @@ resource "kubernetes_deployment" "graphite_exporter" {
         volume {
           name = "mapping"
           config_map {
-            name = kubernetes_config_map.alloy-config.metadata.0.name
+            name = kubernetes_config_map_v1.alloy-config.metadata.0.name
           }
         }
       }
@@ -615,7 +615,7 @@ resource "kubernetes_deployment" "graphite_exporter" {
   }
 }
 
-resource "kubernetes_service" "graphite_exporter" {
+resource "kubernetes_service_v1" "graphite_exporter" {
   metadata {
     name      = "graphite-exporter"
     namespace = var.namespace
@@ -639,7 +639,7 @@ resource "kubernetes_service" "graphite_exporter" {
   }
 }
 
-resource "kubernetes_service" "graphite_exporter_lb" {
+resource "kubernetes_service_v1" "graphite_exporter_lb" {
   metadata {
     name      = "graphite-exporter-lb"
     namespace = var.namespace
@@ -671,7 +671,7 @@ resource "kubernetes_service" "graphite_exporter_lb" {
   }
 }
 
-resource "kubernetes_service" "monitoring-lb" {
+resource "kubernetes_service_v1" "monitoring-lb" {
   metadata {
     name      = "monitoring-lb"
     namespace = var.namespace

@@ -6,7 +6,7 @@ locals {
   sftp_server   = "sftp-server"
 }
 
-resource "kubernetes_persistent_volume_claim" "static_site_data" {
+resource "kubernetes_persistent_volume_claim_v1" "static_site_data" {
   metadata {
     name      = local.data_volume
     namespace = var.namespace
@@ -26,7 +26,7 @@ resource "kubernetes_persistent_volume_claim" "static_site_data" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "server_configuration" {
+resource "kubernetes_persistent_volume_claim_v1" "server_configuration" {
   metadata {
     name      = local.config_volume
     namespace = var.namespace
@@ -46,7 +46,7 @@ resource "kubernetes_persistent_volume_claim" "server_configuration" {
   }
 }
 
-resource "kubernetes_deployment" "static_server" {
+resource "kubernetes_deployment_v1" "static_server" {
   metadata {
     name      = local.static_server
     namespace = var.namespace
@@ -121,7 +121,7 @@ resource "kubernetes_deployment" "static_server" {
   }
 }
 
-resource "kubernetes_service" "static_server_service" {
+resource "kubernetes_service_v1" "static_server_service" {
   metadata {
     name      = local.static_server
     namespace = var.namespace
@@ -144,7 +144,7 @@ resource "kubernetes_service" "static_server_service" {
   }
 }
 
-resource "kubernetes_service" "static_server_sftp" {
+resource "kubernetes_service_v1" "static_server_sftp" {
   metadata {
     name = local.sftp_server
     labels = {

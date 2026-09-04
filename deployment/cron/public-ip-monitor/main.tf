@@ -3,7 +3,7 @@ locals {
   appname = "public-ip-monitor"
 }
 
-resource "kubernetes_persistent_volume_claim" "public_ip_monitor_pvc" {
+resource "kubernetes_persistent_volume_claim_v1" "public_ip_monitor_pvc" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -24,7 +24,7 @@ resource "kubernetes_persistent_volume_claim" "public_ip_monitor_pvc" {
 }
 
 
-resource "kubernetes_cron_job" "public_ip_monitor_cron_job" {
+resource "kubernetes_cron_job_v1" "public_ip_monitor_cron_job" {
   metadata {
     name      = local.appname
     namespace = var.namespace

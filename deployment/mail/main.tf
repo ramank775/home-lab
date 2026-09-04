@@ -10,13 +10,13 @@ locals {
 
 }
 
-resource "kubernetes_namespace" "mail" {
+resource "kubernetes_namespace_v1" "mail" {
   metadata {
     name = var.namespace
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "mail_data_pv" {
+resource "kubernetes_persistent_volume_claim_v1" "mail_data_pv" {
   metadata {
     name      = local.data_volume
     namespace = var.namespace
@@ -34,10 +34,10 @@ resource "kubernetes_persistent_volume_claim" "mail_data_pv" {
     storage_class_name = "truenas-iscsi-csi"
     access_modes       = ["ReadWriteOnce"]
   }
-  depends_on = [kubernetes_namespace.mail]
+  depends_on = [kubernetes_namespace_v1.mail]
 }
 
-resource "kubernetes_config_map" "dovecot_config" {
+resource "kubernetes_config_map_v1" "dovecot_config" {
   metadata {
     name      = "${local.dovecotName}-config"
     namespace = var.namespace
@@ -55,8 +55,8 @@ resource "kubernetes_config_map" "dovecot_config" {
 
 resource "kubernetes_stateful_set_v1" "dovecot" {
   depends_on = [
-    kubernetes_persistent_volume_claim.mail_data_pv,
-    kubernetes_config_map.dovecot_config
+    kubernetes_persistent_volume_claim_v1.mail_data_pv,
+    kubernetes_config_map_v1.dovecot_config
   ]
   metadata {
     namespace = var.namespace
@@ -153,7 +153,7 @@ resource "kubernetes_stateful_set_v1" "dovecot" {
   }
 }
 
-resource "kubernetes_service" "dovecot_service" {
+resource "kubernetes_service_v1" "dovecot_service" {
   metadata {
     namespace = var.namespace
     name      = "${local.dovecotName}-service"
@@ -183,7 +183,7 @@ resource "kubernetes_service" "dovecot_service" {
   }
 }
 
-resource "kubernetes_service" "dovecot_external_service" {
+resource "kubernetes_service_v1" "dovecot_external_service" {
   metadata {
     namespace = var.namespace
     name      = "${local.dovecotName}-external"
@@ -211,7 +211,7 @@ resource "kubernetes_service" "dovecot_external_service" {
   }
 }
 
-resource "kubernetes_config_map" "spampd_config" {
+resource "kubernetes_config_map_v1" "spampd_config" {
   metadata {
     name      = "${local.spampdName}-config"
     namespace = var.namespace
@@ -242,7 +242,7 @@ bayes_auto_expire 1
   }
 }
 
-resource "kubernetes_deployment" "spampd" {
+resource "kubernetes_deployment_v1" "spampd" {
   metadata {
     namespace = var.namespace
     name      = local.spampdName
@@ -330,7 +330,7 @@ resource "kubernetes_deployment" "spampd" {
   }
 }
 
-resource "kubernetes_service" "spampd_service" {
+resource "kubernetes_service_v1" "spampd_service" {
   metadata {
     namespace = var.namespace
     name      = "${local.spampdName}-service"
@@ -353,7 +353,7 @@ resource "kubernetes_service" "spampd_service" {
   }
 }
 
-resource "kubernetes_service" "spampd_external_service" {
+resource "kubernetes_service_v1" "spampd_external_service" {
   metadata {
     namespace = var.namespace
     name      = "${local.spampdName}-external"
@@ -384,7 +384,7 @@ resource "kubernetes_service" "spampd_external_service" {
 }
 
 
-resource "kubernetes_service" "redis-service" {
+resource "kubernetes_service_v1" "redis-service" {
   metadata {
     name      = "${local.prefix}-redis-service"
     namespace = var.namespace
@@ -405,7 +405,7 @@ resource "kubernetes_service" "redis-service" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "redis_data_volume" {
+resource "kubernetes_persistent_volume_claim_v1" "redis_data_volume" {
   metadata {
     name      = "${local.prefix}-redis-data"
     namespace = var.namespace
@@ -472,7 +472,7 @@ resource "kubernetes_stateful_set_v1" "redis" {
   }
 }
 
-resource "kubernetes_stateful_set" "spamassassin" {
+resource "kubernetes_stateful_set_v1" "spamassassin" {
   metadata {
     namespace = var.namespace
     name      = "spamassassin"
@@ -579,7 +579,7 @@ resource "kubernetes_stateful_set" "spamassassin" {
   }
 }
 
-resource "kubernetes_service" "spamassasin_service" {
+resource "kubernetes_service_v1" "spamassasin_service" {
   metadata {
     namespace = var.namespace
     name      = "spamassassin-service"
@@ -601,7 +601,7 @@ resource "kubernetes_service" "spamassasin_service" {
   }
 }
 
-resource "kubernetes_config_map" "postfixadmin_config" {
+resource "kubernetes_config_map_v1" "postfixadmin_config" {
   metadata {
     name      = "${local.postfixadmin}-config"
     namespace = var.namespace
@@ -629,7 +629,7 @@ resource "kubernetes_config_map" "postfixadmin_config" {
   }
 }
 
-resource "kubernetes_deployment" "postfix-admin" {
+resource "kubernetes_deployment_v1" "postfix-admin" {
   metadata {
     name      = local.postfixadmin
     namespace = var.namespace
@@ -690,7 +690,7 @@ resource "kubernetes_deployment" "postfix-admin" {
         volume {
           name = "config-local"
           config_map {
-            name = kubernetes_config_map.postfixadmin_config.metadata[0].name
+            name = kubernetes_config_map_v1.postfixadmin_config.metadata[0].name
           }
         }
       }
@@ -698,7 +698,7 @@ resource "kubernetes_deployment" "postfix-admin" {
   }
 }
 
-resource "kubernetes_service" "postfixadmin_service" {
+resource "kubernetes_service_v1" "postfixadmin_service" {
   metadata {
     namespace = var.namespace
     name      = "${local.postfixadmin}-service"

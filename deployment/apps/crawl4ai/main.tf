@@ -1,4 +1,4 @@
-resource "kubernetes_secret" "crawl4ai" {
+resource "kubernetes_secret_v1" "crawl4ai" {
   metadata {
     name      = "crawl4ai-secret"
     namespace = var.namespace
@@ -13,7 +13,7 @@ resource "kubernetes_secret" "crawl4ai" {
   type = "Opaque"
 }
 
-resource "kubernetes_deployment" "crawl4ai" {
+resource "kubernetes_deployment_v1" "crawl4ai" {
   metadata {
     name      = "crawl4ai"
     namespace = var.namespace
@@ -55,7 +55,7 @@ resource "kubernetes_deployment" "crawl4ai" {
 
           env_from {
             secret_ref {
-              name = kubernetes_secret.crawl4ai.metadata[0].name
+              name = kubernetes_secret_v1.crawl4ai.metadata[0].name
             }
           }
 
@@ -77,7 +77,7 @@ resource "kubernetes_deployment" "crawl4ai" {
   }
 }
 
-resource "kubernetes_service" "crawl4ai" {
+resource "kubernetes_service_v1" "crawl4ai" {
   metadata {
     name      = "crawl4ai"
     namespace = var.namespace
@@ -117,7 +117,7 @@ resource "kubernetes_ingress_v1" "crawl4ai" {
 
           backend {
             service {
-              name = kubernetes_service.crawl4ai.metadata[0].name
+              name = kubernetes_service_v1.crawl4ai.metadata[0].name
               port {
                 number = 80
               }

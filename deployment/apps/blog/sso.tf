@@ -2,7 +2,7 @@ locals {
   appName = "blog-sso"
 }
 
-resource "kubernetes_deployment" "blog_sso" {
+resource "kubernetes_deployment_v1" "blog_sso" {
   metadata {
     name      = local.appName
     namespace = var.namespace
@@ -80,7 +80,7 @@ resource "kubernetes_deployment" "blog_sso" {
   }
 }
 
-resource "kubernetes_service" "blog_sso_service" {
+resource "kubernetes_service_v1" "blog_sso_service" {
   metadata {
     name      = "sso-blog"
     namespace = var.namespace

@@ -28,7 +28,7 @@ resource "postgresql_database" "postiz_db" {
 }
 
 
-resource "kubernetes_service" "redis-service" {
+resource "kubernetes_service_v1" "redis-service" {
   metadata {
     name      = "${local.appname}-redis-service"
     namespace = var.namespace
@@ -86,7 +86,7 @@ resource "kubernetes_stateful_set_v1" "redis" {
   }
 }
 
-resource "kubernetes_persistent_volume_claim" "postiz_data" {
+resource "kubernetes_persistent_volume_claim_v1" "postiz_data" {
   metadata {
     name      = "postiz-data"
     namespace = var.namespace
@@ -111,7 +111,7 @@ resource "random_password" "jwt_secret" {
   special = true
 }
 
-resource "kubernetes_secret" "social_app_config" {
+resource "kubernetes_secret_v1" "social_app_config" {
   metadata {
     name      = "postiz-social-app-config"
     namespace = var.namespace
@@ -122,7 +122,7 @@ resource "kubernetes_secret" "social_app_config" {
 
 }
 
-resource "kubernetes_deployment" "postiz_app" {
+resource "kubernetes_deployment_v1" "postiz_app" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -262,7 +262,7 @@ resource "kubernetes_deployment" "postiz_app" {
 
           env_from {
             secret_ref {
-              name = kubernetes_secret.social_app_config.metadata[0].name
+              name = kubernetes_secret_v1.social_app_config.metadata[0].name
             }
           }
 
@@ -280,14 +280,14 @@ resource "kubernetes_deployment" "postiz_app" {
           name = "uploads"
 
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.postiz_data.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.postiz_data.metadata[0].name
           }
         }
       }
     }
   }
 }
-resource "kubernetes_service" "postiz_app" {
+resource "kubernetes_service_v1" "postiz_app" {
   metadata {
     name = local.appname
     labels = {
@@ -325,7 +325,7 @@ resource "kubernetes_ingress_v1" "postiz_app" {
 
           backend {
             service {
-              name = kubernetes_service.postiz_app.metadata[0].name
+              name = kubernetes_service_v1.postiz_app.metadata[0].name
               port {
                 number = 80
               }

@@ -1,4 +1,4 @@
-resource "kubernetes_namespace" "homelab_apps_namespace" {
+resource "kubernetes_namespace_v1" "homelab_apps_namespace" {
   metadata {
     name = var.namespace
   }

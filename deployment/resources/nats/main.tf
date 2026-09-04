@@ -4,7 +4,7 @@ locals {
   replica = var.replicas
 }
 
-resource "kubernetes_deployment" "nats-deployment" {
+resource "kubernetes_deployment_v1" "nats-deployment" {
   metadata {
     name = local.appname
     labels = {
@@ -70,7 +70,7 @@ resource "kubernetes_deployment" "nats-deployment" {
   }
 }
 
-resource "kubernetes_service" "nats-service" {
+resource "kubernetes_service_v1" "nats-service" {
   metadata {
     name = local.appname
     labels = {
