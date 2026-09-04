@@ -5,7 +5,7 @@ locals {
   replicas            = 1
 }
 
-resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
+resource "kubernetes_persistent_volume_claim_v1" "vaultwarden_data" {
   metadata {
     name      = "vaultwarden-data"
     namespace = var.namespace
@@ -25,7 +25,7 @@ resource "kubernetes_persistent_volume_claim" "vaultwarden_data" {
   }
 }
 
-resource "kubernetes_config_map" "vw-proxy-config" {
+resource "kubernetes_config_map_v1" "vw-proxy-config" {
   metadata {
     name      = local.proxy_config_volume
     namespace = var.namespace
@@ -59,9 +59,9 @@ resource "kubernetes_config_map" "vw-proxy-config" {
   }
 }
 
-resource "kubernetes_deployment" "vaultwarden" {
+resource "kubernetes_deployment_v1" "vaultwarden" {
   depends_on = [
-    kubernetes_persistent_volume_claim.vaultwarden_data
+    kubernetes_persistent_volume_claim_v1.vaultwarden_data
   ]
   metadata {
     name      = local.app
@@ -166,7 +166,7 @@ resource "kubernetes_deployment" "vaultwarden" {
   }
 }
 
-resource "kubernetes_service" "vaultwarden_service" {
+resource "kubernetes_service_v1" "vaultwarden_service" {
   metadata {
     name      = local.app
     namespace = var.namespace

@@ -123,10 +123,10 @@ module "code" {
   public_host       = var.code.public_host
   public_gateway_ip = split("/", var.lxc_ips.public_gateway.address)[0]
   minio             = var.minio
-  smtp            = module.resources.smtp_options
-  imap            = module.mail.private_imap_options
-  email           = var.code.email_options
-  forgejo_version = local.versions.charts.forgejo
+  smtp              = module.resources.smtp_options
+  imap              = module.mail.private_imap_options
+  email             = var.code.email_options
+  forgejo_version   = local.versions.charts.forgejo
 
   # Proxmox-side Forgejo Actions runner VM
   forgejo_runner_node_image      = local.versions.images.forgejo_runner_node

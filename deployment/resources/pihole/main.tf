@@ -4,7 +4,7 @@ locals {
   replica = var.replicas
 }
 
-resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
+resource "kubernetes_persistent_volume_claim_v1" "pihole_pvc" {
   metadata {
     name      = local.appname
     namespace = var.namespace
@@ -24,7 +24,7 @@ resource "kubernetes_persistent_volume_claim" "pihole_pvc" {
   }
 }
 
-resource "kubernetes_config_map" "pihole-config" {
+resource "kubernetes_config_map_v1" "pihole-config" {
   metadata {
     namespace = var.namespace
     name      = "pihole-config"
@@ -151,7 +151,7 @@ resource "kubernetes_stateful_set_v1" "pihole" {
   }
 }
 
-resource "kubernetes_service" "pihole-portal-service" {
+resource "kubernetes_service_v1" "pihole-portal-service" {
   metadata {
     name = "${local.appname}-portal-service"
     labels = {
@@ -174,7 +174,7 @@ resource "kubernetes_service" "pihole-portal-service" {
   }
 }
 
-resource "kubernetes_service" "pihole-dns-service" {
+resource "kubernetes_service_v1" "pihole-dns-service" {
   metadata {
     name = "${local.appname}-dns-service"
     labels = {
@@ -205,7 +205,7 @@ resource "kubernetes_service" "pihole-dns-service" {
   }
 }
 
-resource "kubernetes_service" "pihole-admin-service" {
+resource "kubernetes_service_v1" "pihole-admin-service" {
   metadata {
     name = "${local.appname}-admin-service"
     labels = {
