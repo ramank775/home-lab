@@ -150,13 +150,20 @@ gitea:
       LANDING_PAGE: "explore"
       DOMAIN: "${var.public_host}"
       ROOT_URL: "https://${var.public_host}"
-      # NOTE: do NOT set LOCAL_ROOT_URL to the public URL. It's the loopback
-      # address Forgejo's OWN workers (SSH `serv`, runner callbacks) use to reach
-      # the API server-to-server; the default (http://localhost:3000/) is correct.
-      # Overriding it with https://<public_host> routed every SSH git op back out
-      # through the public gateway — when that path was flaky, all pushes/clones
-      # failed with "Internal Server Connection Error" / "Key check failed".
+      # NOTE: LOCAL_ROOT_URL must stay on loopback. It's the address Forgejo's
+      # OWN workers (SSH `serv`, runner callbacks) use to reach the API
+      # server-to-server. Pointing it at https://<public_host> makes every SSH
+      # git op depend on external DNS: that name CNAMEs to gateway-1.homelab.arpa,
+      # and .arpa is DNSSEC-signed with homelab.arpa undelegated, so whenever the
+      # query escapes Unbound's local data it gets an authenticated NXDOMAIN
+      # (cached by CoreDNS for up to 1800s). Pushes/clones then fail in
+      # multi-minute bursts with "Internal Server Connection Error".
       # User-facing/artifact links come from ROOT_URL, not this.
+      #
+      # Set explicitly, not omitted: the chart's configure-gitea init container
+      # MERGES keys into the existing app.ini on the PVC and never deletes stale
+      # ones, so dropping this from values leaves the old public URL in place.
+      LOCAL_ROOT_URL: "http://localhost:3000/"
       SSH_PORT: 2222
     database:
       DB_TYPE: ${var.forgejo_database.type}
